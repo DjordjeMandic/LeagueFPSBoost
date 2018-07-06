@@ -203,6 +203,7 @@
   <ItemGroup>
     <Compile Include="Cryptography\ChecksumCalculator.cs" />
     <Compile Include="Cryptography\ICheckSumCalculator.cs" />
+    <Compile Include="Properties\DeveloperData.cs" />
     <Compile Include="Diagnostics\Debugger\DebuggerWatcher.cs" />
     <Compile Include="Extensions\HelpingExtensions.cs" />
     <Compile Include="IO\IBasicFileInfo.cs" />

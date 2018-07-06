@@ -88,8 +88,6 @@ namespace LeagueFPSBoost
         [STAThread]
         static void Main(string[] args)
         {
-            PreNLog("This is test program.");
-            PreNLog("5th 6th july");
             if (waitForDebugger)
             {
                 while (!Debugger.IsAttached) { Thread.Sleep(100); }
@@ -580,9 +578,9 @@ namespace LeagueFPSBoost
         {
             logger.Debug("Creating crash report using CrashReporter.Net");
             var reportCrash = new ReportCrash(StringCipher.Decrypt(
-                                                            "kPw1DeQZt9Q9cYm7QQ3B41Qh8NSR7e7jJ4Jzie++yN/xAGNPie/e6CH4F9n529aGOa+uzABVP02KPjOMMQbDXiKQlBibk12w5p1ikTMHZtE531BWVit60kzCtYQzO4T6",
-                                                            "dc0CKZToHxCpv5Y2YQGqhuvjA1H480xxHUuos5BgWlIIBJh7acrYjvdw5RgyFrC4kBPw55qHszW8n6Yq6kGsCSGzHw3aMpk6RC2P8zn50NyM6asH0dKj03F++gGm0VYD",
-                                                            315))
+                                                            DeveloperData.CrashReport_cipherText,
+                                                            DeveloperData.CrashReport_passPharse,
+                                                            DeveloperData.CrashReport_keySize))
             {
                 DeveloperMessage = developerMessage,
                 CaptureScreen = true,
