@@ -1,0 +1,211 @@
+﻿using LeagueFPSBoost.Properties;
+using LeagueFPSBoost.Text;
+using NLog;
+using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
+using System.Xml.Linq;
+
+namespace LeagueFPSBoost.Configuration
+{
+    public class AppConfigEventArgs : EventArgs
+    {
+        public AppConfigEventArgs(string path)
+        {
+            Path = path;
+        }
+
+        public string Path { get; private set; }
+    }
+
+    public abstract class AppConfig : IDisposable
+    {
+        public static event EventHandler<AppConfigEventArgs> OnPathChange = delegate { };
+        static readonly Logger appConfigLogger = LogManager.GetCurrentClassLogger();
+        public static AppConfig Change(string path)
+        {
+            return new ChangeAppConfig(path);
+        }
+
+        public static void CreateConfigIfNotExists()
+        {
+            var configFile = $"{Application.ExecutablePath}.config";
+            if (!File.Exists(configFile))
+            {
+                File.WriteAllText(configFile, Resources.App_Config);
+                appConfigLogger.Debug("Temporary configuration file doesn't exist. Writing new one: " + configFile);
+            }
+
+            var configDir = Path.Combine(Program.leagueConfigDirPath, @"LeagueFPSBoost\");
+            Program.appConfigDir = configDir;
+            if (!Directory.Exists(configDir))
+            {
+                Directory.CreateDirectory(configDir);
+                appConfigLogger.Debug("Configuration directory doesn't exist. Created new one: " + configDir);
+            }
+
+            CorrectRoamingSettingsFileIfNeeded(Assembly.GetEntryAssembly().Location);
+
+            var appConfigPath = Path.Combine(configDir, "App.config");
+
+            if (Settings.Default.UpgradeRequired)
+            {
+                appConfigLogger.Debug("Upgrading settings.");
+                if (File.Exists(appConfigPath))
+                {
+                    File.Delete(appConfigPath);
+                    appConfigLogger.Debug("Deleted old application settings file: " + appConfigPath);
+                }
+
+                appConfigLogger.Debug("Writing new application settings file: " + appConfigPath);
+                File.WriteAllText(appConfigPath, Resources.App_Config);
+
+                Change(appConfigPath);
+
+                Settings.Default.Upgrade();
+                Settings.Default.Reload();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+                appConfigLogger.Debug("Done upgrading settings.");
+            }
+            else
+            {
+                if (!File.Exists(appConfigPath))
+                {
+                    appConfigLogger.Debug("Application configuration file doesn't exist. Writing new one: " + appConfigPath);
+                    File.WriteAllText(appConfigPath, Resources.App_Config);
+                }
+                Change(appConfigPath);
+                Settings.Default.Reload();
+            }
+
+            if (File.Exists(configFile))
+            {
+                appConfigLogger.Debug("Deleting temporary configuration file: " + configFile);
+                File.Delete(configFile);
+            }
+        }
+
+        /// <summary>
+        /// Corrects the roaming settings file if needed because sometimes the node "configSections" is missing in the settings file. 
+        /// Correct this by taking this node out of the default config file.
+        /// </summary>
+        public static void CorrectRoamingSettingsFileIfNeeded(string configExePath)
+        {
+            appConfigLogger.Debug("Correcting user settings file if needed.");
+            const string NODE_NAME_CONFIGURATION = "configuration";
+            const string NODE_NAME_CONFIGSECTIONS = "configSections";
+            const string NODE_NAME_USERSETTINGS = "userSettings";
+
+            //Exit if no romaing config (file) to correct...
+            var configRoaming = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            if (configRoaming == null || !configRoaming.HasFile)
+            {
+                appConfigLogger.Debug("There is no user configuration file to correct.");
+                return;
+            }
+            appConfigLogger.Debug("User configuration file: " + configRoaming.FilePath);
+            //Check for the <sectionGroup> with name="userSettings"
+            //Note: Used ugly iteration because "configRoaming.GetSectionGroup(sectionGroupName)" throws ArgumentException.
+            appConfigLogger.Debug("Checking for the <sectionGroup> with name=\"userSettings\"");
+            ConfigurationSectionGroup sectionGroupUserSettings = null;
+            foreach (ConfigurationSectionGroup sectionGroup in configRoaming.SectionGroups)
+            {
+                if (sectionGroup.Name.Equals(NODE_NAME_USERSETTINGS))
+                {
+                    sectionGroupUserSettings = sectionGroup;
+                    break;
+                }
+            }
+
+            //Exit if the needed section group is found...
+            if (sectionGroupUserSettings != null && sectionGroupUserSettings.IsDeclared)
+            {
+                appConfigLogger.Debug("Needed section group is found.");
+                return;
+            }
+
+            appConfigLogger.Debug("Needed section group is not found. Correcting user configuration file.");
+            //Do correction actions...
+            var xDoc = XDocument.Load(configRoaming.FilePath);
+            var userSettingsNode = xDoc.Element(NODE_NAME_CONFIGURATION).Element(NODE_NAME_USERSETTINGS);
+
+            //var configExePath = Assembly.GetEntryAssembly().Location;
+            var configDefault = ConfigurationManager.OpenExeConfiguration(configExePath);
+            var xDocDefault = XDocument.Load(configDefault.FilePath);
+            var configSectionsNode = xDocDefault.Element(NODE_NAME_CONFIGURATION).Element(NODE_NAME_CONFIGSECTIONS);
+
+            userSettingsNode.AddBeforeSelf(configSectionsNode);
+            xDoc.Save(configRoaming.FilePath);
+            appConfigLogger.Debug("User configuration file has been corrected.");
+
+            var currProc = Process.GetCurrentProcess();
+            var exeName = currProc.MainModule.FileName;
+            ProcessStartInfo startInfo = new ProcessStartInfo(exeName)
+            {
+                Verb = "runas"
+            };
+            startInfo.Arguments = currProc.StartInfo.Arguments + (string.IsNullOrEmpty(currProc.StartInfo.Arguments) ? " " : "") + Strings.configRestartReasonArg;
+            appConfigLogger.Debug("Restarting program.");
+            Process.Start(startInfo);
+            Environment.Exit(0);
+        }
+
+        public abstract void Dispose();
+
+        class ChangeAppConfig : AppConfig
+        {
+            readonly string oldConfig =
+                AppDomain.CurrentDomain.GetData("APP_CONFIG_FILE").ToString();
+
+            bool disposedValue;
+
+            public ChangeAppConfig(string path)
+            {
+                AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", path);
+                ResetConfigMechanism();
+                appConfigLogger.Debug("Application configuration changed to: " + path);
+                OnPathChange?.Invoke(this, new AppConfigEventArgs(path));
+            }
+
+            public override void Dispose()
+            {
+                if (!disposedValue)
+                {
+                    AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", oldConfig);
+                    ResetConfigMechanism();
+
+
+                    disposedValue = true;
+                }
+                GC.SuppressFinalize(this);
+            }
+
+            static void ResetConfigMechanism()
+            {
+                typeof(ConfigurationManager)
+                    .GetField("s_initState", BindingFlags.NonPublic |
+                                             BindingFlags.Static)
+                    .SetValue(null, 0);
+
+                typeof(ConfigurationManager)
+                    .GetField("s_configSystem", BindingFlags.NonPublic |
+                                                BindingFlags.Static)
+                    .SetValue(null, null);
+
+                typeof(ConfigurationManager)
+                    .Assembly.GetTypes()
+                    .Where(x => x.FullName ==
+                                "System.Configuration.ClientConfigPaths")
+                    .First()
+                    .GetField("s_current", BindingFlags.NonPublic |
+                                           BindingFlags.Static)
+                    .SetValue(null, null);
+            }
+        }
+    }
+}
