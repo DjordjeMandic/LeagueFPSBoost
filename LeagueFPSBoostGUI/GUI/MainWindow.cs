@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LeagueFPSBoost.GUI
@@ -36,6 +37,8 @@ namespace LeagueFPSBoost.GUI
             aboutTXT = metroLabel9.Text;
             metroTabControl1.SelectedIndex = 0;
             metroLink2.Text = metroLink2.Text + Program.CurrentVersionFull;
+
+            if (Program.FirstRun.Value) MessageBox.Show("There is new feature in about tab.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
@@ -86,7 +89,8 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
-            if(Program.FirstRun.Value) MessageBox.Show("There is new feature in about tab.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (Program.FirstRun.Value)
+                new Thread(() => MessageBox.Show("There is new feature in about tab.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information)).Start();
             CheckForUpdates();
         }
 
