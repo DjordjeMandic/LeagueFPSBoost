@@ -77,7 +77,7 @@ namespace LeagueFPSBoost
 
         public static string LeagueClientInfo = "";
 
-        static Logger logger;
+        static Logger logger = LogManager.GetCurrentClassLogger();
 
         public static bool MainWindowLoaded;
         static readonly bool WaitForDebugger = false;
@@ -367,7 +367,7 @@ namespace LeagueFPSBoost
         public static void PreNLog(string msg)
         {
             PreNLogMessages.Add(msg);
-            //Console.WriteLine(msg);
+            Console.WriteLine(msg);
         }
 
         static void ConfigureNLogger(string folderPath)
@@ -1376,6 +1376,7 @@ namespace LeagueFPSBoost
         {
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_SHOW);
+            logger.Debug("Console shown.");
         }
 
         public static void HideConsole(string[] args)
@@ -1384,6 +1385,7 @@ namespace LeagueFPSBoost
             {
                 var handle = GetConsoleWindow();
                 ShowWindow(handle, SW_HIDE);
+                logger.Debug("Console hidden.");
             }
         }
 
@@ -1392,6 +1394,7 @@ namespace LeagueFPSBoost
             var handle = GetConsoleWindow();
             while(!HasConsole())
             {
+                logger.Debug("Allocating new console.");
                 AllocConsole();
             }
             ShowConsole();
@@ -1402,7 +1405,9 @@ namespace LeagueFPSBoost
         public static bool HasConsole()
         {
             var handle = GetConsoleWindow();
-            return handle != IntPtr.Zero;
+            var hasConsole = handle != IntPtr.Zero;
+            logger.Debug("HasConsole: " + hasConsole);
+            return hasConsole;
         }
     }
 }

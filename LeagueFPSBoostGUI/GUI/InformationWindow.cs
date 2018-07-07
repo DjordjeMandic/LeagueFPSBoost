@@ -116,23 +116,61 @@ namespace LeagueFPSBoost.GUI
 
         private void metroCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-
+            logger.Debug("Exit early checkbox checked: " + exitEarlyCheckBox1.Checked);
         }
 
         private void cleanCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
+            logger.Debug("Clean checkbox checked: " + cleanCheckBox1.Checked);
+
             noClientCheckBox1.Enabled = !cleanCheckBox1.Checked;
             clearLogsCheckBox1.Enabled = !cleanCheckBox1.Checked;
             procModulesCheckBox1.Enabled = !cleanCheckBox1.Checked;
             exitEarlyCheckBox1.Enabled = !cleanCheckBox1.Checked;
             configRstRsnCheckBox1.Enabled = !cleanCheckBox1.Checked;
             adminRstRsnCheckBox1.Enabled = !cleanCheckBox1.Checked;
-            logger.Debug("Clean checkbox checked: " + cleanCheckBox1.Checked);
         }
 
         private void metroButton2_Click(object sender, EventArgs e)
         {
+            logger.Debug("Console button clicked.");
             console = !Program.ConsoleState(console);
+        }
+
+        private void noClientCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.Debug("No client checkbox checked: " + noClientCheckBox1.Checked);
+        }
+
+        private void clearLogsCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.Debug("Clear logs checkbox checked: " + clearLogsCheckBox1.Checked);
+        }
+
+        private void procModulesCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.Debug("Process modules checkbox checked: " + procModulesCheckBox1.Checked);
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void configRstRsnCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+            logger.Debug("Restart reason config checkbox checked: " +configRstRsnCheckBox1.Checked);
+        }
+
+        private void adminRstRsnCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.Debug("Restart reason admin checkbox checked: " + adminRstRsnCheckBox1.Checked);
+        }
+
+        private void exitEarlyCheckBox1_CheckStateChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

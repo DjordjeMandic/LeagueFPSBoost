@@ -107,6 +107,7 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Startup Arguments";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // cleanCheckBox1
             // 
@@ -131,6 +132,7 @@
             this.exitEarlyCheckBox1.UseStyleColors = true;
             this.exitEarlyCheckBox1.UseVisualStyleBackColor = true;
             this.exitEarlyCheckBox1.CheckedChanged += new System.EventHandler(this.metroCheckBox1_CheckedChanged);
+            this.exitEarlyCheckBox1.CheckStateChanged += new System.EventHandler(this.exitEarlyCheckBox1_CheckStateChanged);
             // 
             // metroLabel1
             // 
@@ -155,6 +157,7 @@
             this.adminRstRsnCheckBox1.Text = "Restart Reason Elevation";
             this.adminRstRsnCheckBox1.UseStyleColors = true;
             this.adminRstRsnCheckBox1.UseVisualStyleBackColor = true;
+            this.adminRstRsnCheckBox1.CheckedChanged += new System.EventHandler(this.adminRstRsnCheckBox1_CheckedChanged);
             // 
             // configRstRsnCheckBox1
             // 
@@ -167,6 +170,7 @@
             this.configRstRsnCheckBox1.Text = "Restart Reason Config";
             this.configRstRsnCheckBox1.UseStyleColors = true;
             this.configRstRsnCheckBox1.UseVisualStyleBackColor = true;
+            this.configRstRsnCheckBox1.CheckedChanged += new System.EventHandler(this.configRstRsnCheckBox1_CheckedChanged);
             // 
             // procModulesCheckBox1
             // 
@@ -178,6 +182,7 @@
             this.procModulesCheckBox1.Text = "Process Modules";
             this.procModulesCheckBox1.UseStyleColors = true;
             this.procModulesCheckBox1.UseVisualStyleBackColor = true;
+            this.procModulesCheckBox1.CheckedChanged += new System.EventHandler(this.procModulesCheckBox1_CheckedChanged);
             // 
             // clearLogsCheckBox1
             // 
@@ -189,6 +194,7 @@
             this.clearLogsCheckBox1.Text = "Clear Logs";
             this.clearLogsCheckBox1.UseStyleColors = true;
             this.clearLogsCheckBox1.UseVisualStyleBackColor = true;
+            this.clearLogsCheckBox1.CheckedChanged += new System.EventHandler(this.clearLogsCheckBox1_CheckedChanged);
             // 
             // noClientCheckBox1
             // 
@@ -200,6 +206,7 @@
             this.noClientCheckBox1.Text = "No Client";
             this.noClientCheckBox1.UseStyleColors = true;
             this.noClientCheckBox1.UseVisualStyleBackColor = true;
+            this.noClientCheckBox1.CheckedChanged += new System.EventHandler(this.noClientCheckBox1_CheckedChanged);
             // 
             // rstButton1
             // 
