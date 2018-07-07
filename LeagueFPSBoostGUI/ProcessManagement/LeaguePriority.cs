@@ -192,7 +192,7 @@ namespace LeagueFPSBoost.ProcessManagement
                     catch (Exception ex)
                     {
                         logger.Error(ex, Strings.exceptionThrown + $" while changing client process {proc.Id} priority to {ppclass}. " + Environment.NewLine);
-                        logger.Debug($"Process info: {Environment.NewLine}{proc.GetProcessInfoForLogging(Program.printProcessModules)}");
+                        logger.Debug($"Process info: {Environment.NewLine}{proc.GetProcessInfoForLogging(Program.PrintProcessModules)}");
                     }
                 }
             }
@@ -211,7 +211,7 @@ namespace LeagueFPSBoost.ProcessManagement
                 catch (Exception ex)
                 {
                     logger.Error(ex, Strings.exceptionThrown + $" while changing game process {proc.Id} priority to {ppclass}. " + Environment.NewLine);
-                    logger.Debug($"Process info: {Environment.NewLine}{proc.GetProcessInfoForLogging(Program.printProcessModules)}");
+                    logger.Debug($"Process info: {Environment.NewLine}{proc.GetProcessInfoForLogging(Program.PrintProcessModules)}");
                 }
             }
         }

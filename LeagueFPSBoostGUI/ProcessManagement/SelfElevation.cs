@@ -15,9 +15,9 @@ namespace LeagueFPSBoost.ProcessManagement
                 var exeName = Process.GetCurrentProcess().MainModule.FileName;
                 ProcessStartInfo startInfo = new ProcessStartInfo(exeName)
                 {
-                    Verb = "runas",
-                    Arguments = Strings.adminRestartReasonArg
+                    Verb = "runas"
                 };
+                startInfo.Arguments = Program.ArgumentsStr + " -" + Strings.RestartReasonArg.Split('|')[0] + "=" + Program.RestartReason.SelfElevation.ToString();
                 if (MessageBox.Show("Do you want to launch LeagueFPSBoost in Administrator mode?", "LeagueFPSBoost: Startup Failed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Process.Start(startInfo);

@@ -40,8 +40,8 @@ namespace LeagueFPSBoost.Configuration
                 appConfigLogger.Debug("Temporary configuration file doesn't exist. Writing new one: " + configFile);
             }
 
-            var configDir = Path.Combine(Program.leagueConfigDirPath, @"LeagueFPSBoost\");
-            Program.appConfigDir = configDir;
+            var configDir = Path.Combine(Program.LeagueConfigDirPath, @"LeagueFPSBoost\");
+            Program.AppConfigDir = configDir;
             if (!Directory.Exists(configDir))
             {
                 Directory.CreateDirectory(configDir);
@@ -54,6 +54,7 @@ namespace LeagueFPSBoost.Configuration
 
             if (Settings.Default.UpgradeRequired)
             {
+                Program.FirstRun.Value = true;
                 appConfigLogger.Debug("Upgrading settings.");
                 if (File.Exists(appConfigPath))
                 {
@@ -74,6 +75,7 @@ namespace LeagueFPSBoost.Configuration
             }
             else
             {
+                Program.FirstRun.Value = false;
                 if (!File.Exists(appConfigPath))
                 {
                     appConfigLogger.Debug("Application configuration file doesn't exist. Writing new one: " + appConfigPath);
@@ -149,8 +151,8 @@ namespace LeagueFPSBoost.Configuration
             {
                 Verb = "runas"
             };
-            startInfo.Arguments = currProc.StartInfo.Arguments + (string.IsNullOrEmpty(currProc.StartInfo.Arguments) ? " " : "") + Strings.configRestartReasonArg;
-            appConfigLogger.Debug("Restarting program.");
+            startInfo.Arguments = Program.ArgumentsStr + " -" + Strings.RestartReasonArg.Split('|')[0] + "=" + Program.RestartReason.Configuration.ToString();
+            appConfigLogger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + startInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + startInfo.Arguments);
             Process.Start(startInfo);
             Environment.Exit(0);
         }
