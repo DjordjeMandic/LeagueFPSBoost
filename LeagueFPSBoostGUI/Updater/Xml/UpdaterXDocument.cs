@@ -8,7 +8,7 @@ namespace LeagueFPSBoost.Updater.Xml
     {
         public static bool Mandatory = true;
         public static Version Version = Program.Version;
-        public static string DownloadURL = "https://dl.dropboxusercontent.com/s/e8ogbhle3i0v7aw/LeagueFPSBoost.zip";
+        public static string DownloadURL = "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/beta/AutoUpdater/LeagueFPSBoost.zip";
         public static string ChangelogURL = "https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have";
         public static string CommandLineArguments = string.Empty;
 

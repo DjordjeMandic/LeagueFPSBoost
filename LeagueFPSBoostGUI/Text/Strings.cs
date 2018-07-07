@@ -38,7 +38,7 @@ namespace LeagueFPSBoost.Text
 
 
 
-        public static readonly string Updater_XML_URL = @"https://dl.dropboxusercontent.com/s/r02oaunwwqjnkmm/updater.xml";
+        public static readonly string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/beta/AutoUpdater/updater.xml";
         public static readonly string BoardsPage_URL = @"https://goo.gl/bpxbGV";
         public static readonly string GitHub_URL = @"https://goo.gl/eww7KH";
         public static readonly string YouTube_URL = @"https://goo.gl/RDpsri";
