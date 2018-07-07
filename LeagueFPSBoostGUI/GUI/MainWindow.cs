@@ -86,6 +86,7 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
+            if(Program.FirstRun.Value) MessageBox.Show("There is new feature in about tab.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
             CheckForUpdates();
         }
 

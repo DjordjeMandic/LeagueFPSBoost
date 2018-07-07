@@ -258,9 +258,7 @@
             this.Name = "InformationWindow";
             this.Resizable = false;
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.Text = "More Information";
-            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.InformationWindow_FormClosed);
             this.Load += new System.EventHandler(this.InformationWindow_Load);
             this.groupBox1.ResumeLayout(false);
