@@ -31,6 +31,14 @@ namespace LeagueFPSBoost.Configuration
             return new ChangeAppConfig(path);
         }
 
+        static Process currProc = Process.GetCurrentProcess();
+        static string exeName = currProc.MainModule.FileName;
+        public static readonly ProcessStartInfo restartInfo = new ProcessStartInfo(exeName)
+        {
+            Verb = "runas",
+            Arguments = Program.ArgumentsStr + " -" + Strings.RestartReasonArg.Split('|')[0] + "=" + Program.RestartReason.Configuration.ToString()
+        };
+
         public static void CreateConfigIfNotExists()
         {
             var configFile = $"{Application.ExecutablePath}.config";
@@ -144,16 +152,9 @@ namespace LeagueFPSBoost.Configuration
             userSettingsNode.AddBeforeSelf(configSectionsNode);
             xDoc.Save(configRoaming.FilePath);
             appConfigLogger.Debug("User configuration file has been corrected.");
-
-            var currProc = Process.GetCurrentProcess();
-            var exeName = currProc.MainModule.FileName;
-            ProcessStartInfo startInfo = new ProcessStartInfo(exeName)
-            {
-                Verb = "runas"
-            };
-            startInfo.Arguments = Program.ArgumentsStr + " -" + Strings.RestartReasonArg.Split('|')[0] + "=" + Program.RestartReason.Configuration.ToString();
-            appConfigLogger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + startInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + startInfo.Arguments);
-            Process.Start(startInfo);
+            
+            appConfigLogger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + restartInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + restartInfo.Arguments);
+            Process.Start(restartInfo);
             Environment.Exit(0);
         }
 

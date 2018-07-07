@@ -86,7 +86,6 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
-            
             CheckForUpdates();
         }
 

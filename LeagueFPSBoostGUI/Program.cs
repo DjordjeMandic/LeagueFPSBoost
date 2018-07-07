@@ -77,7 +77,7 @@ namespace LeagueFPSBoost
 
         public static string LeagueClientInfo = "";
 
-        static Logger logger = LogManager.GetCurrentClassLogger();
+        public static Logger logger { get; private set; } = LogManager.GetCurrentClassLogger();
 
         public static bool MainWindowLoaded;
         static readonly bool WaitForDebugger = false;
@@ -476,7 +476,7 @@ namespace LeagueFPSBoost
             var task = LogSOFT_HARD_Info(logger);
         }
 
-        static async Task LogSOFT_HARD_Info(Logger log)
+        public static async Task LogSOFT_HARD_Info(Logger log)
         {
             var task = new Task<string>(GetSoftwareAndHardwareInfo);
             log.Trace("Reading system, hardware and software information.");
@@ -485,7 +485,7 @@ namespace LeagueFPSBoost
             log.Debug("Finished reading system and hardware and software information: " + Environment.NewLine + logTxt);
         }
 
-        static string GetSoftwareAndHardwareInfo()
+        public static string GetSoftwareAndHardwareInfo()
         {
             return ReadOS_CPU_GPU_Info();
         }
@@ -1053,10 +1053,15 @@ namespace LeagueFPSBoost
                 catch (Exception ex)
                 {
                     logger.Fatal(ex, Strings.exceptionThrown + " while configuring application configuration: " + Environment.NewLine);
-                    MessageBox.Show("There was an error while configuring application configuration." + Environment.NewLine +
-                                    "This is known bug when running new version for first time." + Environment.NewLine +
-                                    "If you keep seeing this error check LeagueFPSBoostNLog file." + Environment.NewLine +
-                                    "You can try to restart program for now. Program will close.", "Known Bug", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var dialogResult = MessageBox.Show("There was an error while configuring application configuration." + Environment.NewLine +
+                                                        "This is known bug when running new version for first time." + Environment.NewLine +
+                                                        "If you keep seeing this error check LeagueFPSBoostNLog file." + Environment.NewLine +
+                                                        "Restart program automatically now? If no, program will close.", "Known Bug", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if(dialogResult == DialogResult.Yes)
+                    {
+                        logger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + AppConfig.restartInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + AppConfig.restartInfo.Arguments);
+                        Process.Start(AppConfig.restartInfo);
+                    }
                     Environment.Exit(0);
                 }
 
