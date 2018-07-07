@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <item>
-  <version>3.2.6762.12983</version>
+  <version>3.2.6762.14549</version>
   <url>https://dl.dropboxusercontent.com/s/e8ogbhle3i0v7aw/LeagueFPSBoost.zip</url>
   <changelog>https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have</changelog>
   <mandatory>false</mandatory>
-  <checksum algorithm="SHA512">0bd27d981455de11f79a642427c8ea1dd85ffb6898fee0ab15a366578ce734d8262c353328d337df8d68b1e97c12f5fba1eceb87cbcc5cc41782eb371dbaa892</checksum>
+  <checksum algorithm="SHA512">54f3468623937654ef60a7e8cd88979776858858d498db6083585017dc3b967f67d915d0bf43678059e934274d136b1dfc010a9f60953f07f4282c085290c5b7</checksum>
 </item>

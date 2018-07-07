@@ -110,7 +110,13 @@ namespace LeagueFPSBoost
         static void Main(string[] tmp_args)
         {
             var args = tmp_args.Distinct().ToArray();
-            if (args.Length > 0) AttachConsole(ATTACH_PARENT_PROCESS);
+            Arguments = args;
+            if (args.Length > 0)
+            {
+                AttachConsole(ATTACH_PARENT_PROCESS);
+                if (!HasConsole()) AllocConsole();
+            }
+            else if (DebugBuild) ConsoleState(true);
             var showHelp = false;
             List<string> extraArgs;
             var optionSet = new OptionSet()
@@ -153,7 +159,6 @@ namespace LeagueFPSBoost
                     PreNLog("Program has restarted itself with admin rights.");
                 }
 
-            Arguments = args;
             foreach (string s in Arguments) ArgumentsStr += s + " ";
             if (WaitForDebugger)
             {
@@ -205,14 +210,17 @@ namespace LeagueFPSBoost
             
             using (var mainWindow = new MainWindow())
             {
+                
                 if (FirstRun.Value)
                 {
+                    logger.Info("Waiting for user to read message box then hiding console.");
                     MessageBox.Show("If you like this program please share it with your friends." + Environment.NewLine +
                                     "Also feedback on any errors/bugs is really useful. Visit the" + Environment.NewLine +
                                     "boards page and find GitHub repository link and submit new " + Environment.NewLine +
                                     "issue and I will try to fix it. Boards link can be found in" + Environment.NewLine +
                                     "about tab. Good luck! - IShunpoYourFace (EUNE) July 2018", $"Welcome to LeagueFPSBoost version {Program.CurrentVersionFull}", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                HideConsole(Arguments);
                 Application.Run(mainWindow);
             }
 
@@ -1370,21 +1378,31 @@ namespace LeagueFPSBoost
             ShowWindow(handle, SW_SHOW);
         }
 
-        public static void HideConsole()
+        public static void HideConsole(string[] args)
         {
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_HIDE);
+            if(args.Length < 1 || !DebugBuild)
+            {
+                var handle = GetConsoleWindow();
+                ShowWindow(handle, SW_HIDE);
+            }
         }
 
         public static bool ConsoleState(bool visible)
         {
             var handle = GetConsoleWindow();
-            if(handle == IntPtr.Zero)
+            while(!HasConsole())
             {
                 AllocConsole();
             }
-            ShowWindow(handle, visible ? SW_SHOW : SW_HIDE);
+            ShowConsole();
+            if (visible == false) HideConsole(Arguments);
             return visible;
+        }
+
+        public static bool HasConsole()
+        {
+            var handle = GetConsoleWindow();
+            return handle != IntPtr.Zero;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace LeagueFPSBoost.GUI
     {
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        bool console;
+        bool console = true;
 
         public InformationWindow(MetroStyleManager styleManager)
         {
@@ -23,6 +23,7 @@ namespace LeagueFPSBoost.GUI
             metroStyleManager1.Style = styleManager.Style;
             metroStyleManager1.Theme = styleManager.Theme;
             metroStyleManager1.Update();
+            metroButton2.Visible = Program.HasConsole();
         }
 
         private void InformationWindow_Load(object sender, EventArgs e)
@@ -131,8 +132,7 @@ namespace LeagueFPSBoost.GUI
 
         private void metroButton2_Click(object sender, EventArgs e)
         {
-            console = !console;
-            Program.ConsoleState(console);
+            console = !Program.ConsoleState(console);
         }
     }
 }

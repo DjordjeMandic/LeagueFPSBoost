@@ -229,7 +229,7 @@
             this.metroButton2.Name = "metroButton2";
             this.metroButton2.Size = new System.Drawing.Size(75, 23);
             this.metroButton2.TabIndex = 8;
-            this.metroButton2.Text = "con";
+            this.metroButton2.Text = "Console";
             this.metroButton2.Click += new System.EventHandler(this.metroButton2_Click);
             // 
             // InformationWindow
