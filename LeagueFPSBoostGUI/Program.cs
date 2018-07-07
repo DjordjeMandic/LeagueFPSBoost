@@ -77,7 +77,7 @@ namespace LeagueFPSBoost
 
         public static string LeagueClientInfo = "";
 
-        public static Logger logger { get; private set; } = LogManager.GetCurrentClassLogger();
+        public static Logger Logger { get; private set; } = LogManager.GetCurrentClassLogger();
 
         public static bool MainWindowLoaded;
         static readonly bool WaitForDebugger = false;
@@ -195,13 +195,13 @@ namespace LeagueFPSBoost
 
             if (ExitBeforeMainWindow)
             {
-                logger.Info("Exit argument has been specified. Exiting before checking for league's config.");
+                Logger.Info("Exit argument has been specified. Exiting before checking for league's config.");
                 Environment.Exit(0);
             }
 
             if (!CheckForLeagueConfig())
             {
-                logger.Fatal("League's game.cfg file is missing. Path: " + Path.Combine(LeagueConfigDirPath, @"game.cfg"));
+                Logger.Fatal("League's game.cfg file is missing. Path: " + Path.Combine(LeagueConfigDirPath, @"game.cfg"));
                 MessageBox.Show("This program cannot run without configuration file(game.cfg).", "LeagueFPSBoost: Missing LoL configuration file", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -213,7 +213,7 @@ namespace LeagueFPSBoost
                 
                 if (FirstRun.Value)
                 {
-                    logger.Info("Waiting for user to read message box then hiding console.");
+                    Logger.Info("Waiting for user to read message box then hiding console.");
                     MessageBox.Show("If you like this program please share it with your friends." + Environment.NewLine +
                                     "Also feedback on any errors/bugs is really useful. Visit the" + Environment.NewLine +
                                     "boards page and find GitHub repository link and submit new " + Environment.NewLine +
@@ -337,7 +337,7 @@ namespace LeagueFPSBoost
                         PreNLog("Update folder has been created!");
                         if (ExitBeforeMainWindow)
                         {
-                            logger.Info("Exit argument has been specified. Exiting before checking for league's config.");
+                            Logger.Info("Exit argument has been specified. Exiting before checking for league's config.");
                             Environment.Exit(0);
                         }
                         success = true;
@@ -466,14 +466,14 @@ namespace LeagueFPSBoost
             LogManager.Configuration = config;
             LogManager.ReconfigExistingLoggers();
 
-            logger.Info("Printing info that happened before logger has been initialized.");
+            Logger.Info("Printing info that happened before logger has been initialized.");
             foreach (string s in PreNLogMessages)
             {
-                logger.Info(s);
+                Logger.Info(s);
             }
-            logger.Info("End of printing info that happened before logger has been initialized.");
-            logger.Debug("Logger is fully initialized.");
-            var task = LogSOFT_HARD_Info(logger);
+            Logger.Info("End of printing info that happened before logger has been initialized.");
+            Logger.Debug("Logger is fully initialized.");
+            var task = LogSOFT_HARD_Info(Logger);
         }
 
         public static async Task LogSOFT_HARD_Info(Logger log)
@@ -516,7 +516,7 @@ namespace LeagueFPSBoost
                 }
                 catch (Exception ex)
                 {
-                    logger.Warn(ex, Strings.exceptionThrown + " while reading system memory." + Environment.NewLine);
+                    Logger.Warn(ex, Strings.exceptionThrown + " while reading system memory." + Environment.NewLine);
                 }
                 OsSB.AppendLine(Strings.doubleTabWithLine + "Product suite: " + mo["OSProductsuite"]);
                 OsSB.Append(Strings.doubleTabWithLine + "Type: " + mo["OSType"]);
@@ -556,7 +556,7 @@ namespace LeagueFPSBoost
                 }
                 catch (Exception ex)
                 {
-                    logger.Warn(ex, Strings.exceptionThrown + " while reading video controller memory." + Environment.NewLine);
+                    Logger.Warn(ex, Strings.exceptionThrown + " while reading video controller memory." + Environment.NewLine);
                 }
                 GpuSB.AppendLine(Strings.doubleTabWithLine + "Video mode description: " + mo["VideoModeDescription"]);
                 GpuSB.AppendLine(Strings.doubleTabWithLine + "Min refresh rate: " + mo["MinRefreshRate"]);
@@ -606,7 +606,7 @@ namespace LeagueFPSBoost
             PreNLog("Initializing mutex.");
             Mutex = new Mutex(true, @"{63163300-b738-45b6-936f-3b1334617004}");
 
-            logger = LogManager.GetCurrentClassLogger();
+            Logger = LogManager.GetCurrentClassLogger();
         }
 
         static void Dispose()
@@ -630,11 +630,11 @@ namespace LeagueFPSBoost
 
             StartWatch = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
             StartWatch.EventArrived += ProcessEvents.StartCheckWatch_EventArrived;
-            logger.Trace("Subscribed to Win32_ProcessStartTrace event.");
+            Logger.Trace("Subscribed to Win32_ProcessStartTrace event.");
 
             StopWatch = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStopTrace"));
             StopWatch.EventArrived += ProcessEvents.StopCheckWatch_EventArrived;
-            logger.Trace("Subscribed to Win32_ProcessStopTrace event.");
+            Logger.Trace("Subscribed to Win32_ProcessStopTrace event.");
         }
 
         static bool CheckForLeagueConfig()
@@ -676,13 +676,13 @@ namespace LeagueFPSBoost
             LeagueLogger.Error("Application Thread Exception Occurred!");
             try
             {
-                logger.Fatal(e.Exception, "Application thread exception has been thrown: " + Environment.NewLine);
+                Logger.Fatal(e.Exception, "Application thread exception has been thrown: " + Environment.NewLine);
                 ReportCrash(e.Exception);
                 Environment.Exit(0);
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
                 MessageBox.Show("Unknown error: \n" + ex, "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
@@ -693,13 +693,13 @@ namespace LeagueFPSBoost
             LeagueLogger.Error("Current Domain Unhandled Exception Occurred!");
             try
             {
-                logger.Fatal((Exception)e.ExceptionObject, "Current domain unhandled exception has been thrown: " + Environment.NewLine);
+                Logger.Fatal((Exception)e.ExceptionObject, "Current domain unhandled exception has been thrown: " + Environment.NewLine);
                 ReportCrash((Exception)e.ExceptionObject);
                 Environment.Exit(0);
             }
             catch (Exception ex)
             {
-                logger.Fatal(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
+                Logger.Fatal(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
                 MessageBox.Show("Unknown error: \n" + ex, "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
             }
@@ -707,7 +707,7 @@ namespace LeagueFPSBoost
 
         public static void ReportCrash(Exception exception)
         {
-            logger.Debug("Building crash string for crash report.");
+            Logger.Debug("Building crash string for crash report.");
             try
             {
                 foreach (string s in PreLogWarnings)
@@ -728,20 +728,20 @@ namespace LeagueFPSBoost
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while building crash string for crash report: " + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while building crash string for crash report: " + Environment.NewLine);
             }
 
         }
 
         public static void OnApplicationExit(object sender, EventArgs e)
         {
-            logger.Info("Exiting application.");
+            Logger.Info("Exiting application.");
             LeagueLogger.Always("Exiting program.");
         }
 
         public static void ReportCrash2(Exception exception, string developerMessage = "")
         {
-            logger.Debug("Creating crash report using CrashReporter.Net");
+            Logger.Debug("Creating crash report using CrashReporter.Net");
             var reportCrash = new ReportCrash(StringCipher.Decrypt(
                                                             DeveloperData.CrashReport_cipherText,
                                                             DeveloperData.CrashReport_passPharse,
@@ -757,16 +757,16 @@ namespace LeagueFPSBoost
             sb.AppendLine(Strings.doubleTabWithLine + "Capture screen: " + reportCrash.CaptureScreen);
             sb.AppendLine(Strings.doubleTabWithLine + "Email required: " + reportCrash.EmailRequired);
             sb.Append(Strings.doubleTabWithLine + "Include screenshot: " + reportCrash.IncludeScreenshot);
-            logger.Debug("Crash report has been created: " + Environment.NewLine + sb);
-            logger.Debug("Displaying crash report window.");
+            Logger.Debug("Crash report has been created: " + Environment.NewLine + sb);
+            Logger.Debug("Displaying crash report window.");
             try
             {
                 reportCrash.Send(exception);
-                logger.Debug("Crash report window has been closed. Developer message: " + Environment.NewLine + reportCrash.DeveloperMessage);
+                Logger.Debug("Crash report window has been closed. Developer message: " + Environment.NewLine + reportCrash.DeveloperMessage);
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while displaying crash report window: " + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while displaying crash report window: " + Environment.NewLine);
             }
         }
 
@@ -1045,21 +1045,21 @@ namespace LeagueFPSBoost
                 {
                     AppConfig.CreateConfigIfNotExists();
 
-                    logger.Debug("Saving league's root directory path in settings: " + LeaguePath);
+                    Logger.Debug("Saving league's root directory path in settings: " + LeaguePath);
                     Settings.Default.LeaguePath = LeaguePath;
                     Settings.Default.Save();
-                    logger.Debug("Successfully saved.");
+                    Logger.Debug("Successfully saved.");
                 }
                 catch (Exception ex)
                 {
-                    logger.Fatal(ex, Strings.exceptionThrown + " while configuring application configuration: " + Environment.NewLine);
+                    Logger.Fatal(ex, Strings.exceptionThrown + " while configuring application configuration: " + Environment.NewLine);
                     var dialogResult = MessageBox.Show("There was an error while configuring application configuration." + Environment.NewLine +
                                                         "This is known bug when running new version for first time." + Environment.NewLine +
                                                         "If you keep seeing this error check LeagueFPSBoostNLog file." + Environment.NewLine +
                                                         "Restart program automatically now? If no, program will close.", "Known Bug", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                     if(dialogResult == DialogResult.Yes)
                     {
-                        logger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + AppConfig.restartInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + AppConfig.restartInfo.Arguments);
+                        Logger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + AppConfig.restartInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + AppConfig.restartInfo.Arguments);
                         Process.Start(AppConfig.restartInfo);
                     }
                     Environment.Exit(0);
@@ -1076,7 +1076,7 @@ namespace LeagueFPSBoost
 
         static void StartLogger()
         {
-            logger.Info("League's style logger is not supported anymore.");
+            Logger.Info("League's style logger is not supported anymore.");
 
             //if (!Directory.Exists(leagueLogFileDirPath))
             //{
@@ -1151,7 +1151,7 @@ namespace LeagueFPSBoost
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while reading LeagueFPSBoost information from file: " + assembly.Location + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while reading LeagueFPSBoost information from file: " + assembly.Location + Environment.NewLine);
                 return "ERR";
             }
         }
@@ -1179,7 +1179,7 @@ namespace LeagueFPSBoost
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while reading league client information from file: " + clientPath + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while reading league client information from file: " + clientPath + Environment.NewLine);
                 return "ERR";
             }
         }
@@ -1199,7 +1199,7 @@ namespace LeagueFPSBoost
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while calculating MD5 hash for file: " + filename + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while calculating MD5 hash for file: " + filename + Environment.NewLine);
                 return "ERR";
             }
         }
@@ -1213,7 +1213,7 @@ namespace LeagueFPSBoost
             }
             catch (Exception ex)
             {
-                logger.Error(ex, Strings.exceptionThrown + " while getting human readable file size for file: " + filename + Environment.NewLine);
+                Logger.Error(ex, Strings.exceptionThrown + " while getting human readable file size for file: " + filename + Environment.NewLine);
                 return "ERR";
             }
         }
@@ -1276,7 +1276,7 @@ namespace LeagueFPSBoost
             string v = success ? "success" : "fail";
             if (PlayNotiAllow)
             {
-                logger.Debug($"Playing {v} notification.");
+                Logger.Debug($"Playing {v} notification.");
                 try
                 {
                     var waveOut = new WaveOutEvent();
@@ -1289,7 +1289,7 @@ namespace LeagueFPSBoost
                         }
                         else
                         {
-                            logger.Debug("Custom success notification sound not found. Playing default one.");
+                            Logger.Debug("Custom success notification sound not found. Playing default one.");
                             LeagueLogger.Info("Custom success notification sound not found. Playing default one.");
 
                             waveOut.Init(new Mp3FileReader(new MemoryStream(Resources.notiSuccess)));
@@ -1304,25 +1304,25 @@ namespace LeagueFPSBoost
                         }
                         else
                         {
-                            logger.Debug("Custom fail notification sound not found. Playing default one.");
+                            Logger.Debug("Custom fail notification sound not found. Playing default one.");
                             LeagueLogger.Info("Custom fail notification sound not found. Playing default one.");
 
                             waveOut.Init(new Mp3FileReader(new MemoryStream(Resources.notiFail)));
                         }
                     }
                     waveOut.Play();
-                    logger.Debug("Playing notification succeeded.");
+                    Logger.Debug("Playing notification succeeded.");
                     LeagueLogger.Okay("Playing notification succeeded.");
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex, Strings.exceptionThrown + " while playing notification: " + Environment.NewLine);
+                    Logger.Error(ex, Strings.exceptionThrown + " while playing notification: " + Environment.NewLine);
                     LeagueLogger.Error("Playing notification failed: " + ex.Message);
                 }
             }
             else
             {
-                logger.Debug($"Not playing {v} notification because its disabled.");
+                Logger.Debug($"Not playing {v} notification because its disabled.");
             }
         }
 
@@ -1381,7 +1381,7 @@ namespace LeagueFPSBoost
         {
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_SHOW);
-            logger.Debug("Console shown.");
+            Logger.Debug("Console shown.");
         }
 
         public static void HideConsole(string[] args)
@@ -1390,7 +1390,7 @@ namespace LeagueFPSBoost
             {
                 var handle = GetConsoleWindow();
                 ShowWindow(handle, SW_HIDE);
-                logger.Debug("Console hidden.");
+                Logger.Debug("Console hidden.");
             }
         }
 
@@ -1399,7 +1399,7 @@ namespace LeagueFPSBoost
             var handle = GetConsoleWindow();
             while(!HasConsole())
             {
-                logger.Debug("Allocating new console.");
+                Logger.Debug("Allocating new console.");
                 AllocConsole();
             }
             ShowConsole();
@@ -1411,7 +1411,7 @@ namespace LeagueFPSBoost
         {
             var handle = GetConsoleWindow();
             var hasConsole = handle != IntPtr.Zero;
-            logger.Debug("HasConsole: " + hasConsole);
+            Logger.Debug("HasConsole: " + hasConsole);
             return hasConsole;
         }
     }
