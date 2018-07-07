@@ -39,6 +39,8 @@ namespace LeagueFPSBoost.Text
 
 
         public static readonly string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/beta/AutoUpdater/updater.xml";
+        public static readonly string Updater_XML_Download_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/beta/AutoUpdater/LeagueFPSBoost.zip";
+        public static readonly string Updater_XML_Changelog_URL = @"https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have";
         public static readonly string BoardsPage_URL = @"https://goo.gl/bpxbGV";
         public static readonly string GitHub_URL = @"https://goo.gl/eww7KH";
         public static readonly string YouTube_URL = @"https://goo.gl/RDpsri";
