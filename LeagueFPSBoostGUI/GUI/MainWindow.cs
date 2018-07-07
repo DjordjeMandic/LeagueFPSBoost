@@ -37,8 +37,6 @@ namespace LeagueFPSBoost.GUI
             aboutTXT = metroLabel9.Text;
             metroTabControl1.SelectedIndex = 0;
             metroLink2.Text = metroLink2.Text + Program.CurrentVersionFull;
-
-            if (Program.FirstRun.Value) MessageBox.Show("There is new feature in about tab.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
