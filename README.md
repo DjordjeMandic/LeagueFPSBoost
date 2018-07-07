@@ -11,3 +11,7 @@ Used libraries:
   - [MetroFramework](https://github.com/thielj/MetroFramework)
   - [NAudio](https://github.com/naudio/NAudio)
   - [NLog](http://nlog-project.org/)
+<<<<<<< HEAD
+=======
+  - [NDesk.Options](http://www.ndesk.org/Options)
+>>>>>>> beta

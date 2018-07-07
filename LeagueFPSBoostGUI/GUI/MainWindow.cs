@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LeagueFPSBoost.GUI
@@ -43,13 +44,13 @@ namespace LeagueFPSBoost.GUI
             //Debug text update
             if(Program.DebugBuild)
             {
-                Text = "League FPS Boost β";
+                Text = "LeagueFPSBoost β";
                 metroLabel9.Text += Environment.NewLine + "THIS IS BETA BUILD!";
                 aboutTXTDebug = metroLabel9.Text;
             }
-            Program.debuggerWatcher.DebuggerChanged += DebuggerChangedGUI;
-            Program.debuggerWatcher.DebuggerChecked += DebuggerChangedGUI;
-            Program.debuggerWatcher.CheckNow();
+            Program.DebuggerWatcher.DebuggerChanged += DebuggerChangedGUI;
+            Program.DebuggerWatcher.DebuggerChecked += DebuggerChangedGUI;
+            Program.DebuggerWatcher.CheckNow();
 
             //Theme
             metroStyleManager1.Theme = Settings.Default.ThemeStyle;
@@ -68,7 +69,7 @@ namespace LeagueFPSBoost.GUI
             //Notification
             notification = Properties.Settings.Default.Notifications;
             notificationsToggle.Checked = notification;
-            Program.playNotiAllow = notification;
+            Program.PlayNotiAllow = notification;
             logger.Debug("Loaded notification settings.");
             LeagueLogger.Okay("Loaded notification settings.");
             
@@ -77,8 +78,8 @@ namespace LeagueFPSBoost.GUI
             ReadGameConfigData();
 
             //Watcher
-            Program.startWatch.Start();
-            Program.stopWatch.Start();
+            Program.StartWatch.Start();
+            Program.StopWatch.Start();
             logger.Debug("Process watcher has been started.");
             LeagueLogger.Okay("Process watcher started.");
 
@@ -86,26 +87,25 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
-
+            if (Program.FirstRun.Value)
+                new Thread(() => MessageBox.Show("There is new feature in about tab.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information)).Start();
             CheckForUpdates();
         }
 
         private void CheckForUpdates()
         {
-            AutoUpdater.ReportErrors = Program.DebugBuild;
+            //AutoUpdater.ReportErrors = Program.DebugBuild;
             AutoUpdater.RunUpdateAsAdmin = true;
             AutoUpdater.LetUserSelectRemindLater = true;
             AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Days;
             AutoUpdater.RemindLaterAt = 1;
             AutoUpdater.DownloadPath = Environment.CurrentDirectory;
             logger.Debug("Checking for updates...");
-            var xmlUrl = Settings.Default.UpdaterXML_URL;
+            var xmlUrl = Strings.Updater_XML_URL; //Settings.Default.UpdaterXML_URL;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             AutoUpdater.Start(xmlUrl);
-
-            if (Program.UpdatedArg) MessageBox.Show($"LeagueFPSBoost has been successfully updated to version{Program.CurrentVersionFull}!", "Update completed!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
+        
         private void AutoUpdater_ApplicationExitEvent()
         {
             logger.Info("Update pending. Closing application.");
@@ -117,12 +117,12 @@ namespace LeagueFPSBoost.GUI
             {
                 if(Program.DebugBuild)
                 {
-                    Text = "League FPS Boost Dβ";
+                    Text = "LeagueFPSBoost Dβ";
                     metroLabel9.Text = aboutTXTDebug + Environment.NewLine + "Debugger is attached!";
                 }
                 else
                 {
-                    Text = "League FPS Boost D";
+                    Text = "LeagueFPSBoost D";
                     metroLabel9.Text = aboutTXT + Environment.NewLine + Environment.NewLine + "Debugger is attached!";
                 }
             }
@@ -130,12 +130,12 @@ namespace LeagueFPSBoost.GUI
             {
                 if(Program.DebugBuild)
                 {
-                    Text = "League FPS Boost β";
+                    Text = "LeagueFPSBoost β";
                     metroLabel9.Text = aboutTXTDebug;
                 }
                 else
                 {
-                    Text = "League FPS Boost";
+                    Text = "LeagueFPSBoost";
                     metroLabel9.Text = aboutTXT;
                 }
             }
@@ -180,6 +180,7 @@ namespace LeagueFPSBoost.GUI
                 updateAndSaveThemeStyle(metroStyleManager1, MetroThemeStyle.Light);
                 if (Loaded) LeagueLogger.Okay("Theme style set to light.");
             }
+            Refresh();
         }
 
         private void blackColorButton_Click(object sender, EventArgs e)
@@ -309,7 +310,7 @@ namespace LeagueFPSBoost.GUI
         private void notificationsToggle_CheckedChanged(object sender, EventArgs e)
         {
             notification = notificationsToggle.Checked;
-            Program.playNotiAllow = notification;
+            Program.PlayNotiAllow = notification;
             Properties.Settings.Default.Notifications = notification;
             try
             {
@@ -349,7 +350,7 @@ namespace LeagueFPSBoost.GUI
                 sd.Title = @"Backup Config File";
                 sd.Filter = @"Config File|*.cfg";
                 sd.FileName = @"gameBACKUP" + DateTime.Now.ToString(Strings.logDateTimeFormat);
-                sd.InitialDirectory = Path.Combine(Program.leagueConfigDirPath);
+                sd.InitialDirectory = Path.Combine(Program.LeagueConfigDirPath);
                 sd.OverwritePrompt = true;
                 sd.RestoreDirectory = true;
 
@@ -358,17 +359,17 @@ namespace LeagueFPSBoost.GUI
                     try
                     {
                         logger.Debug("Saving game's configuration backup.");
-                        File.Copy(Path.Combine(Program.leagueConfigDirPath, "game.cfg"), sd.FileName, false);
+                        File.Copy(Path.Combine(Program.LeagueConfigDirPath, "game.cfg"), sd.FileName, false);
                         LeagueLogger.Okay("Config backup saved at " + sd.FileName.Replace(@"\", @"/"));
                         logger.Debug("Game's configuration backup saved at: " + sd.FileName);
                         try
                         {
                             logger.Debug("Saving new settings to game's configuration file.");
-                            configParser.WriteFile(Path.Combine(Program.leagueConfigDirPath, "game.cfg"), GameConfigData);
-                            GameConfigData = configParser.ReadFile(Path.Combine(Program.leagueConfigDirPath, "game.cfg"));
+                            configParser.WriteFile(Path.Combine(Program.LeagueConfigDirPath, "game.cfg"), GameConfigData);
+                            GameConfigData = configParser.ReadFile(Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
                             var sb = new StringBuilder();
                             sb.AppendLine(Strings.tabWithLine + "Saved new game's configuration:");
-                            sb.AppendLine(Strings.doubleTabWithLine + "File name: " + Path.Combine(Program.leagueConfigDirPath, "game.cfg"));
+                            sb.AppendLine(Strings.doubleTabWithLine + "File name: " + Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
                             sb.AppendLine(Strings.tripleTabWithLine + "CharacterInking=" + GameConfigData["Performance"]["CharacterInking"]);
                             sb.AppendLine(Strings.tripleTabWithLine + "EnableHUDAnimations=" + GameConfigData["Performance"]["EnableHUDAnimations"]);
                             sb.AppendLine(Strings.tripleTabWithLine + "ShadowsEnabled=" + GameConfigData["Performance"]["ShadowsEnabled"]);
@@ -396,17 +397,13 @@ namespace LeagueFPSBoost.GUI
 
         private void boardsLink_Click(object sender, EventArgs e)
         {
-            logger.Debug("Opening boards link: " + @"https://goo.gl/bpxbGV");
-            try
+            logger.Debug("Opening More Information Window.");
+            using (var moreInfoForm = new InformationWindow(metroStyleManager1))
             {
-                Process.Start(@"https://goo.gl/bpxbGV");
-                logger.Debug("Successfully opened boards link.");
-                LeagueLogger.Okay(@"Opened boards link: https://goo.gl/bpxbGV");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, Strings.exceptionThrown + " while opening boards link " + @"https://goo.gl/bpxbGV :" + Environment.NewLine);
-                LeagueLogger.Error("Error while opening boards link: " + ex.Message);
+                Hide();
+                moreInfoForm.ShowDialog();
+                metroTabControl1.SelectedIndex = 0;
+                Show();
             }
         }
 
@@ -492,19 +489,19 @@ namespace LeagueFPSBoost.GUI
             {
                 if (!saving)
                 {
-                    if (!File.Exists(Path.Combine(Program.leagueConfigDirPath, "game.cfg")))
+                    if (!File.Exists(Path.Combine(Program.LeagueConfigDirPath, "game.cfg")))
                     {
                         logger.Error("Game's configuration file doesn't exist.");
-                        throw new FileNotFoundException("Could not find file '" + Path.Combine(Program.leagueConfigDirPath, "game.cfg") + "'.", Path.Combine(Program.leagueConfigDirPath, "game.cfg"));
+                        throw new FileNotFoundException("Could not find file '" + Path.Combine(Program.LeagueConfigDirPath, "game.cfg") + "'.", Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
                     }
-                    GameConfigData = configParser.ReadFile(Path.Combine(Program.leagueConfigDirPath, "game.cfg"));
+                    GameConfigData = configParser.ReadFile(Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
 
                     characterInkingToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["CharacterInking"]));
                     hudAnimationsToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["EnableHUDAnimations"]));
                     shadowsToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["ShadowsEnabled"]));
                     grassSwayingToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["EnableGrassSwaying"]));
                     perPixelPointLightingToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["PerPixelPointLighting"]));
-                    logger.Debug("Successfully read game's configuration from file: " + Path.Combine(Program.leagueConfigDirPath, "game.cfg"));
+                    logger.Debug("Successfully read game's configuration from file: " + Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
                 }
                 else
                 {
@@ -524,17 +521,22 @@ namespace LeagueFPSBoost.GUI
 
         private void metroButton1_Click(object sender, EventArgs e)
         {
-            OpenFolder(Program.leagueLogFileDirPath);
+            OpenFolder(Program.LeagueLogFileDirPath);
         }
 
         private void metroButton2_Click(object sender, EventArgs e)
         {
-            OpenFolder(Program.leagueConfigDirPath);
+            OpenFolder(Program.LeagueConfigDirPath);
         }
 
         private void metroButton3_Click(object sender, EventArgs e)
         {
-            OpenFolder(Program.appConfigDir);
+            OpenFolder(Program.AppConfigDir);
+        }
+
+        private void metroButton4_Click(object sender, EventArgs e)
+        {
+            boardsLink_Click(sender, e);
         }
     }
 }

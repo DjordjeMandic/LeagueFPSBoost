@@ -13,13 +13,13 @@ namespace LeagueFPSBoost.Text
         public static readonly string doubleTabWithLine = tab + tabWithLine;
         public static readonly string tripleTabWithLine = tab + doubleTabWithLine;
 
-        public static readonly string noClientArg = "-noClient";
-        public static readonly string updateCheckArg = "-updateCheck";
-        public static readonly string printProcessModulesArg = "-procModules";
-        public static readonly string configRestartReasonArg = "--configRestartReason";
-        public static readonly string adminRestartReasonArg = "--adminRestartReason";
-        public static readonly string createUpdateFolderArg = "-createUpdateFolder";
-        public static readonly string updatedArg = "--updated";
+        public static readonly string noClientArg = "n|noClient";
+        public static readonly string printProcessModulesArg = "p|procModules";
+        public static readonly string RestartReasonArg = "r|restartReason=";
+        public static readonly string UpdateFolderArg = "u|updateFolder=";
+        public static readonly string ExitBeforeMainWindow = "e|exitEarly";
+        public static readonly string clearLogsArg = "c|clearLogs";
+        public static readonly string helpArg = "h|help";
 
         public static readonly string exceptionThrown = "Exception has been thrown";
 
@@ -34,6 +34,19 @@ namespace LeagueFPSBoost.Text
         public static readonly string GameProcessName = "League Of Legends";
 
         public static readonly string ColorStyleSetTo = "Color style set to ";
+
+
+
+
+        public static readonly string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/beta/AutoUpdater/updater.xml";
+        public static readonly string Updater_XML_Download_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/beta/AutoUpdater/LeagueFPSBoost.zip";
+        public static readonly string Updater_XML_Changelog_URL = @"https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have";
+        public static readonly string BoardsPage_URL = @"https://goo.gl/bpxbGV";
+        public static readonly string GitHub_URL = @"https://goo.gl/eww7KH";
+        public static readonly string YouTube_URL = @"https://goo.gl/RDpsri";
+        public static readonly string Facebook_URL = @"https://goo.gl/MjQp43";
+        public static readonly string OPGG_URL = @"https://goo.gl/sEYLbe";
+
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
         static Dictionary<int, string> _FieldLookup;

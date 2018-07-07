@@ -15,6 +15,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,7 +30,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -116,6 +116,9 @@
   <PropertyGroup>
     <StartupObject>LeagueFPSBoost.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoUpdater.NET, Version=1.4.10.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Autoupdater.NET.Official.1.4.10\lib\net462\AutoUpdater.NET.dll</HintPath>
@@ -144,6 +147,9 @@
     </Reference>
     <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.6\lib\net45\NLog.dll</HintPath>
@@ -203,6 +209,13 @@
   <ItemGroup>
     <Compile Include="Cryptography\ChecksumCalculator.cs" />
     <Compile Include="Cryptography\ICheckSumCalculator.cs" />
+    <Compile Include="GUI\InformationWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\InformationWindow.Designer.cs">
+      <DependentUpon>InformationWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProcessManagement\OpenUrl.cs" />
     <Compile Include="Properties\DeveloperData.cs" />
     <Compile Include="Diagnostics\Debugger\DebuggerWatcher.cs" />
     <Compile Include="Extensions\HelpingExtensions.cs" />
@@ -215,7 +228,7 @@
     <Compile Include="Microsoft\Win32\Interop\ResultWin32.cs" />
     <Compile Include="Configuration\AppConfig.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ProcessManager\LeaguePriority.cs" />
+    <Compile Include="ProcessManagement\LeaguePriority.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="GUI\MainWindow.cs">
       <SubType>Form</SubType>
@@ -223,11 +236,11 @@
     <Compile Include="GUI\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProcessManager\ProcessEvents.cs" />
-    <Compile Include="ProcessManager\ProcessExtensions.cs" />
+    <Compile Include="ProcessManagement\ProcessEvents.cs" />
+    <Compile Include="ProcessManagement\ProcessExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProcessManager\SelfElevation.cs" />
+    <Compile Include="ProcessManagement\SelfElevation.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -237,6 +250,9 @@
     <Compile Include="Text\Strings.cs" />
     <Compile Include="Updater\Xml\Checksum.cs" />
     <Compile Include="Updater\Xml\UpdaterXDocument.cs" />
+    <EmbeddedResource Include="GUI\InformationWindow.resx">
+      <DependentUpon>InformationWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -304,8 +320,7 @@
   </Target>
   <Import Project="..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Release "$(TargetPath)" -u="$(SolutionDir)\AutoUpdater" -e</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

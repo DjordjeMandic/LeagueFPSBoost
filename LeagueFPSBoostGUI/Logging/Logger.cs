@@ -41,7 +41,7 @@ namespace LeagueFPSBoost.Logging
         {
             if (Running)
             {
-                var time = ((decimal)000000.000 + (decimal)(Program.stopwatch.ElapsedMilliseconds / 1000.000)).ToString("N3").Replace(",", "").PadLeft(10, '0');
+                var time = ((decimal)000000.000 + (decimal)(Program.Stopwatch.ElapsedMilliseconds / 1000.000)).ToString("N3").Replace(",", "").PadLeft(10, '0');
                 Trace.WriteLine($"{time}| {type.PadLeft(6)}| {message}");
             }
         }

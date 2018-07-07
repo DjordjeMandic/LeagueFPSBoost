@@ -45,7 +45,7 @@ namespace LeagueFPSBoost.ProcessManagement
                     {
                         logger.Warn(ex, Strings.exceptionThrown + " while reading stop event information." + Environment.NewLine);
                     }
-                    LeaguePriority.CheckAndBoost(Program.noClient);
+                    LeaguePriority.CheckAndBoost(Program.NoClient);
                 }
             }
             catch (Exception ex)
@@ -65,8 +65,8 @@ namespace LeagueFPSBoost.ProcessManagement
                     var proc = pid.GetProcessById();
                     if (proc.ProcessName.ToLower().Contains("league"))
                     {
-                        logger.Debug("Started process: " + Environment.NewLine + proc.GetProcessInfoForLogging(Program.printProcessModules));
-                        LeaguePriority.CheckAndBoost(Program.noClient);
+                        logger.Debug("Started process: " + Environment.NewLine + proc.GetProcessInfoForLogging(Program.PrintProcessModules));
+                        LeaguePriority.CheckAndBoost(Program.NoClient);
                     }
                 }
             }

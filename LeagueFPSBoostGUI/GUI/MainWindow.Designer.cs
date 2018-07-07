@@ -66,9 +66,9 @@
             this.whiteColorButton = new System.Windows.Forms.Button();
             this.aboutTabPage = new MetroFramework.Controls.MetroTabPage();
             this.metroLink2 = new MetroFramework.Controls.MetroLink();
-            this.boardsLink = new MetroFramework.Controls.MetroLink();
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
+            this.metroButton4 = new MetroFramework.Controls.MetroButton();
             this.metroTabControl1.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.themeTabPage.SuspendLayout();
@@ -468,8 +468,8 @@
             // 
             // aboutTabPage
             // 
+            this.aboutTabPage.Controls.Add(this.metroButton4);
             this.aboutTabPage.Controls.Add(this.metroLink2);
-            this.aboutTabPage.Controls.Add(this.boardsLink);
             this.aboutTabPage.Controls.Add(this.metroLabel9);
             this.aboutTabPage.HorizontalScrollbarBarColor = true;
             this.aboutTabPage.Location = new System.Drawing.Point(4, 35);
@@ -485,19 +485,9 @@
             this.metroLink2.Name = "metroLink2";
             this.metroLink2.Size = new System.Drawing.Size(228, 23);
             this.metroLink2.TabIndex = 5;
-            this.metroLink2.Text = "IShunpoYourFace - Ver: ";
+            this.metroLink2.Text = "Đorđe Mandić - Ver: ";
             this.metroLink2.UseStyleColors = true;
             this.metroLink2.Click += new System.EventHandler(this.metroLink2_Click);
-            // 
-            // boardsLink
-            // 
-            this.boardsLink.Location = new System.Drawing.Point(3, 3);
-            this.boardsLink.Name = "boardsLink";
-            this.boardsLink.Size = new System.Drawing.Size(228, 23);
-            this.boardsLink.TabIndex = 3;
-            this.boardsLink.Text = "Boards Page";
-            this.boardsLink.UseStyleColors = true;
-            this.boardsLink.Click += new System.EventHandler(this.boardsLink_Click);
             // 
             // metroLabel9
             // 
@@ -517,6 +507,15 @@
             // 
             this.metroStyleManager1.Owner = this;
             // 
+            // metroButton4
+            // 
+            this.metroButton4.Location = new System.Drawing.Point(3, 6);
+            this.metroButton4.Name = "metroButton4";
+            this.metroButton4.Size = new System.Drawing.Size(228, 23);
+            this.metroButton4.TabIndex = 6;
+            this.metroButton4.Text = "More Information";
+            this.metroButton4.Click += new System.EventHandler(this.metroButton4_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -527,7 +526,7 @@
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.Resizable = false;
-            this.Text = "League FPS Boost";
+            this.Text = "LeagueFPSBoost";
             this.Activated += new System.EventHandler(this.MainWindow_Activated);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.metroTabControl1.ResumeLayout(false);
@@ -577,11 +576,11 @@
         private MetroFramework.Controls.MetroToggle darkThemeToggle;
         private System.Windows.Forms.Button blackColorButton;
         private MetroFramework.Controls.MetroLink metroLink2;
-        private MetroFramework.Controls.MetroLink boardsLink;
         private MetroFramework.Controls.MetroLabel metroLabel9;
         private MetroFramework.Components.MetroStyleManager metroStyleManager1;
         private MetroFramework.Controls.MetroButton metroButton3;
         private MetroFramework.Controls.MetroButton metroButton2;
         private MetroFramework.Controls.MetroButton metroButton1;
+        private MetroFramework.Controls.MetroButton metroButton4;
     }
 }
