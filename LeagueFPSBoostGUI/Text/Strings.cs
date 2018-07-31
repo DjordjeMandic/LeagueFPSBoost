@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32.Interop;
+﻿using LeagueFPSBoost.NativeUnmanaged;
 using NLog;
 using System;
 using System.Collections.Generic;
