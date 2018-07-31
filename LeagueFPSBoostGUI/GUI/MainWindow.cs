@@ -423,15 +423,33 @@ namespace LeagueFPSBoost.GUI
             }
         }
 
+        private void SetGameConfigData(string a, string b, string val)
+        {
+            var method = $"{nameof(GameConfigData)}[{a}][{b}] = {val}.";
+            logger.Debug($"Trying: {method}");
+            try
+            {
+                GameConfigData[a][b] = val;
+                logger.Debug($"Success: {method}");
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, $"{Strings.exceptionThrown} while trying: {method} " + Environment.NewLine);
+                MessageBox.Show($"Failed changing {b} under {a} to {val}. {Environment.NewLine} Check log for more details.", "LeagueFPSBosot: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void CharacterInkingToggle_CheckedChanged(object sender, EventArgs e)
         {
             if (characterInkingToggle.Checked)
             {
-                GameConfigData["Performance"]["CharacterInking"] = "1";
+                //GameConfigData["Performance"]["CharacterInking"] = "1";
+                SetGameConfigData("Performance", "CharacterInking", "1");
             }
             else
             {
-                GameConfigData["Performance"]["CharacterInking"] = "0";
+                //GameConfigData["Performance"]["CharacterInking"] = "0";
+                SetGameConfigData("Performance", "CharacterInking", "0");
             }
         }
 
@@ -439,11 +457,13 @@ namespace LeagueFPSBoost.GUI
         {
             if (hudAnimationsToggle.Checked)
             {
-                GameConfigData["Performance"]["EnableHUDAnimations"] = "1";
+                //GameConfigData["Performance"]["EnableHUDAnimations"] = "1";
+                SetGameConfigData("Performance", "EnableHUDAnimations", "1");
             }
             else
             {
-                GameConfigData["Performance"]["EnableHUDAnimations"] = "0";
+                //GameConfigData["Performance"]["EnableHUDAnimations"] = "0";
+                SetGameConfigData("Performance", "EnableHUDAnimations", "0");
             }
         }
 
@@ -451,11 +471,13 @@ namespace LeagueFPSBoost.GUI
         {
             if (shadowsToggle.Checked)
             {
-                GameConfigData["Performance"]["ShadowsEnabled"] = "1";
+                //GameConfigData["Performance"]["ShadowsEnabled"] = "1";
+                SetGameConfigData("Performance", "ShadowsEnabled", "1");
             }
             else
             {
-                GameConfigData["Performance"]["ShadowsEnabled"] = "0";
+                //GameConfigData["Performance"]["ShadowsEnabled"] = "0";
+                SetGameConfigData("Performance", "ShadowsEnabled", "0");
             }
         }
 
@@ -463,11 +485,13 @@ namespace LeagueFPSBoost.GUI
         {
             if (grassSwayingToggle.Checked)
             {
-                GameConfigData["Performance"]["EnableGrassSwaying"] = "1";
+                //GameConfigData["Performance"]["EnableGrassSwaying"] = "1";
+                SetGameConfigData("Performance", "EnableGrassSwaying", "1");
             }
             else
             {
-                GameConfigData["Performance"]["EnableGrassSwaying"] = "0";
+                //GameConfigData["Performance"]["EnableGrassSwaying"] = "0";
+                SetGameConfigData("Performance", "EnableGrassSwaying", "0");
             }
         }
 
@@ -475,11 +499,13 @@ namespace LeagueFPSBoost.GUI
         {
             if (perPixelPointLightingToggle.Checked)
             {
-                GameConfigData["Performance"]["PerPixelPointLighting"] = "1";
+                //GameConfigData["Performance"]["PerPixelPointLighting"] = "1";
+                SetGameConfigData("Performance", "PerPixelPointLighting", "1");
             }
             else
             {
-                GameConfigData["Performance"]["PerPixelPointLighting"] = "0";
+                //GameConfigData["Performance"]["PerPixelPointLighting"] = "0";
+                SetGameConfigData("Performance", "PerPixelPointLighting", "0");
             }
         }
 
