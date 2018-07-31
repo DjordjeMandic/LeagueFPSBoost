@@ -376,6 +376,7 @@ namespace LeagueFPSBoost.GUI
                             sb.AppendLine(Strings.tripleTabWithLine + "EnableGrassSwaying=" + GameConfigData["Performance"]["EnableGrassSwaying"]);
                             sb.Append(Strings.tripleTabWithLine + "PerPixelPointLighting=" + GameConfigData["Performance"]["PerPixelPointLighting"]);
                             logger.Debug("Finished saving new game's configuration: " + sb);
+                            MessageBox.Show("Successfully saved new game's configuration." + Environment.NewLine + "Check log for more information.", "LeagueFPSBoost: Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         catch (Exception ex)
                         {
