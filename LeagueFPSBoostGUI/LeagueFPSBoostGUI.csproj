@@ -154,6 +154,9 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.6\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PowerManagerAPI, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PowerManagerAPI.0.1.0-ci-20170528-042127\lib\net452\PowerManagerAPI.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>False</Private>
@@ -166,6 +169,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.IO.Compression">
       <Private>False</Private>
     </Reference>
@@ -215,6 +219,7 @@
     <Compile Include="GUI\InformationWindow.Designer.cs">
       <DependentUpon>InformationWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="NativeUnmanaged\NativeMethods.cs" />
     <Compile Include="ProcessManagement\OpenUrl.cs" />
     <Compile Include="Properties\DeveloperData.cs" />
     <Compile Include="Diagnostics\Debugger\DebuggerWatcher.cs" />
@@ -225,7 +230,7 @@
     <Compile Include="IO\Serialization\SerializableBasicFileInformation.cs" />
     <Compile Include="IO\Serialization\SerializableLeagueClientFileInformation.cs" />
     <Compile Include="IO\Serialization\SerializableLeagueFPSBoostFileInformation.cs" />
-    <Compile Include="Microsoft\Win32\Interop\ResultWin32.cs" />
+    <Compile Include="NativeUnmanaged\ResultWin32.cs" />
     <Compile Include="Configuration\AppConfig.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ProcessManagement\LeaguePriority.cs" />

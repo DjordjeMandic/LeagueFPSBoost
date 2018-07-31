@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Microsoft.Win32.Interop
+namespace LeagueFPSBoost.NativeUnmanaged
 {
     public static class ResultWin32
     {

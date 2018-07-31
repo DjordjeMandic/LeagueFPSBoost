@@ -5,6 +5,7 @@ using LeagueFPSBoost.Diagnostics.Debugger;
 using LeagueFPSBoost.Extensions;
 using LeagueFPSBoost.GUI;
 using LeagueFPSBoost.Logging;
+using LeagueFPSBoost.NativeUnmanaged;
 using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
@@ -26,7 +27,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Management;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
@@ -113,8 +113,8 @@ namespace LeagueFPSBoost
             Arguments = args;
             if (args.Length > 0)
             {
-                AttachConsole(ATTACH_PARENT_PROCESS);
-                if (!HasConsole()) AllocConsole();
+                NativeMethods.AttachConsole(NativeMethods.ATTACH_PARENT_PROCESS);
+                if (!HasConsole()) NativeMethods.AllocConsole();
             }
             else if (DebugBuild) ConsoleState(true);
             var showHelp = false;
@@ -1334,53 +1334,12 @@ namespace LeagueFPSBoost
             p.WriteOptionDescriptions(Console.Out);
         }
 
-        /// <summary>
-        /// allocates a new console for the calling process.
-        /// </summary>
-        /// <returns>If the function succeeds, the return value is nonzero.
-        /// If the function fails, the return value is zero. 
-        /// To get extended error information, call Marshal.GetLastWin32Error.</returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool AllocConsole();
-        /// <summary>
-        /// Detaches the calling process from its console
-        /// </summary>
-        /// <returns>If the function succeeds, the return value is nonzero.
-        /// If the function fails, the return value is zero. 
-        /// To get extended error information, call Marshal.GetLastWin32Error.</returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool FreeConsole();
-        /// <summary>
-        /// Attaches the calling process to the console of the specified process.
-        /// </summary>
-        /// <param name="dwProcessId">[in] Identifier of the process, usually will be ATTACH_PARENT_PROCESS</param>
-        /// <returns>If the function succeeds, the return value is nonzero.
-        /// If the function fails, the return value is zero. 
-        /// To get extended error information, call Marshal.GetLastWin32Error.</returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool AttachConsole(uint dwProcessId);
-        /// <summary>Identifies the console of the parent of the current process as the console to be attached.
-        /// always pass this with AttachConsole in .NET for stability reasons and mainly because
-        /// I have NOT tested interprocess attaching in .NET so dont blame me if it doesnt work! </summary>
-        const uint ATTACH_PARENT_PROCESS = 0x0ffffffff;
-        /// <summary>
-        /// calling process is already attached to a console
-        /// </summary>
-        const int ERROR_ACCESS_DENIED = 5;
-
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
 
         public static void ShowConsole()
         {
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_SHOW);
+            var handle = NativeMethods.GetConsoleWindow();
+            NativeMethods.ShowWindow(handle, NativeMethods.SW_SHOW);
             Logger.Debug("Console shown.");
         }
 
@@ -1388,19 +1347,19 @@ namespace LeagueFPSBoost
         {
             if(args.Length < 1 || !DebugBuild)
             {
-                var handle = GetConsoleWindow();
-                ShowWindow(handle, SW_HIDE);
+                var handle = NativeMethods.GetConsoleWindow();
+                NativeMethods.ShowWindow(handle, NativeMethods.SW_HIDE);
                 Logger.Debug("Console hidden.");
             }
         }
 
         public static bool ConsoleState(bool visible)
         {
-            var handle = GetConsoleWindow();
+            var handle = NativeMethods.GetConsoleWindow();
             while(!HasConsole())
             {
                 Logger.Debug("Allocating new console.");
-                AllocConsole();
+                NativeMethods.AllocConsole();
             }
             ShowConsole();
             if (visible == false) HideConsole(Arguments);
@@ -1409,7 +1368,7 @@ namespace LeagueFPSBoost
 
         public static bool HasConsole()
         {
-            var handle = GetConsoleWindow();
+            var handle = NativeMethods.GetConsoleWindow();
             var hasConsole = handle != IntPtr.Zero;
             Logger.Debug("HasConsole: " + hasConsole);
             return hasConsole;
