@@ -2,6 +2,8 @@
 Simple tool written in C# that should help with increasing frame rate in league of legends.
 More info till this page gets updated can be found on [boards page](https://goo.gl/bpxbGV)
 
+If you like the program a small donation would be helpful. Donate via [PayPal](https://paypal.me/DjordjeMandic)
+
 Used libraries:
   - [AutoUpdater.NET](https://github.com/ravibpatel/AutoUpdater.NET)
   - [ByteSize](https://github.com/omar/ByteSize)
