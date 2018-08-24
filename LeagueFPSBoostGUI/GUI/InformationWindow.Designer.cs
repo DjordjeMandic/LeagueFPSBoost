@@ -47,6 +47,7 @@
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
+            this.metroButton3 = new MetroFramework.Controls.MetroButton();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.SuspendLayout();
@@ -239,11 +240,21 @@
             this.metroButton2.Text = "Console";
             this.metroButton2.Click += new System.EventHandler(this.MetroButton2_Click);
             // 
+            // metroButton3
+            // 
+            this.metroButton3.Location = new System.Drawing.Point(191, 160);
+            this.metroButton3.Name = "metroButton3";
+            this.metroButton3.Size = new System.Drawing.Size(73, 23);
+            this.metroButton3.TabIndex = 9;
+            this.metroButton3.Text = "Donate";
+            this.metroButton3.Click += new System.EventHandler(this.MetroButton3_Click);
+            // 
             // InformationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(287, 329);
+            this.Controls.Add(this.metroButton3);
             this.Controls.Add(this.metroButton2);
             this.Controls.Add(this.rstButton1);
             this.Controls.Add(this.metroButton1);
@@ -287,5 +298,6 @@
         private MetroFramework.Controls.MetroCheckBox exitEarlyCheckBox1;
         private MetroFramework.Controls.MetroCheckBox cleanCheckBox1;
         private MetroFramework.Controls.MetroButton metroButton2;
+        private MetroFramework.Controls.MetroButton metroButton3;
     }
 }

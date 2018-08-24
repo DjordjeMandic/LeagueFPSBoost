@@ -37,7 +37,7 @@ namespace LeagueFPSBoost.GUI
         private static string aboutTXT = "";
         private static string aboutTXTDebug = "";
         public static bool saving;
-
+        bool updateFound;
         public static bool updateCheckFinished { get; private set; }
         public MainWindow()
         {
@@ -152,7 +152,7 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
-            //if (Program.FirstRun.Value) new Thread(() => { Thread.Sleep(2000); MessageBox.Show("If you have any problems create an issue on github.", "LeagueFPSBoost: Update", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
+            if (Program.FirstRun.Value) new Thread(() => { Thread.Sleep(2000); MessageBox.Show("If you like the program small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
             updateCheckTimer = new System.Timers.Timer
             {
                 Interval = 5 * 60 * 1000,
@@ -211,6 +211,7 @@ namespace LeagueFPSBoost.GUI
             {
                 if(args.IsUpdateAvailable)
                 {
+                    StopUpdateCheckTimer();
                     logger.Info($@"There is new version { args.CurrentVersion } available. Current installed version is { args.InstalledVersion }.");
                     if (DialogResult.Yes == MessageBox.Show(
                         $@"There is new version {args.CurrentVersion} available. You are using version {
@@ -256,6 +257,7 @@ namespace LeagueFPSBoost.GUI
             }
             AutoUpdater.CheckForUpdateEvent -= AutoUpdaterOnCheckForUpdateEvent;
             updateCheckFinished = true;
+            StartUpdateCheckTimer();
         }
         
         private void DebuggerChangedGUI(object sender, DebugEventArgs e)

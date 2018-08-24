@@ -207,5 +207,10 @@ namespace LeagueFPSBoost.GUI
         {
 
         }
+
+        private void MetroButton3_Click(object sender, EventArgs e)
+        {
+            OpenUrl.Open(Strings.DONATE_URL);
+        }
     }
 }

@@ -43,6 +43,7 @@ namespace LeagueFPSBoost.Text
         public const string YouTube_URL = @"https://goo.gl/RDpsri";
         public const string Facebook_URL = @"https://goo.gl/MjQp43";
         public const string OPGG_URL = @"https://goo.gl/sEYLbe";
+        public const string DONATE_URL = @"https://paypal.me/DjordjeMandic";
 
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
