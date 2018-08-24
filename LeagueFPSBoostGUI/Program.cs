@@ -5,7 +5,7 @@ using LeagueFPSBoost.Diagnostics.Debugger;
 using LeagueFPSBoost.Extensions;
 using LeagueFPSBoost.GUI;
 using LeagueFPSBoost.Logging;
-using LeagueFPSBoost.NativeUnmanaged;
+using LeagueFPSBoost.Native.Unmanaged;
 using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
@@ -17,6 +17,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
+using PowerManagerAPI;
 using StringCipherLib;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Management;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
@@ -165,7 +167,7 @@ namespace LeagueFPSBoost
                 while (!Debugger.IsAttached) { Thread.Sleep(100); }
                 Debugger.Break();
             }
-            PreNLog("Starting program.");
+            PreNLog($"Starting LeagueFPSBoost {CurrentVersionFull}");
             PrenlogCmdArgs(args);
             Init();
             PreNLog("Enabling Visual Styles.");
@@ -178,9 +180,11 @@ namespace LeagueFPSBoost
             DeleteTempUpdaterFilesAndCreateUpdateFolder(UpdateFolderPath);
 
             CodeStep = 1; // LeagueFPSBoost: Fatal Error While Checking Mutex
+            PreNLog("Checking if program is already open.");
             if (!Mutex.WaitOne(TimeSpan.Zero, true))
             {
-                MessageBox.Show("Check task bar, application is already open.", "LeagueFPSBoost: Already Running", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                PreNLog("Program is already running. Closing this instance after message box.");
+                MessageBox.Show("Check task bar, application is already open." + Environment.NewLine + "Program will now exit.", "LeagueFPSBoost: Already Running", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -207,24 +211,24 @@ namespace LeagueFPSBoost
             }
 
             Startup();
-            
+
+            HideConsole(Arguments);
             using (var mainWindow = new MainWindow())
             {
-                
                 if (FirstRun.Value)
                 {
-                    Logger.Info("Waiting for user to read message box then hiding console.");
                     MessageBox.Show("If you like this program please share it with your friends." + Environment.NewLine +
                                     "Also feedback on any errors/bugs is really useful. Visit the" + Environment.NewLine +
                                     "boards page and find GitHub repository link and submit new " + Environment.NewLine +
                                     "issue and I will try to fix it. Boards link can be found in" + Environment.NewLine +
                                     "about tab. Good luck! - IShunpoYourFace (EUNE) July 2018", $"Welcome to LeagueFPSBoost version {Program.CurrentVersionFull}", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                HideConsole(Arguments);
                 Application.Run(mainWindow);
             }
+            Logger.Debug("MainWindow closed.");
 
             Dispose();
+            Logger.Debug("Shutting down program.");
         }
 
         private static void DeleteTempUpdaterFilesAndCreateUpdateFolder(string folderPath)
@@ -482,18 +486,25 @@ namespace LeagueFPSBoost
             log.Trace("Reading system, hardware and software information.");
             task.Start();
             var logTxt = await task;
-            log.Debug("Finished reading system and hardware and software information: " + Environment.NewLine + logTxt);
+            log.Debug("Finished reading system and hardware and software information task: " + Environment.NewLine + logTxt);
         }
 
         public static string GetSoftwareAndHardwareInfo()
         {
-            return ReadOS_CPU_GPU_Info();
+            try
+            {
+                return ReadOS_CPU_GPU_Info();
+            }
+            catch(Exception ex)
+            {
+                return Strings.exceptionThrown + " while trying to ReadOS_CPU_GPU_Info: " + Environment.NewLine + ex;
+            }
         }
 
         static string ReadOS_CPU_GPU_Info()
         {
             PiSB.Append(Process.GetCurrentProcess().GetProcessInfoForLogging(PrintProcessModules));
-
+            Logger.Debug("Started reading Win32_OperatingSystem.");
             var mos = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
             foreach (ManagementObject mo in mos.Get())
             {
@@ -521,7 +532,9 @@ namespace LeagueFPSBoost
                 OsSB.AppendLine(Strings.doubleTabWithLine + "Product suite: " + mo["OSProductsuite"]);
                 OsSB.Append(Strings.doubleTabWithLine + "Type: " + mo["OSType"]);
             }
+            Logger.Debug("Finished reading Win32_OperatingSystem.");
 
+            Logger.Debug("Started reading Win32_Processor.");
             mos = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
             foreach (ManagementObject mo in mos.Get())
             {
@@ -540,7 +553,9 @@ namespace LeagueFPSBoost
                 CpuSB.AppendLine(Strings.doubleTabWithLine + "VM Monitor Mode Extensions: " + mo["VMMonitorModeExtensions"]);
             }
             if (CpuSB[CpuSB.Length - 1] == '\n') CpuSB.Remove(CpuSB.Length - 1, 1);
+            Logger.Debug("Finished reading Win32_Processor.");
 
+            Logger.Debug("Started reading Win32_VideoController.");
             mos = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
             foreach (ManagementObject mo in mos.Get())
             {
@@ -568,6 +583,7 @@ namespace LeagueFPSBoost
                 GpuSB.AppendLine(Strings.doubleTabWithLine + "Video architecture : " + mo["VideoArchitecture"]);
             }
             if (GpuSB[GpuSB.Length - 1] == '\n') GpuSB.Remove(GpuSB.Length - 1, 1);
+            Logger.Debug("Finished reading Win32_VideoController.");
 
             var sb = new StringBuilder();
             sb.AppendLine("System information:");
@@ -611,14 +627,46 @@ namespace LeagueFPSBoost
 
         static void Dispose()
         {
-            StartWatch.Stop();
-            Stopwatch.Stop();
-
-            StartWatch.Dispose();
-            StopWatch.Dispose();
+            Logger.Debug("Disposing program.");
 
 
-            Mutex.ReleaseMutex();
+            try
+            {
+                Logger.Debug($"Returning power plan to last used one: {MainWindow.currentLastActivePowerPlan} - {PowerManager.GetPlanName(MainWindow.currentLastActivePowerPlan)}");
+                PowerManager.SetActivePlan(MainWindow.currentLastActivePowerPlan);
+                Logger.Debug("Change was successful without exceptions.");
+            }
+            catch(Exception ex)
+            {
+                Logger.Error(ex, Strings.exceptionThrown + " while changing power plan to last used one: " + MainWindow.currentLastActivePowerPlan + Environment.NewLine);
+            }
+
+            try
+            {
+                Logger.Debug("Stopping process start wmi watcher.");
+                StartWatch.Stop();
+                Logger.Debug("Stopping process stop wmi watcher.");
+                StopWatch.Stop();
+
+                Logger.Debug("Disposing process start wmi watcher.");
+                StartWatch.Dispose();
+                Logger.Debug("Disposing process stop wmi watcher.");
+                StopWatch.Dispose();
+            }
+            catch (COMException ex)
+            {
+                Logger.Warn(ex, Strings.exceptionThrown + " while trying to stop or dispose ManagementEventWatcher. Can happen if the user has already disconnected. Ignoring and continuing shutting down. " + Environment.NewLine);
+            }
+
+            try
+            {
+                Logger.Debug("Trying to release mutex.");
+                Mutex.ReleaseMutex();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, Strings.exceptionThrown + " while trying to release mutex." + Environment.NewLine);
+            }
         }
 
         static void Startup()

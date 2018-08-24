@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace LeagueFPSBoost.NativeUnmanaged
+namespace LeagueFPSBoost.Native.Unmanaged
 {
     public static class NativeMethods
     {
+        [DllImport("user32.dll")]
+        public static extern int SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern int IsIconic(IntPtr hWnd);
+
         [DllImport("kernel32.dll")]
         public static extern int GetSystemDefaultLCID();
 

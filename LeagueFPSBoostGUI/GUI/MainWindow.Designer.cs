@@ -35,12 +35,10 @@
             this.metroButton3 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
-            this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel5 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
-            this.perPixelPointLightingToggle = new MetroFramework.Controls.MetroToggle();
             this.grassSwayingToggle = new MetroFramework.Controls.MetroToggle();
             this.shadowsToggle = new MetroFramework.Controls.MetroToggle();
             this.hudAnimationsToggle = new MetroFramework.Controls.MetroToggle();
@@ -65,10 +63,12 @@
             this.greenColorButton = new System.Windows.Forms.Button();
             this.whiteColorButton = new System.Windows.Forms.Button();
             this.aboutTabPage = new MetroFramework.Controls.MetroTabPage();
+            this.metroButton4 = new MetroFramework.Controls.MetroButton();
             this.metroLink2 = new MetroFramework.Controls.MetroLink();
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
-            this.metroButton4 = new MetroFramework.Controls.MetroButton();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.highPerformanceToggle = new MetroFramework.Controls.MetroToggle();
             this.metroTabControl1.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.themeTabPage.SuspendLayout();
@@ -89,15 +89,15 @@
             // 
             // settingsTabPage
             // 
+            this.settingsTabPage.Controls.Add(this.metroLabel2);
+            this.settingsTabPage.Controls.Add(this.highPerformanceToggle);
             this.settingsTabPage.Controls.Add(this.metroButton3);
             this.settingsTabPage.Controls.Add(this.metroButton2);
             this.settingsTabPage.Controls.Add(this.metroButton1);
-            this.settingsTabPage.Controls.Add(this.metroLabel7);
             this.settingsTabPage.Controls.Add(this.metroLabel6);
             this.settingsTabPage.Controls.Add(this.metroLabel5);
             this.settingsTabPage.Controls.Add(this.metroLabel4);
             this.settingsTabPage.Controls.Add(this.metroLabel3);
-            this.settingsTabPage.Controls.Add(this.perPixelPointLightingToggle);
             this.settingsTabPage.Controls.Add(this.grassSwayingToggle);
             this.settingsTabPage.Controls.Add(this.shadowsToggle);
             this.settingsTabPage.Controls.Add(this.hudAnimationsToggle);
@@ -115,47 +115,36 @@
             // 
             // metroButton3
             // 
-            this.metroButton3.Location = new System.Drawing.Point(159, 38);
+            this.metroButton3.Location = new System.Drawing.Point(159, 61);
             this.metroButton3.Name = "metroButton3";
             this.metroButton3.Size = new System.Drawing.Size(72, 23);
             this.metroButton3.TabIndex = 26;
             this.metroButton3.Text = "App Config";
-            this.metroButton3.Click += new System.EventHandler(this.metroButton3_Click);
+            this.metroButton3.Click += new System.EventHandler(this.MetroButton3_Click);
             // 
             // metroButton2
             // 
-            this.metroButton2.Location = new System.Drawing.Point(81, 38);
+            this.metroButton2.Location = new System.Drawing.Point(81, 61);
             this.metroButton2.Name = "metroButton2";
             this.metroButton2.Size = new System.Drawing.Size(72, 23);
             this.metroButton2.TabIndex = 25;
             this.metroButton2.Text = "LoL Config";
-            this.metroButton2.Click += new System.EventHandler(this.metroButton2_Click);
+            this.metroButton2.Click += new System.EventHandler(this.MetroButton2_Click);
             // 
             // metroButton1
             // 
-            this.metroButton1.Location = new System.Drawing.Point(3, 38);
+            this.metroButton1.Location = new System.Drawing.Point(3, 61);
             this.metroButton1.Name = "metroButton1";
             this.metroButton1.Size = new System.Drawing.Size(72, 23);
             this.metroButton1.TabIndex = 24;
             this.metroButton1.Text = "App Logs";
-            this.metroButton1.Click += new System.EventHandler(this.metroButton1_Click);
-            // 
-            // metroLabel7
-            // 
-            this.metroLabel7.AutoSize = true;
-            this.metroLabel7.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel7.Location = new System.Drawing.Point(89, 187);
-            this.metroLabel7.Name = "metroLabel7";
-            this.metroLabel7.Size = new System.Drawing.Size(148, 19);
-            this.metroLabel7.TabIndex = 23;
-            this.metroLabel7.Text = "Per pixel Point Lighting";
-            this.metroLabel7.UseStyleColors = true;
+            this.metroButton1.Click += new System.EventHandler(this.MetroButton1_Click);
             // 
             // metroLabel6
             // 
             this.metroLabel6.AutoSize = true;
             this.metroLabel6.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel6.Location = new System.Drawing.Point(89, 164);
+            this.metroLabel6.Location = new System.Drawing.Point(89, 187);
             this.metroLabel6.Name = "metroLabel6";
             this.metroLabel6.Size = new System.Drawing.Size(97, 19);
             this.metroLabel6.TabIndex = 22;
@@ -166,7 +155,7 @@
             // 
             this.metroLabel5.AutoSize = true;
             this.metroLabel5.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel5.Location = new System.Drawing.Point(89, 141);
+            this.metroLabel5.Location = new System.Drawing.Point(89, 164);
             this.metroLabel5.Name = "metroLabel5";
             this.metroLabel5.Size = new System.Drawing.Size(63, 19);
             this.metroLabel5.TabIndex = 21;
@@ -177,7 +166,7 @@
             // 
             this.metroLabel4.AutoSize = true;
             this.metroLabel4.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel4.Location = new System.Drawing.Point(89, 118);
+            this.metroLabel4.Location = new System.Drawing.Point(89, 141);
             this.metroLabel4.Name = "metroLabel4";
             this.metroLabel4.Size = new System.Drawing.Size(112, 19);
             this.metroLabel4.TabIndex = 20;
@@ -188,29 +177,17 @@
             // 
             this.metroLabel3.AutoSize = true;
             this.metroLabel3.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel3.Location = new System.Drawing.Point(89, 95);
+            this.metroLabel3.Location = new System.Drawing.Point(89, 118);
             this.metroLabel3.Name = "metroLabel3";
             this.metroLabel3.Size = new System.Drawing.Size(110, 19);
             this.metroLabel3.TabIndex = 19;
             this.metroLabel3.Text = "Character Inking";
             this.metroLabel3.UseStyleColors = true;
             // 
-            // perPixelPointLightingToggle
-            // 
-            this.perPixelPointLightingToggle.AutoSize = true;
-            this.perPixelPointLightingToggle.Location = new System.Drawing.Point(3, 188);
-            this.perPixelPointLightingToggle.Name = "perPixelPointLightingToggle";
-            this.perPixelPointLightingToggle.Size = new System.Drawing.Size(80, 17);
-            this.perPixelPointLightingToggle.TabIndex = 18;
-            this.perPixelPointLightingToggle.Text = "Off";
-            this.perPixelPointLightingToggle.UseStyleColors = true;
-            this.perPixelPointLightingToggle.UseVisualStyleBackColor = true;
-            this.perPixelPointLightingToggle.CheckedChanged += new System.EventHandler(this.PerPixelPointLightingToggle_CheckedChanged);
-            // 
             // grassSwayingToggle
             // 
             this.grassSwayingToggle.AutoSize = true;
-            this.grassSwayingToggle.Location = new System.Drawing.Point(3, 165);
+            this.grassSwayingToggle.Location = new System.Drawing.Point(3, 188);
             this.grassSwayingToggle.Name = "grassSwayingToggle";
             this.grassSwayingToggle.Size = new System.Drawing.Size(80, 17);
             this.grassSwayingToggle.TabIndex = 17;
@@ -222,7 +199,7 @@
             // shadowsToggle
             // 
             this.shadowsToggle.AutoSize = true;
-            this.shadowsToggle.Location = new System.Drawing.Point(3, 142);
+            this.shadowsToggle.Location = new System.Drawing.Point(3, 165);
             this.shadowsToggle.Name = "shadowsToggle";
             this.shadowsToggle.Size = new System.Drawing.Size(80, 17);
             this.shadowsToggle.TabIndex = 16;
@@ -234,7 +211,7 @@
             // hudAnimationsToggle
             // 
             this.hudAnimationsToggle.AutoSize = true;
-            this.hudAnimationsToggle.Location = new System.Drawing.Point(3, 119);
+            this.hudAnimationsToggle.Location = new System.Drawing.Point(3, 142);
             this.hudAnimationsToggle.Name = "hudAnimationsToggle";
             this.hudAnimationsToggle.Size = new System.Drawing.Size(80, 17);
             this.hudAnimationsToggle.TabIndex = 15;
@@ -246,7 +223,7 @@
             // characterInkingToggle
             // 
             this.characterInkingToggle.AutoSize = true;
-            this.characterInkingToggle.Location = new System.Drawing.Point(3, 96);
+            this.characterInkingToggle.Location = new System.Drawing.Point(3, 119);
             this.characterInkingToggle.Name = "characterInkingToggle";
             this.characterInkingToggle.Size = new System.Drawing.Size(80, 17);
             this.characterInkingToggle.TabIndex = 14;
@@ -259,7 +236,7 @@
             // 
             this.metroLabel1.AutoSize = true;
             this.metroLabel1.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel1.Location = new System.Drawing.Point(89, 14);
+            this.metroLabel1.Location = new System.Drawing.Point(89, 37);
             this.metroLabel1.Name = "metroLabel1";
             this.metroLabel1.Size = new System.Drawing.Size(128, 19);
             this.metroLabel1.TabIndex = 11;
@@ -269,23 +246,23 @@
             // notificationsToggle
             // 
             this.notificationsToggle.AutoSize = true;
-            this.notificationsToggle.Location = new System.Drawing.Point(3, 15);
+            this.notificationsToggle.Location = new System.Drawing.Point(3, 38);
             this.notificationsToggle.Name = "notificationsToggle";
             this.notificationsToggle.Size = new System.Drawing.Size(80, 17);
             this.notificationsToggle.TabIndex = 10;
             this.notificationsToggle.Text = "Off";
             this.notificationsToggle.UseStyleColors = true;
             this.notificationsToggle.UseVisualStyleBackColor = true;
-            this.notificationsToggle.CheckedChanged += new System.EventHandler(this.notificationsToggle_CheckedChanged);
+            this.notificationsToggle.CheckedChanged += new System.EventHandler(this.NotificationsToggle_CheckedChanged);
             // 
             // backupConfigButton
             // 
-            this.backupConfigButton.Location = new System.Drawing.Point(3, 67);
+            this.backupConfigButton.Location = new System.Drawing.Point(3, 90);
             this.backupConfigButton.Name = "backupConfigButton";
             this.backupConfigButton.Size = new System.Drawing.Size(228, 23);
             this.backupConfigButton.TabIndex = 2;
             this.backupConfigButton.Text = "Backup And Save Config";
-            this.backupConfigButton.Click += new System.EventHandler(this.backupConfigButton_Click);
+            this.backupConfigButton.Click += new System.EventHandler(this.BackupConfigButton_Click);
             // 
             // themeTabPage
             // 
@@ -320,7 +297,7 @@
             this.blackColorButton.Size = new System.Drawing.Size(35, 35);
             this.blackColorButton.TabIndex = 62;
             this.blackColorButton.UseVisualStyleBackColor = false;
-            this.blackColorButton.Click += new System.EventHandler(this.blackColorButton_Click);
+            this.blackColorButton.Click += new System.EventHandler(this.BlackColorButton_Click);
             // 
             // darkThemeToggle
             // 
@@ -334,7 +311,7 @@
             this.darkThemeToggle.Text = "Off";
             this.darkThemeToggle.UseStyleColors = true;
             this.darkThemeToggle.UseVisualStyleBackColor = true;
-            this.darkThemeToggle.CheckedChanged += new System.EventHandler(this.darkThemeToggle_CheckedChanged);
+            this.darkThemeToggle.CheckedChanged += new System.EventHandler(this.DarkThemeToggle_CheckedChanged);
             // 
             // purpleColorButton
             // 
@@ -344,7 +321,7 @@
             this.purpleColorButton.Size = new System.Drawing.Size(35, 35);
             this.purpleColorButton.TabIndex = 59;
             this.purpleColorButton.UseVisualStyleBackColor = false;
-            this.purpleColorButton.Click += new System.EventHandler(this.purpleColorButton_Click);
+            this.purpleColorButton.Click += new System.EventHandler(this.PurpleColorButton_Click);
             // 
             // pinkColorButton
             // 
@@ -354,7 +331,7 @@
             this.pinkColorButton.Size = new System.Drawing.Size(35, 35);
             this.pinkColorButton.TabIndex = 58;
             this.pinkColorButton.UseVisualStyleBackColor = false;
-            this.pinkColorButton.Click += new System.EventHandler(this.pinkColorButton_Click);
+            this.pinkColorButton.Click += new System.EventHandler(this.PinkColorButton_Click);
             // 
             // magentaColorButton
             // 
@@ -364,7 +341,7 @@
             this.magentaColorButton.Size = new System.Drawing.Size(35, 35);
             this.magentaColorButton.TabIndex = 57;
             this.magentaColorButton.UseVisualStyleBackColor = false;
-            this.magentaColorButton.Click += new System.EventHandler(this.magentaColorButton_Click);
+            this.magentaColorButton.Click += new System.EventHandler(this.MagentaColorButton_Click);
             // 
             // brownColorButton
             // 
@@ -374,7 +351,7 @@
             this.brownColorButton.Size = new System.Drawing.Size(35, 35);
             this.brownColorButton.TabIndex = 56;
             this.brownColorButton.UseVisualStyleBackColor = false;
-            this.brownColorButton.Click += new System.EventHandler(this.brownColorButton_Click);
+            this.brownColorButton.Click += new System.EventHandler(this.BrownColorButton_Click);
             // 
             // silverColorButton
             // 
@@ -384,7 +361,7 @@
             this.silverColorButton.Size = new System.Drawing.Size(35, 35);
             this.silverColorButton.TabIndex = 55;
             this.silverColorButton.UseVisualStyleBackColor = false;
-            this.silverColorButton.Click += new System.EventHandler(this.silverColorButton_Click);
+            this.silverColorButton.Click += new System.EventHandler(this.SilverColorButton_Click);
             // 
             // tealColorButton
             // 
@@ -394,7 +371,7 @@
             this.tealColorButton.Size = new System.Drawing.Size(35, 35);
             this.tealColorButton.TabIndex = 54;
             this.tealColorButton.UseVisualStyleBackColor = false;
-            this.tealColorButton.Click += new System.EventHandler(this.tealColorButton_Click);
+            this.tealColorButton.Click += new System.EventHandler(this.TealColorButton_Click);
             // 
             // blueColorButton
             // 
@@ -404,7 +381,7 @@
             this.blueColorButton.Size = new System.Drawing.Size(35, 35);
             this.blueColorButton.TabIndex = 53;
             this.blueColorButton.UseVisualStyleBackColor = false;
-            this.blueColorButton.Click += new System.EventHandler(this.deepSkyBlueColorButton_Click);
+            this.blueColorButton.Click += new System.EventHandler(this.DeepSkyBlueColorButton_Click);
             // 
             // redColorButton
             // 
@@ -414,7 +391,7 @@
             this.redColorButton.Size = new System.Drawing.Size(35, 35);
             this.redColorButton.TabIndex = 52;
             this.redColorButton.UseVisualStyleBackColor = false;
-            this.redColorButton.Click += new System.EventHandler(this.redColorButton_Click);
+            this.redColorButton.Click += new System.EventHandler(this.RedColorButton_Click);
             // 
             // orangeColorButton
             // 
@@ -424,7 +401,7 @@
             this.orangeColorButton.Size = new System.Drawing.Size(35, 35);
             this.orangeColorButton.TabIndex = 51;
             this.orangeColorButton.UseVisualStyleBackColor = false;
-            this.orangeColorButton.Click += new System.EventHandler(this.orangeColorButton_Click);
+            this.orangeColorButton.Click += new System.EventHandler(this.OrangeColorButton_Click);
             // 
             // yellowColorButton
             // 
@@ -434,7 +411,7 @@
             this.yellowColorButton.Size = new System.Drawing.Size(35, 35);
             this.yellowColorButton.TabIndex = 50;
             this.yellowColorButton.UseVisualStyleBackColor = false;
-            this.yellowColorButton.Click += new System.EventHandler(this.yellowColorButton_Click);
+            this.yellowColorButton.Click += new System.EventHandler(this.YellowColorButton_Click);
             // 
             // limeGreenColorButton
             // 
@@ -444,7 +421,7 @@
             this.limeGreenColorButton.Size = new System.Drawing.Size(35, 35);
             this.limeGreenColorButton.TabIndex = 49;
             this.limeGreenColorButton.UseVisualStyleBackColor = false;
-            this.limeGreenColorButton.Click += new System.EventHandler(this.limeGreenColorButton_Click);
+            this.limeGreenColorButton.Click += new System.EventHandler(this.LimeGreenColorButton_Click);
             // 
             // greenColorButton
             // 
@@ -454,7 +431,7 @@
             this.greenColorButton.Size = new System.Drawing.Size(35, 35);
             this.greenColorButton.TabIndex = 48;
             this.greenColorButton.UseVisualStyleBackColor = false;
-            this.greenColorButton.Click += new System.EventHandler(this.greenColorButton_Click);
+            this.greenColorButton.Click += new System.EventHandler(this.GreenColorButton_Click);
             // 
             // whiteColorButton
             // 
@@ -464,7 +441,7 @@
             this.whiteColorButton.Size = new System.Drawing.Size(35, 35);
             this.whiteColorButton.TabIndex = 47;
             this.whiteColorButton.UseVisualStyleBackColor = false;
-            this.whiteColorButton.Click += new System.EventHandler(this.whiteColorButton_Click);
+            this.whiteColorButton.Click += new System.EventHandler(this.WhiteColorButton_Click);
             // 
             // aboutTabPage
             // 
@@ -479,6 +456,15 @@
             this.aboutTabPage.Text = "About";
             this.aboutTabPage.VerticalScrollbarBarColor = true;
             // 
+            // metroButton4
+            // 
+            this.metroButton4.Location = new System.Drawing.Point(3, 6);
+            this.metroButton4.Name = "metroButton4";
+            this.metroButton4.Size = new System.Drawing.Size(228, 23);
+            this.metroButton4.TabIndex = 6;
+            this.metroButton4.Text = "More Information";
+            this.metroButton4.Click += new System.EventHandler(this.MetroButton4_Click);
+            // 
             // metroLink2
             // 
             this.metroLink2.Location = new System.Drawing.Point(3, 185);
@@ -487,7 +473,7 @@
             this.metroLink2.TabIndex = 5;
             this.metroLink2.Text = "Đorđe Mandić - Ver: ";
             this.metroLink2.UseStyleColors = true;
-            this.metroLink2.Click += new System.EventHandler(this.metroLink2_Click);
+            this.metroLink2.Click += new System.EventHandler(this.MetroLink2_Click);
             // 
             // metroLabel9
             // 
@@ -507,14 +493,28 @@
             // 
             this.metroStyleManager1.Owner = this;
             // 
-            // metroButton4
+            // metroLabel2
             // 
-            this.metroButton4.Location = new System.Drawing.Point(3, 6);
-            this.metroButton4.Name = "metroButton4";
-            this.metroButton4.Size = new System.Drawing.Size(228, 23);
-            this.metroButton4.TabIndex = 6;
-            this.metroButton4.Text = "More Information";
-            this.metroButton4.Click += new System.EventHandler(this.metroButton4_Click);
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabel2.Location = new System.Drawing.Point(89, 14);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(138, 19);
+            this.metroLabel2.TabIndex = 28;
+            this.metroLabel2.Text = "High Performance PP";
+            this.metroLabel2.UseStyleColors = true;
+            // 
+            // highPerformanceToggle
+            // 
+            this.highPerformanceToggle.AutoSize = true;
+            this.highPerformanceToggle.Location = new System.Drawing.Point(3, 15);
+            this.highPerformanceToggle.Name = "highPerformanceToggle";
+            this.highPerformanceToggle.Size = new System.Drawing.Size(80, 17);
+            this.highPerformanceToggle.TabIndex = 27;
+            this.highPerformanceToggle.Text = "Off";
+            this.highPerformanceToggle.UseStyleColors = true;
+            this.highPerformanceToggle.UseVisualStyleBackColor = true;
+            this.highPerformanceToggle.CheckedChanged += new System.EventHandler(this.HighPerformanceToggle1_CheckedChanged);
             // 
             // MainWindow
             // 
@@ -549,14 +549,12 @@
         private MetroFramework.Controls.MetroTabPage aboutTabPage;
         private MetroFramework.Controls.MetroButton backupConfigButton;
         private MetroFramework.Controls.MetroLabel metroLabel3;
-        private MetroFramework.Controls.MetroToggle perPixelPointLightingToggle;
         private MetroFramework.Controls.MetroToggle grassSwayingToggle;
         private MetroFramework.Controls.MetroToggle shadowsToggle;
         private MetroFramework.Controls.MetroToggle hudAnimationsToggle;
         private MetroFramework.Controls.MetroToggle characterInkingToggle;
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroToggle notificationsToggle;
-        private MetroFramework.Controls.MetroLabel metroLabel7;
         private MetroFramework.Controls.MetroLabel metroLabel6;
         private MetroFramework.Controls.MetroLabel metroLabel5;
         private MetroFramework.Controls.MetroLabel metroLabel4;
@@ -582,5 +580,7 @@
         private MetroFramework.Controls.MetroButton metroButton2;
         private MetroFramework.Controls.MetroButton metroButton1;
         private MetroFramework.Controls.MetroButton metroButton4;
+        private MetroFramework.Controls.MetroLabel metroLabel2;
+        private MetroFramework.Controls.MetroToggle highPerformanceToggle;
     }
 }

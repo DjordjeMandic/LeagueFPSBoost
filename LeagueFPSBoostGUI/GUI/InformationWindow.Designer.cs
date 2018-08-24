@@ -53,9 +53,9 @@
             // 
             // ytLink1
             // 
-            this.ytLink1.Location = new System.Drawing.Point(38, 254);
+            this.ytLink1.Location = new System.Drawing.Point(23, 254);
             this.ytLink1.Name = "ytLink1";
-            this.ytLink1.Size = new System.Drawing.Size(211, 23);
+            this.ytLink1.Size = new System.Drawing.Size(241, 23);
             this.ytLink1.TabIndex = 0;
             this.ytLink1.Text = "Developer\'s YouTube Channel: N!cky";
             this.ytLink1.UseStyleColors = true;
@@ -107,7 +107,7 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Startup Arguments";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            this.groupBox1.Enter += new System.EventHandler(this.GroupBox1_Enter);
             // 
             // cleanCheckBox1
             // 
@@ -119,7 +119,7 @@
             this.cleanCheckBox1.Text = "Clean";
             this.cleanCheckBox1.UseStyleColors = true;
             this.cleanCheckBox1.UseVisualStyleBackColor = true;
-            this.cleanCheckBox1.CheckedChanged += new System.EventHandler(this.cleanCheckBox1_CheckedChanged);
+            this.cleanCheckBox1.CheckedChanged += new System.EventHandler(this.CleanCheckBox1_CheckedChanged);
             // 
             // exitEarlyCheckBox1
             // 
@@ -131,8 +131,8 @@
             this.exitEarlyCheckBox1.Text = "Exit Early";
             this.exitEarlyCheckBox1.UseStyleColors = true;
             this.exitEarlyCheckBox1.UseVisualStyleBackColor = true;
-            this.exitEarlyCheckBox1.CheckedChanged += new System.EventHandler(this.metroCheckBox1_CheckedChanged);
-            this.exitEarlyCheckBox1.CheckStateChanged += new System.EventHandler(this.exitEarlyCheckBox1_CheckStateChanged);
+            this.exitEarlyCheckBox1.CheckedChanged += new System.EventHandler(this.MetroCheckBox1_CheckedChanged);
+            this.exitEarlyCheckBox1.CheckStateChanged += new System.EventHandler(this.ExitEarlyCheckBox1_CheckStateChanged);
             // 
             // metroLabel1
             // 
@@ -157,7 +157,7 @@
             this.adminRstRsnCheckBox1.Text = "Restart Reason Elevation";
             this.adminRstRsnCheckBox1.UseStyleColors = true;
             this.adminRstRsnCheckBox1.UseVisualStyleBackColor = true;
-            this.adminRstRsnCheckBox1.CheckedChanged += new System.EventHandler(this.adminRstRsnCheckBox1_CheckedChanged);
+            this.adminRstRsnCheckBox1.CheckedChanged += new System.EventHandler(this.AdminRstRsnCheckBox1_CheckedChanged);
             // 
             // configRstRsnCheckBox1
             // 
@@ -170,7 +170,7 @@
             this.configRstRsnCheckBox1.Text = "Restart Reason Config";
             this.configRstRsnCheckBox1.UseStyleColors = true;
             this.configRstRsnCheckBox1.UseVisualStyleBackColor = true;
-            this.configRstRsnCheckBox1.CheckedChanged += new System.EventHandler(this.configRstRsnCheckBox1_CheckedChanged);
+            this.configRstRsnCheckBox1.CheckedChanged += new System.EventHandler(this.ConfigRstRsnCheckBox1_CheckedChanged);
             // 
             // procModulesCheckBox1
             // 
@@ -182,7 +182,7 @@
             this.procModulesCheckBox1.Text = "Process Modules";
             this.procModulesCheckBox1.UseStyleColors = true;
             this.procModulesCheckBox1.UseVisualStyleBackColor = true;
-            this.procModulesCheckBox1.CheckedChanged += new System.EventHandler(this.procModulesCheckBox1_CheckedChanged);
+            this.procModulesCheckBox1.CheckedChanged += new System.EventHandler(this.ProcModulesCheckBox1_CheckedChanged);
             // 
             // clearLogsCheckBox1
             // 
@@ -194,7 +194,7 @@
             this.clearLogsCheckBox1.Text = "Clear Logs";
             this.clearLogsCheckBox1.UseStyleColors = true;
             this.clearLogsCheckBox1.UseVisualStyleBackColor = true;
-            this.clearLogsCheckBox1.CheckedChanged += new System.EventHandler(this.clearLogsCheckBox1_CheckedChanged);
+            this.clearLogsCheckBox1.CheckedChanged += new System.EventHandler(this.ClearLogsCheckBox1_CheckedChanged);
             // 
             // noClientCheckBox1
             // 
@@ -206,7 +206,7 @@
             this.noClientCheckBox1.Text = "No Client";
             this.noClientCheckBox1.UseStyleColors = true;
             this.noClientCheckBox1.UseVisualStyleBackColor = true;
-            this.noClientCheckBox1.CheckedChanged += new System.EventHandler(this.noClientCheckBox1_CheckedChanged);
+            this.noClientCheckBox1.CheckedChanged += new System.EventHandler(this.NoClientCheckBox1_CheckedChanged);
             // 
             // rstButton1
             // 
@@ -215,7 +215,7 @@
             this.rstButton1.Size = new System.Drawing.Size(73, 23);
             this.rstButton1.TabIndex = 7;
             this.rstButton1.Text = "Restart";
-            this.rstButton1.Click += new System.EventHandler(this.rstButton1_Click);
+            this.rstButton1.Click += new System.EventHandler(this.RstButton1_Click);
             // 
             // metroStyleManager1
             // 
@@ -228,7 +228,7 @@
             this.metroButton1.Size = new System.Drawing.Size(73, 23);
             this.metroButton1.TabIndex = 5;
             this.metroButton1.Text = "Update";
-            this.metroButton1.Click += new System.EventHandler(this.metroButton1_Click);
+            this.metroButton1.Click += new System.EventHandler(this.MetroButton1_Click);
             // 
             // metroButton2
             // 
@@ -237,7 +237,7 @@
             this.metroButton2.Size = new System.Drawing.Size(75, 23);
             this.metroButton2.TabIndex = 8;
             this.metroButton2.Text = "Console";
-            this.metroButton2.Click += new System.EventHandler(this.metroButton2_Click);
+            this.metroButton2.Click += new System.EventHandler(this.MetroButton2_Click);
             // 
             // InformationWindow
             // 

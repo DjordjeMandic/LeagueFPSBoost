@@ -1,5 +1,6 @@
 # LeagueFPSBoost
 Simple tool written in C# that should help with increasing frame rate in league of legends.
+More info till this page gets updated can be found on [boards page](https://goo.gl/bpxbGV)
 
 Used libraries:
   - [AutoUpdater.NET](https://github.com/ravibpatel/AutoUpdater.NET)
@@ -12,3 +13,4 @@ Used libraries:
   - [NAudio](https://github.com/naudio/NAudio)
   - [NLog](http://nlog-project.org/)
   - [NDesk.Options](http://www.ndesk.org/Options)
+  - [PowerManagerAPI](https://github.com/Ravatsaas/PowerManagerAPI)

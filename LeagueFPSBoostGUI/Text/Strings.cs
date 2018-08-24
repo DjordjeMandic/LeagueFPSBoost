@@ -1,4 +1,4 @@
-﻿using LeagueFPSBoost.NativeUnmanaged;
+﻿using LeagueFPSBoost.Native.Unmanaged;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -8,41 +8,41 @@ namespace LeagueFPSBoost.Text
 {
     public static class Strings
     {
-        public static readonly string tab = "\t";
-        public static readonly string tabWithLine = tab + "- ";
-        public static readonly string doubleTabWithLine = tab + tabWithLine;
-        public static readonly string tripleTabWithLine = tab + doubleTabWithLine;
+        public const string tab = "\t";
+        public const string tabWithLine = tab + "- ";
+        public const string doubleTabWithLine = tab + tabWithLine;
+        public const string tripleTabWithLine = tab + doubleTabWithLine;
 
-        public static readonly string noClientArg = "n|noClient";
-        public static readonly string printProcessModulesArg = "p|procModules";
-        public static readonly string RestartReasonArg = "r|restartReason=";
-        public static readonly string UpdateFolderArg = "u|updateFolder=";
-        public static readonly string ExitBeforeMainWindow = "e|exitEarly";
-        public static readonly string clearLogsArg = "c|clearLogs";
-        public static readonly string helpArg = "h|help";
+        public const string noClientArg = "n|noClient";
+        public const string printProcessModulesArg = "p|procModules";
+        public const string RestartReasonArg = "r|restartReason=";
+        public const string UpdateFolderArg = "u|updateFolder=";
+        public const string ExitBeforeMainWindow = "e|exitEarly";
+        public const string clearLogsArg = "c|clearLogs";
+        public const string helpArg = "h|help";
 
-        public static readonly string exceptionThrown = "Exception has been thrown";
+        public const string exceptionThrown = "Exception has been thrown";
 
-        public static readonly string LeagueRegistrySubKeyName = @"SOFTWARE\Riot Games, Inc\League of Legends";
-        public static readonly string LeagueRegistryLocationStringName = "Location";
+        public const string LeagueRegistrySubKeyName = @"SOFTWARE\Riot Games, Inc\League of Legends";
+        public const string LeagueRegistryLocationStringName = "Location";
 
-        public static readonly string defaultLeagueDirectoryPath = @"C:\Riot Games\League Of Legends";
-        public static readonly string logDateTimeFormat = "yyyy-MM-ddTHH-mm-ss";
-        public static readonly string startTimeFormat = "dd/MM/yyyy HH:mm:ss.ffff";
+        public const string defaultLeagueDirectoryPath = @"C:\Riot Games\League Of Legends";
+        public const string logDateTimeFormat = "yyyy-MM-ddTHH-mm-ss";
+        public const string startTimeFormat = "dd/MM/yyyy HH:mm:ss.ffff";
 
         public static readonly string[] ClientProcessNames = { "LeagueClient", "LeagueClientUx", "LeagueClientUxRender" };
-        public static readonly string GameProcessName = "League Of Legends";
+        public const string GameProcessName = "League Of Legends";
 
-        public static readonly string ColorStyleSetTo = "Color style set to ";
+        public const string ColorStyleSetTo = "Color style set to ";
         
-        public static readonly string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/master/AutoUpdater/updater.xml";
-        public static readonly string Updater_XML_Download_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip";
-        public static readonly string Updater_XML_Changelog_URL = @"https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have";
-        public static readonly string BoardsPage_URL = @"https://goo.gl/bpxbGV";
-        public static readonly string GitHub_URL = @"https://goo.gl/eww7KH";
-        public static readonly string YouTube_URL = @"https://goo.gl/RDpsri";
-        public static readonly string Facebook_URL = @"https://goo.gl/MjQp43";
-        public static readonly string OPGG_URL = @"https://goo.gl/sEYLbe";
+        public const string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/master/AutoUpdater/updater.xml";
+        public const string Updater_XML_Download_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip";
+        public const string Updater_XML_Changelog_URL = @"https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have";
+        public const string BoardsPage_URL = @"https://goo.gl/bpxbGV";
+        public const string GitHub_URL = @"https://goo.gl/eww7KH";
+        public const string YouTube_URL = @"https://goo.gl/RDpsri";
+        public const string Facebook_URL = @"https://goo.gl/MjQp43";
+        public const string OPGG_URL = @"https://goo.gl/sEYLbe";
 
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();

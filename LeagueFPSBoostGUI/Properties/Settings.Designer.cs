@@ -8,10 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LeagueFPSBoost.Properties
-{
-
-
+namespace LeagueFPSBoost.Properties {
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
@@ -86,10 +85,35 @@ namespace LeagueFPSBoost.Properties
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://dl.dropboxusercontent.com/s/r02oaunwwqjnkmm/updater.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/master/AutoUpdater" +
+            "/updater.xml")]
         public string UpdaterXML_URL {
             get {
                 return ((string)(this["UpdaterXML_URL"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
+        public global::System.Guid LastActivePowerPlan {
+            get {
+                return ((global::System.Guid)(this["LastActivePowerPlan"]));
+            }
+            set {
+                this["LastActivePowerPlan"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HighPPPAgreement {
+            get {
+                return ((bool)(this["HighPPPAgreement"]));
+            }
+            set {
+                this["HighPPPAgreement"] = value;
             }
         }
     }

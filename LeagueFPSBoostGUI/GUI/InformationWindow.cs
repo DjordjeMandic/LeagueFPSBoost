@@ -6,6 +6,7 @@ using MetroFramework.Forms;
 using NLog;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LeagueFPSBoost.GUI
@@ -15,6 +16,8 @@ namespace LeagueFPSBoost.GUI
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         bool console = true;
+
+        bool checkingForUpdate;
 
         public InformationWindow(MetroStyleManager styleManager)
         {
@@ -73,7 +76,7 @@ namespace LeagueFPSBoost.GUI
             }
         }
 
-        private void rstButton1_Click(object sender, EventArgs e)
+        private void RstButton1_Click(object sender, EventArgs e)
         {
             try
             {
@@ -107,19 +110,51 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Information window closed.");
         }
 
-        private void metroButton1_Click(object sender, EventArgs e)
+        private void MetroButton1_Click(object sender, EventArgs e)
         {
-            logger.Debug("Checking for updates.");
-            AutoUpdater.ReportErrors = true;
-            AutoUpdater.Start(Strings.Updater_XML_URL);
+            logger.Debug("Update button clicked, checking for updates.");
+            if (!checkingForUpdate)
+            {
+                logger.Debug("Update check thread not running. Starting it now.");
+                try
+                {
+
+                    ThreadPool.QueueUserWorkItem(UpdateCheckMethod);
+                }
+                catch(Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while trying to queue update check thread: " + Environment.NewLine);
+                    MessageBox.Show("There was an error while trying to check for updates. Check log for more info.", "LeagueFPSBoost: Update check fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                logger.Debug("Update check thread is already running.");
+            }
         }
 
-        private void metroCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void UpdateCheckMethod(object StateInfo)
+        {
+            checkingForUpdate = true;
+            while (!MainWindow.updateCheckFinished)
+            {
+                logger.Debug("Checking for updates.");
+                logger.Warn("Automatic update check is currently in progress. Sleeping this thread for 500ms.");
+                Thread.Sleep(500);
+            }
+            AutoUpdater.ReportErrors = true;
+            logger.Debug("Starting auto updater.");
+            AutoUpdater.Start(Strings.Updater_XML_URL);
+            Thread.Sleep(500);
+            checkingForUpdate = false;
+        }
+
+        private void MetroCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.Debug("Exit early checkbox checked: " + exitEarlyCheckBox1.Checked);
         }
 
-        private void cleanCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void CleanCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.Debug("Clean checkbox checked: " + cleanCheckBox1.Checked);
 
@@ -131,44 +166,44 @@ namespace LeagueFPSBoost.GUI
             adminRstRsnCheckBox1.Enabled = !cleanCheckBox1.Checked;
         }
 
-        private void metroButton2_Click(object sender, EventArgs e)
+        private void MetroButton2_Click(object sender, EventArgs e)
         {
             logger.Debug("Console button clicked.");
             console = !Program.ConsoleState(console);
         }
 
-        private void noClientCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void NoClientCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.Debug("No client checkbox checked: " + noClientCheckBox1.Checked);
         }
 
-        private void clearLogsCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void ClearLogsCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.Debug("Clear logs checkbox checked: " + clearLogsCheckBox1.Checked);
         }
 
-        private void procModulesCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void ProcModulesCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.Debug("Process modules checkbox checked: " + procModulesCheckBox1.Checked);
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
+        private void GroupBox1_Enter(object sender, EventArgs e)
         {
 
         }
 
-        private void configRstRsnCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void ConfigRstRsnCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
 
             logger.Debug("Restart reason config checkbox checked: " +configRstRsnCheckBox1.Checked);
         }
 
-        private void adminRstRsnCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void AdminRstRsnCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             logger.Debug("Restart reason admin checkbox checked: " + adminRstRsnCheckBox1.Checked);
         }
 
-        private void exitEarlyCheckBox1_CheckStateChanged(object sender, EventArgs e)
+        private void ExitEarlyCheckBox1_CheckStateChanged(object sender, EventArgs e)
         {
 
         }

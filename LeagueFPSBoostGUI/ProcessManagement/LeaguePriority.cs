@@ -1,4 +1,5 @@
-﻿using LeagueFPSBoost.Text;
+﻿using LeagueFPSBoost.GUI;
+using LeagueFPSBoost.Text;
 using NLog;
 using System;
 using System.Diagnostics;
@@ -179,6 +180,14 @@ namespace LeagueFPSBoost.ProcessManagement
 
         public static void SetClientPriority(ProcessPriorityClass ppclass)
         {
+            if (ppclass == ProcessPriorityClass.BelowNormal)
+            {
+                MainWindow.StopUpdateCheckTimer();
+            }
+            else
+            {
+                MainWindow.StartUpdateCheckTimer();
+            }
             logger.Debug("Changing client priority to: " + ppclass);
             foreach (string clientProcessName in Strings.ClientProcessNames)
             {
@@ -200,6 +209,10 @@ namespace LeagueFPSBoost.ProcessManagement
 
         public static void SetGamePriority(ProcessPriorityClass ppclass)
         {
+            if(ppclass == ProcessPriorityClass.High)
+            {
+                MainWindow.StopUpdateCheckTimer();
+            }
             logger.Debug("Changing game priority to: " + ppclass);
             foreach (Process proc in Process.GetProcessesByName(Strings.GameProcessName))
             {
