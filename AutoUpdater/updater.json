@@ -4,15 +4,15 @@
     "Major": 3,
     "Minor": 4,
     "Build": 6907,
-    "Revision": 905,
+    "Revision": 1063,
     "MajorRevision": 0,
-    "MinorRevision": 905
+    "MinorRevision": 1063
   },
   "DownloadURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip",
   "ChangelogURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/releases",
   "CommandLineArguments": "",
   "Checksum": {
     "Type": 4,
-    "Value": "2ae3f310c862af7304611a8244ae915f42c4418132b1552e499ff45948ff537a6e097dda857ae4b24789676e886ba6701f79b79e94ba350dde48637acac62b94"
+    "Value": "b3d465517be69eab81bc0c1a588b680defe2b4329722768d0e589d74c0e1be20e8e0747360b9c50f2e29dd8f504c85d42dc976a75d49dda851030819fe37048e"
   }
 }
