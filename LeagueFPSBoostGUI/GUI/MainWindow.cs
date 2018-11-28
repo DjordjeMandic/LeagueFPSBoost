@@ -15,7 +15,6 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Timers;
@@ -222,7 +221,10 @@ namespace LeagueFPSBoost.GUI
         private void CheckForUpdates()
         {
             //fix for #3
-            ServicePointManager.SecurityProtocol = (ServicePointManager.SecurityProtocol & SecurityProtocolType.Ssl3) | (SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12);
+            //ServicePointManager.SecurityProtocol = (ServicePointManager.SecurityProtocol & SecurityProtocolType.Ssl3) | (SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12);
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+
             //AutoUpdater.ReportErrors = Program.DebugBuild;
             AutoUpdater.RunUpdateAsAdmin = true;
             AutoUpdater.LetUserSelectRemindLater = true;
@@ -789,7 +791,7 @@ namespace LeagueFPSBoost.GUI
             if (currentLastActivePowerPlan == NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID)
             {
                 logger.Info("Old power plan was also high performance.");
-                MessageBox.Show("Old power plan was also high performance. Try clicking on 'High Performance PP' and selecting your default plan and then double click on 'High Performance PP' and reset last active power plan.", "LeagueFPSBoost: PowerManager Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Old power plan was also high performance. Try double clicking on 'High Performance PP' and selecting your default plan and then click on 'High Performance PP' and reset last active power plan.", "LeagueFPSBoost: PowerManager Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (highPerformanceToggle.Checked)
             {
@@ -829,16 +831,7 @@ namespace LeagueFPSBoost.GUI
 
         private void MetroLabel2_DoubleClick(object sender, EventArgs e)
         {
-            if (DialogResult.Yes == MessageBox.Show("Are you sure that you want to reset last active power plan?", "LeagueFPSBoost: PowerManager", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-            {
-                SaveLastActivePowerPlan(Guid.Empty);
-                currentLastActivePowerPlan = PowerManager.GetActivePlan();
-            }
-        }
-
-        private void MetroLabel2_Click(object sender, EventArgs e)
-        {
-            logger.Info("High Performance PP label has been clicked. Trying to open Power Options in Control Panel: " + Strings.POWER_OPTIONS_CPL);
+            logger.Info("High Performance PP label has been double clicked. Trying to open Power Options in Control Panel: " + Strings.POWER_OPTIONS_CPL);
             try
             {
                 Process.Start(Strings.POWER_OPTIONS_CPL);
@@ -849,6 +842,15 @@ namespace LeagueFPSBoost.GUI
                 logger.Error(ex, Strings.exceptionThrown + " while trying to start: " + Strings.POWER_OPTIONS_CPL);
                 MessageBox.Show("There was an error while opening Power Options in Control Panel. Check logs for more details.", "LeagueFPSBoost: Power Manager Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void MetroLabel2_Click(object sender, EventArgs e)
+        {
+            if (DialogResult.Yes == MessageBox.Show("Are you sure that you want to reset last active power plan?", "LeagueFPSBoost: PowerManager", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                SaveLastActivePowerPlan(Guid.Empty);
+                currentLastActivePowerPlan = PowerManager.GetActivePlan();
+            }            
         }
     }
 }

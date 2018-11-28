@@ -28,6 +28,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Management;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -627,6 +628,9 @@ namespace LeagueFPSBoost
 
             PreNLog("Initializing AppDomain UnhandledException Event.");
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            PreNLog("Setting Security Protocol");
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)48 | (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
 
             PreNLog("Initializing LeaguePriority events.");
             LeaguePriority.GameBoostOk += OnGameBoostOk;
