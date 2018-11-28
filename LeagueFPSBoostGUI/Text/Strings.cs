@@ -23,6 +23,9 @@ namespace LeagueFPSBoost.Text
 
         public const string exceptionThrown = "Exception has been thrown";
 
+
+        public const string POWER_OPTIONS_CPL = "powercfg.cpl";
+
         public const string LeagueRegistrySubKeyName = @"SOFTWARE\Riot Games, Inc\League of Legends";
         public const string LeagueRegistryLocationStringName = "Location";
 
@@ -37,7 +40,7 @@ namespace LeagueFPSBoost.Text
         
         public const string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/master/AutoUpdater/updater.xml";
         public const string Updater_XML_Download_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip";
-        public const string Updater_XML_Changelog_URL = @"https://boards.eune.leagueoflegends.com/en/c/alpha-client-discussion-en/jkmeEvQe-fps-boost-program-open-source-ask-any-questions-if-you-have";
+        public const string Updater_XML_Changelog_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/releases";
         public const string BoardsPage_URL = @"https://goo.gl/bpxbGV";
         public const string GitHub_URL = @"https://goo.gl/eww7KH";
         public const string YouTube_URL = @"https://goo.gl/RDpsri";

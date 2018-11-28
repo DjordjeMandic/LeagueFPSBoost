@@ -16,3 +16,4 @@ Used libraries:
   - [NLog](http://nlog-project.org/)
   - [NDesk.Options](http://www.ndesk.org/Options)
   - [PowerManagerAPI](https://github.com/Ravatsaas/PowerManagerAPI)
+  - [Json.NET](https://www.newtonsoft.com/json)

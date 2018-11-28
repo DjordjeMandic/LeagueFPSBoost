@@ -108,6 +108,7 @@ namespace LeagueFPSBoost.GUI
         private void InformationWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             logger.Debug("Information window closed.");
+            Application.OpenForms["MainWindow"].Activate();
         }
 
         private void MetroButton1_Click(object sender, EventArgs e)
@@ -136,7 +137,7 @@ namespace LeagueFPSBoost.GUI
         private void UpdateCheckMethod(object StateInfo)
         {
             checkingForUpdate = true;
-            while (!MainWindow.updateCheckFinished)
+            while (!MainWindow.UpdateCheckFinished)
             {
                 logger.Debug("Checking for updates.");
                 logger.Warn("Automatic update check is currently in progress. Sleeping this thread for 500ms.");
@@ -170,6 +171,7 @@ namespace LeagueFPSBoost.GUI
         {
             logger.Debug("Console button clicked.");
             console = !Program.ConsoleState(console);
+            this.Activate();
         }
 
         private void NoClientCheckBox1_CheckedChanged(object sender, EventArgs e)

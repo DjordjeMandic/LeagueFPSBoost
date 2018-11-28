@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.settingsTabPage = new MetroFramework.Controls.MetroTabPage();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.highPerformanceToggle = new MetroFramework.Controls.MetroToggle();
             this.metroButton3 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
@@ -67,8 +69,6 @@
             this.metroLink2 = new MetroFramework.Controls.MetroLink();
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
-            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
-            this.highPerformanceToggle = new MetroFramework.Controls.MetroToggle();
             this.metroTabControl1.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.themeTabPage.SuspendLayout();
@@ -112,6 +112,31 @@
             this.settingsTabPage.TabIndex = 0;
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.VerticalScrollbarBarColor = true;
+            // 
+            // metroLabel2
+            // 
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabel2.Location = new System.Drawing.Point(89, 14);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(138, 19);
+            this.metroLabel2.TabIndex = 28;
+            this.metroLabel2.Text = "High Performance PP";
+            this.metroLabel2.UseStyleColors = true;
+            this.metroLabel2.Click += new System.EventHandler(this.MetroLabel2_Click);
+            this.metroLabel2.DoubleClick += new System.EventHandler(this.MetroLabel2_DoubleClick);
+            // 
+            // highPerformanceToggle
+            // 
+            this.highPerformanceToggle.AutoSize = true;
+            this.highPerformanceToggle.Location = new System.Drawing.Point(3, 15);
+            this.highPerformanceToggle.Name = "highPerformanceToggle";
+            this.highPerformanceToggle.Size = new System.Drawing.Size(80, 17);
+            this.highPerformanceToggle.TabIndex = 27;
+            this.highPerformanceToggle.Text = "Off";
+            this.highPerformanceToggle.UseStyleColors = true;
+            this.highPerformanceToggle.UseVisualStyleBackColor = true;
+            this.highPerformanceToggle.CheckedChanged += new System.EventHandler(this.HighPerformanceToggle1_CheckedChanged);
             // 
             // metroButton3
             // 
@@ -492,29 +517,6 @@
             // metroStyleManager1
             // 
             this.metroStyleManager1.Owner = this;
-            // 
-            // metroLabel2
-            // 
-            this.metroLabel2.AutoSize = true;
-            this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel2.Location = new System.Drawing.Point(89, 14);
-            this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(138, 19);
-            this.metroLabel2.TabIndex = 28;
-            this.metroLabel2.Text = "High Performance PP";
-            this.metroLabel2.UseStyleColors = true;
-            // 
-            // highPerformanceToggle
-            // 
-            this.highPerformanceToggle.AutoSize = true;
-            this.highPerformanceToggle.Location = new System.Drawing.Point(3, 15);
-            this.highPerformanceToggle.Name = "highPerformanceToggle";
-            this.highPerformanceToggle.Size = new System.Drawing.Size(80, 17);
-            this.highPerformanceToggle.TabIndex = 27;
-            this.highPerformanceToggle.Text = "Off";
-            this.highPerformanceToggle.UseStyleColors = true;
-            this.highPerformanceToggle.UseVisualStyleBackColor = true;
-            this.highPerformanceToggle.CheckedChanged += new System.EventHandler(this.HighPerformanceToggle1_CheckedChanged);
             // 
             // MainWindow
             // 

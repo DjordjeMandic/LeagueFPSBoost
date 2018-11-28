@@ -15,8 +15,10 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace LeagueFPSBoost.GUI
@@ -30,15 +32,17 @@ namespace LeagueFPSBoost.GUI
 
         public static bool Loaded;
 
-        public static System.Timers.Timer updateCheckTimer { get; private set; }
+        public static System.Timers.Timer UpdateCheckTimer { get; private set; }
+        public static System.Timers.Timer BoostCheckTimer { get; private set; }
 
         public static Guid currentLastActivePowerPlan;
 
-        private static string aboutTXT = "";
-        private static string aboutTXTDebug = "";
+        static int boostCheckEventCount;
+
+        static string aboutTXT = "";
+        static string aboutTXTDebug = "";
         public static bool saving;
-        bool updateFound;
-        public static bool updateCheckFinished { get; private set; }
+        public static bool UpdateCheckFinished { get; private set; }
         public MainWindow()
         {
             logger.Trace("Initializing main window.");
@@ -108,17 +112,9 @@ namespace LeagueFPSBoost.GUI
                 }
             }
 
-            try
-            {
-                logger.Debug($"Saving current active power plan to settings.");
-                Properties.Settings.Default.LastActivePowerPlan = currentLastActivePowerPlan;
-                Properties.Settings.Default.Save();
-                logger.Info("Last active power plan has been saved.");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, Strings.exceptionThrown + " while saving current active power plan in settings: " + Environment.NewLine);
-            }
+            SaveLastActivePowerPlan(currentLastActivePowerPlan);
+
+            
 
             //Notification
             notification = Properties.Settings.Default.Notifications;
@@ -153,36 +149,80 @@ namespace LeagueFPSBoost.GUI
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
             if (Program.FirstRun.Value) new Thread(() => { Thread.Sleep(2000); MessageBox.Show("If you like the program a small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
-            updateCheckTimer = new System.Timers.Timer
+            UpdateCheckTimer = new System.Timers.Timer
             {
-                Interval = 5 * 60 * 1000,
-                SynchronizingObject = this
+                Interval = 5 * 60 * 1000
             };
-            updateCheckTimer.Elapsed += UpdateCheckTimer_Elapsed;
+            UpdateCheckTimer.Elapsed += UpdateCheckTimer_Elapsed;
+
+            BoostCheckTimer = new System.Timers.Timer
+            {
+                Interval = 1 * 60 * 1000
+            };
+            BoostCheckTimer.Elapsed += BoostCheckTimer_Elapsed;
+
+            BoostCheckTimer.Start();
+
             CheckForUpdates();
+            this.BringToFront();
+        }
+
+        private void SaveLastActivePowerPlan(Guid currentLastActivePP)
+        {
+            try
+            {
+                logger.Debug($"Saving current active power plan to settings: " + currentLastActivePP);
+                Properties.Settings.Default.LastActivePowerPlan = currentLastActivePP;
+                Properties.Settings.Default.Save();
+                logger.Info("Last active power plan has been saved.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, Strings.exceptionThrown + " while saving current active power plan in settings: " + Environment.NewLine);
+                MessageBox.Show("There was an error while opening while saving current active power plan in settings. Check logs for more details.", "LeagueFPSBoost: Power Manager Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BoostCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if(Process.GetProcessesByName(Strings.GameProcessName).Length != 0)
+            {
+                logger.Debug($"Timer is trying to boost game. Interval: {BoostCheckTimer.Interval}ms");
+                ProcessManagement.LeaguePriority.CheckAndBoost(Program.NoClient);
+            }
+            else if(boostCheckEventCount >= 5)
+            {
+                logger.Debug($"Timer is trying to return client to normal priority. Interval: {BoostCheckTimer.Interval}ms");
+                ProcessManagement.LeaguePriority.CheckAndBoost(Program.NoClient);
+                boostCheckEventCount = 0;
+            }
+
+            boostCheckEventCount++;
         }
 
         public static void StopUpdateCheckTimer()
         {
             logger.Debug("Stopping timer for update checking.");
-            updateCheckTimer.Stop();
+            UpdateCheckTimer.Stop();
         }
 
         public static void StartUpdateCheckTimer()
         {
             logger.Debug("Starting timer for update checking.");
-            updateCheckTimer.Start();
+            UpdateCheckTimer.Start();
         }
 
-        private void UpdateCheckTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void UpdateCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            updateCheckFinished = false;
+            UpdateCheckFinished = false;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
             AutoUpdater.Start(Strings.Updater_XML_URL);
         }
 
         private void CheckForUpdates()
         {
+            //fix for #3
+            ServicePointManager.SecurityProtocol = (ServicePointManager.SecurityProtocol & SecurityProtocolType.Ssl3) | (SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12);
             //AutoUpdater.ReportErrors = Program.DebugBuild;
             AutoUpdater.RunUpdateAsAdmin = true;
             AutoUpdater.LetUserSelectRemindLater = true;
@@ -193,8 +233,8 @@ namespace LeagueFPSBoost.GUI
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             logger.Debug("Checking for updates...");
             AutoUpdater.Start(xmlUrl);
-            updateCheckFinished = true;
-            updateCheckTimer.Start();
+            UpdateCheckFinished = true;
+            UpdateCheckTimer.Start();
         }
         
         private void AutoUpdater_ApplicationExitEvent()
@@ -205,7 +245,7 @@ namespace LeagueFPSBoost.GUI
 
         private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
         {
-            updateCheckFinished = false;
+            UpdateCheckFinished = false;
             logger.Debug("Checking for updates...");
             if (args != null)
             {
@@ -256,7 +296,7 @@ namespace LeagueFPSBoost.GUI
                 logger.Warn("There is a problem reaching update server please check your internet connection and try again later.");
             }
             AutoUpdater.CheckForUpdateEvent -= AutoUpdaterOnCheckForUpdateEvent;
-            updateCheckFinished = true;
+            UpdateCheckFinished = true;
             StartUpdateCheckTimer();
         }
         
@@ -677,6 +717,10 @@ namespace LeagueFPSBoost.GUI
         private void MainWindow_Activated(object sender, EventArgs e)
         {
             ReadGameConfigData();
+            highPerformanceToggle.CheckedChanged -= HighPerformanceToggle1_CheckedChanged;
+            if(currentLastActivePowerPlan != NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID) currentLastActivePowerPlan = PowerManager.GetActivePlan();
+            highPerformanceToggle.Checked = PowerManager.GetActivePlan() == NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID;
+            highPerformanceToggle.CheckedChanged += HighPerformanceToggle1_CheckedChanged;
         }
 
         private void MetroButton1_Click(object sender, EventArgs e)
@@ -701,7 +745,7 @@ namespace LeagueFPSBoost.GUI
 
         private void HighPerformanceToggle1_CheckedChanged(object sender, EventArgs e)
         {
-            if(!Settings.Default.HighPPPAgreement)
+            if(!Settings.Default.HighPPPAgreement && currentLastActivePowerPlan != NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID)
             {
                 logger.Info("User clicked on High PPP without agreeing.");
                 if( DialogResult.OK != MessageBox.Show("By clicking OK you are agreeing that you are aware of possibility of reducing battery life on laptops and increased temperatures" +
@@ -741,7 +785,13 @@ namespace LeagueFPSBoost.GUI
                     }
                 }
             }
-            if(highPerformanceToggle.Checked)
+            
+            if (currentLastActivePowerPlan == NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID)
+            {
+                logger.Info("Old power plan was also high performance.");
+                MessageBox.Show("Old power plan was also high performance. Try clicking on 'High Performance PP' and selecting your default plan and then double click on 'High Performance PP' and reset last active power plan.", "LeagueFPSBoost: PowerManager Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (highPerformanceToggle.Checked)
             {
                 logger.Debug("High PPP has been checked.");
                 try
@@ -754,9 +804,6 @@ namespace LeagueFPSBoost.GUI
                 {
                     logger.Error(ex, Strings.exceptionThrown + $" while changing power plan to high performance: {NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID}{Environment.NewLine}");
                     MessageBox.Show("There was an error while changing power plan to high performance. Check log for more details.", "LeagueFPSBoost: PowerManager Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    highPerformanceToggle.CheckedChanged -= HighPerformanceToggle1_CheckedChanged;
-                    highPerformanceToggle.Checked = false;
-                    highPerformanceToggle.CheckedChanged += HighPerformanceToggle1_CheckedChanged;
                 }
             }
             else
@@ -772,10 +819,35 @@ namespace LeagueFPSBoost.GUI
                 {
                     logger.Error(ex, Strings.exceptionThrown + $" while changing power plan to last active power plan: {currentLastActivePowerPlan}");
                     MessageBox.Show("There was an error while changing power plan to last active power plan. Check log for more details.", "LeagueFPSBoost: PowerManager Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    highPerformanceToggle.CheckedChanged -= HighPerformanceToggle1_CheckedChanged;
-                    highPerformanceToggle.Checked = true;
-                    highPerformanceToggle.CheckedChanged += HighPerformanceToggle1_CheckedChanged;
                 }
+            }
+
+            highPerformanceToggle.CheckedChanged -= HighPerformanceToggle1_CheckedChanged;
+            highPerformanceToggle.Checked = PowerManager.GetActivePlan() == NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID;
+            highPerformanceToggle.CheckedChanged += HighPerformanceToggle1_CheckedChanged;
+        }
+
+        private void MetroLabel2_DoubleClick(object sender, EventArgs e)
+        {
+            if (DialogResult.Yes == MessageBox.Show("Are you sure that you want to reset last active power plan?", "LeagueFPSBoost: PowerManager", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                SaveLastActivePowerPlan(Guid.Empty);
+                currentLastActivePowerPlan = PowerManager.GetActivePlan();
+            }
+        }
+
+        private void MetroLabel2_Click(object sender, EventArgs e)
+        {
+            logger.Info("High Performance PP label has been clicked. Trying to open Power Options in Control Panel: " + Strings.POWER_OPTIONS_CPL);
+            try
+            {
+                Process.Start(Strings.POWER_OPTIONS_CPL);
+                logger.Debug("Successfully opened: " + Strings.POWER_OPTIONS_CPL);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, Strings.exceptionThrown + " while trying to start: " + Strings.POWER_OPTIONS_CPL);
+                MessageBox.Show("There was an error while opening Power Options in Control Panel. Check logs for more details.", "LeagueFPSBoost: Power Manager Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

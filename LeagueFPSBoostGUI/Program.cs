@@ -1,6 +1,7 @@
 ﻿using ByteSizeLib;
 using CrashReporterDotNET;
 using LeagueFPSBoost.Configuration;
+using LeagueFPSBoost.Cryptography;
 using LeagueFPSBoost.Diagnostics.Debugger;
 using LeagueFPSBoost.Extensions;
 using LeagueFPSBoost.GUI;
@@ -9,7 +10,7 @@ using LeagueFPSBoost.Native.Unmanaged;
 using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
-using LeagueFPSBoost.Updater.Xml;
+using LeagueFPSBoost.Updater;
 using Microsoft.Win32;
 using NAudio.Wave;
 using NDesk.Options;
@@ -306,7 +307,8 @@ namespace LeagueFPSBoost
                 
                 var zipFilePath = Path.Combine(dir, zipFileName);
                 var xmlFilePath = Path.Combine(dir, "updater.xml");
-                
+                var jsonFilePath = Path.Combine(dir, "updater.json");
+
 
                 var success = false;
                 var count = 0;
@@ -325,15 +327,28 @@ namespace LeagueFPSBoost
 
                         PreNLog("Created update zip file: " + zipFilePath);
 
+                        var checksum = new Checksum();
+
                         using (var fs = File.OpenRead(zipFilePath))
                         {
-                            UpdaterXDocument.Checksum = new Checksum(fs, ChecksumType.SHA512);
+                            checksum = new Checksum(fs, ChecksumType.SHA512);
                         }
 
-                        UpdaterXDocument.Mandatory = MandatoryUpdate;
-                        UpdaterXDocument.Save(xmlFilePath);
+                        bool mandatory = false;
+
+                        var xmlUpdaterData = new UpdaterData(xmlFilePath, UpdaterDataTypeFormat.XDocument, checksum, mandatory);
+                        
+                        xmlUpdaterData.Save();
 
                         PreNLog("Created update xml file: " + xmlFilePath);
+
+                        var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, mandatory);
+
+                        if (jsonUpdaterData.Save())
+                            PreNLog("Created update json file: " + jsonFilePath);
+                        else
+                            PreNLog("Couldnt create json file: " + jsonFilePath);
+
                         if (!DebugBuild)
                         {
                             MessageBox.Show("Update folder has been created.", "LeagueFPSBoost");

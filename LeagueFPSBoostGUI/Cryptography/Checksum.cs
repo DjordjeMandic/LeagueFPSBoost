@@ -1,7 +1,6 @@
-﻿using LeagueFPSBoost.Cryptography;
-using System.IO;
+﻿using System.IO;
 
-namespace LeagueFPSBoost.Updater.Xml
+namespace LeagueFPSBoost.Cryptography
 {
     public enum ChecksumType
     {

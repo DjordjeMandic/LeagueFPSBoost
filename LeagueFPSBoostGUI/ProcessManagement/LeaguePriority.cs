@@ -3,6 +3,7 @@ using LeagueFPSBoost.Text;
 using NLog;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace LeagueFPSBoost.ProcessManagement
 {
@@ -53,7 +54,7 @@ namespace LeagueFPSBoost.ProcessManagement
                     logger.Debug("Trying to boost game. Client running: " + clientRunning);
                     if (clientRunning)
                     {
-                        if (IsClientNormal() || !IsGameHigh())
+                        if (!IsGameHigh() || !IsClientBelowNormal())
                         {
                             try
                             {
@@ -85,7 +86,7 @@ namespace LeagueFPSBoost.ProcessManagement
                         }
                     }
                 }
-                else if (clientRunning && IsClientBelowNormal())
+                else if (clientRunning && !IsClientNormal())
                 {
                     try
                     {
@@ -134,48 +135,18 @@ namespace LeagueFPSBoost.ProcessManagement
 
         public static bool IsClientBelowNormal()
         {
-            var status = true;
-            foreach (string clientProcessName in Strings.ClientProcessNames)
-            {
-                if (!status) break;
-                foreach (Process proc in Process.GetProcessesByName(clientProcessName))
-                {
-                    if (status && proc.PriorityClass != ProcessPriorityClass.BelowNormal)
-                    {
-                        status = false;
-                        break;
-                    }
-                }
-            }
-            return status;
+            return Process.GetProcesses().Where(proc => proc.ProcessName.StartsWith(Strings.ClientProcessNames[0], StringComparison.Ordinal)).ToList().All(proc => proc.PriorityClass == ProcessPriorityClass.BelowNormal);
         }
 
         public static bool IsClientNormal()
         {
-            var status = true;
-            foreach (string clientProcessName in Strings.ClientProcessNames)
-            {
-                if (!status) break;
-                foreach (Process proc in Process.GetProcessesByName(clientProcessName))
-                {
-                    if (status && proc.PriorityClass != ProcessPriorityClass.Normal)
-                    {
-                        status = false;
-                        break;
-                    }
-                }
-            }
-            return status;
+            return Process.GetProcesses().Where(proc => proc.ProcessName.StartsWith(Strings.ClientProcessNames[0], StringComparison.Ordinal)).ToList().All(proc => proc.PriorityClass == ProcessPriorityClass.Normal);
         }
 
         public static bool IsGameHigh()
         {
-            var game = false;
-            foreach (Process proc in Process.GetProcessesByName(Strings.GameProcessName))
-            {
-                game = proc.PriorityClass == ProcessPriorityClass.High;
-            }
-            return game;
+
+            return Process.GetProcessesByName(Strings.GameProcessName).ToList().All(proc => proc.PriorityClass == ProcessPriorityClass.High);
         }
 
         public static void SetClientPriority(ProcessPriorityClass ppclass)
