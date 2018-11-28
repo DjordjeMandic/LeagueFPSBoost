@@ -2,6 +2,8 @@
 Simple tool written in C# that should help with increasing frame rate in league of legends.
 More info till this page gets updated can be found on [boards page](https://goo.gl/bpxbGV)
 
+IF YOU CANT UPDATE INSTALL .NET FRAMEWORK 4.7
+
 If you like the program a small donation would be helpful. Donate via [PayPal](https://paypal.me/DjordjeMandic)
 
 Used libraries:
