@@ -147,7 +147,7 @@ namespace LeagueFPSBoost.GUI
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
-            if (Program.FirstRun.Value) new Thread(() => { Thread.Sleep(2000); MessageBox.Show("If you like the program a small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
+            if (Program.FirstRun.Value) new Thread(() => { Thread.Sleep(1000); MessageBox.Show("If you like the program a small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
             UpdateCheckTimer = new System.Timers.Timer
             {
                 Interval = 5 * 60 * 1000
@@ -235,6 +235,7 @@ namespace LeagueFPSBoost.GUI
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             logger.Debug("Checking for updates...");
             AutoUpdater.Start(xmlUrl);
+            //AutoUpdater.Start("file:///H:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/updater.xml");
             UpdateCheckFinished = true;
             UpdateCheckTimer.Start();
         }

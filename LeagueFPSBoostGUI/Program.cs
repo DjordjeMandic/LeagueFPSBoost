@@ -214,6 +214,11 @@ namespace LeagueFPSBoost
 
             Startup();
 
+            Logger.Debug("ServicePointManager.SecurityProtocol = " + ServicePointManager.SecurityProtocol);
+            Logger.Debug("Setting security protocols.");
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)48 | (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
+            Logger.Debug("ServicePointManager.SecurityProtocol = " + ServicePointManager.SecurityProtocol);
+
             HideConsole(Arguments);
             using (var mainWindow = new MainWindow())
             {
@@ -619,6 +624,7 @@ namespace LeagueFPSBoost
 
         static void Init()
         {
+            
             PreNLog("Initializing Application events.");
             Application.ThreadException += Application_ThreadException;
             Application.ApplicationExit += OnApplicationExit;
@@ -629,9 +635,7 @@ namespace LeagueFPSBoost
             PreNLog("Initializing AppDomain UnhandledException Event.");
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            PreNLog("Setting Security Protocol");
-            ServicePointManager.SecurityProtocol = (SecurityProtocolType)48 | (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
-
+            
             PreNLog("Initializing LeaguePriority events.");
             LeaguePriority.GameBoostOk += OnGameBoostOk;
             LeaguePriority.GameBoostFail += OnGameBoostFail;
@@ -745,14 +749,13 @@ namespace LeagueFPSBoost
             {
                 Logger.Fatal(e.Exception, "Application thread exception has been thrown: " + Environment.NewLine);
                 ReportCrash(e.Exception);
-                Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
                 MessageBox.Show("Unknown error: \n" + ex, "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(0);
             }
+            throw e.Exception;
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -762,14 +765,13 @@ namespace LeagueFPSBoost
             {
                 Logger.Fatal((Exception)e.ExceptionObject, "Current domain unhandled exception has been thrown: " + Environment.NewLine);
                 ReportCrash((Exception)e.ExceptionObject);
-                Environment.Exit(0);
             }
             catch (Exception ex)
             {
                 Logger.Fatal(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
                 MessageBox.Show("Unknown error: \n" + ex, "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(0);
             }
+            throw (Exception)e.ExceptionObject;
         }
 
         public static void ReportCrash(Exception exception)
@@ -797,7 +799,7 @@ namespace LeagueFPSBoost
             {
                 Logger.Error(ex, Strings.exceptionThrown + " while building crash string for crash report: " + Environment.NewLine);
             }
-
+            throw exception;
         }
 
         public static void OnApplicationExit(object sender, EventArgs e)
