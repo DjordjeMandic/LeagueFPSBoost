@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.IO;
 
 namespace LeagueFPSBoost.Cryptography
 {
@@ -13,7 +15,10 @@ namespace LeagueFPSBoost.Cryptography
 
     public struct Checksum
     {
+        [JsonProperty]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ChecksumType Type { get; private set; }
+        [JsonProperty]
         public string Value { get; private set; }
 
         public Checksum(Stream stream, ChecksumType type = ChecksumType.MD5)
@@ -43,5 +48,13 @@ namespace LeagueFPSBoost.Cryptography
             }
             Value = chksum;
         }
+
+        [JsonConstructor]
+        public Checksum(ChecksumType type, string val)
+        {
+            Type = type;
+            Value = val;
+        }
+
     }
 }

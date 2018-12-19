@@ -47,8 +47,9 @@ namespace LeagueFPSBoost.Configuration
                 File.WriteAllText(configFile, Resources.App_Config);
                 appConfigLogger.Debug("Temporary configuration file doesn't exist. Writing new one: " + configFile);
             }
-
             var configDir = Path.Combine(Program.LeagueConfigDirPath, @"LeagueFPSBoost\");
+
+            var appConfigPath = Path.Combine(configDir, Path.GetFileName(configFile));
             Program.AppConfigDir = configDir;
             if (!Directory.Exists(configDir))
             {
@@ -57,9 +58,7 @@ namespace LeagueFPSBoost.Configuration
             }
 
             CorrectRoamingSettingsFileIfNeeded(Assembly.GetEntryAssembly().Location);
-
-            var appConfigPath = Path.Combine(configDir, "App.config");
-
+            
             if (Settings.Default.UpgradeRequired)
             {
                 Program.FirstRun.Value = true;
@@ -106,6 +105,11 @@ namespace LeagueFPSBoost.Configuration
         /// </summary>
         public static void CorrectRoamingSettingsFileIfNeeded(string configExePath)
         {
+            appConfigLogger.Debug($"Incrementing {nameof(Settings.Default.UserConfigCorrectionHelperCount)} to {Settings.Default.UserConfigCorrectionHelperCount++}.");
+            appConfigLogger.Debug("Saving settings to generate user.config file if it doesn't exist then correcting it.");
+            Settings.Default.Save();
+            appConfigLogger.Debug("Saving settings done.");
+
             appConfigLogger.Debug("Correcting user settings file if needed.");
             const string NODE_NAME_CONFIGURATION = "configuration";
             const string NODE_NAME_CONFIGSECTIONS = "configSections";
@@ -152,10 +156,20 @@ namespace LeagueFPSBoost.Configuration
             userSettingsNode.AddBeforeSelf(configSectionsNode);
             xDoc.Save(configRoaming.FilePath);
             appConfigLogger.Debug("User configuration file has been corrected.");
-            
-            appConfigLogger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + restartInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + restartInfo.Arguments);
-            Process.Start(restartInfo);
-            Environment.Exit(0);
+
+            appConfigLogger.Debug("Trying to read user configuration.");
+            try
+            {
+                appConfigLogger.Debug($"Reading {nameof(Settings.Default.UserConfigCorrectionHelperCount)}: {Settings.Default.UserConfigCorrectionHelperCount}");
+                appConfigLogger.Debug("Reading successful.");
+            }
+            catch (Exception ex)
+            {
+                appConfigLogger.Error(ex, Strings.exceptionThrown + " while reading: " + Environment.NewLine);
+                appConfigLogger.Debug("Restarting: " + Environment.NewLine + Strings.tabWithLine + "File Name: " + restartInfo.FileName + Environment.NewLine + Strings.tabWithLine + "Arguments: " + restartInfo.Arguments);
+                Process.Start(restartInfo);
+                Environment.Exit(0);
+            }            
         }
 
         public abstract void Dispose();

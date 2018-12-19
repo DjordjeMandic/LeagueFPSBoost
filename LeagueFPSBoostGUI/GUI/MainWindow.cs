@@ -1,23 +1,24 @@
-﻿using AutoUpdaterDotNET;
-using IniParser;
+﻿using IniParser;
 using IniParser.Model;
 using LeagueFPSBoost.Diagnostics.Debugger;
 using LeagueFPSBoost.Logging;
 using LeagueFPSBoost.Native;
+using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
+using LeagueFPSBoost.Updater;
 using MetroFramework;
 using MetroFramework.Components;
 using MetroFramework.Forms;
 using NLog;
 using PowerManagerAPI;
 using System;
+using System.Configuration;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Timers;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LeagueFPSBoost.GUI
@@ -30,18 +31,14 @@ namespace LeagueFPSBoost.GUI
         public static IniData GameConfigData { get; private set; }
 
         public static bool Loaded;
-
-        public static System.Timers.Timer UpdateCheckTimer { get; private set; }
-        public static System.Timers.Timer BoostCheckTimer { get; private set; }
+        
 
         public static Guid currentLastActivePowerPlan;
 
-        static int boostCheckEventCount;
 
         static string aboutTXT = "";
         static string aboutTXTDebug = "";
         public static bool saving;
-        public static bool UpdateCheckFinished { get; private set; }
         public MainWindow()
         {
             logger.Trace("Initializing main window.");
@@ -54,7 +51,7 @@ namespace LeagueFPSBoost.GUI
         private void MainWindow_Load(object sender, EventArgs e)
         {
             //Debug text update
-            if(Program.DebugBuild)
+            if (Program.DebugBuild)
             {
                 Text = "LeagueFPSBoost β";
                 metroLabel9.Text += Environment.NewLine + "THIS IS BETA BUILD!";
@@ -127,43 +124,34 @@ namespace LeagueFPSBoost.GUI
             ReadGameConfigData();
 
             //Watcher
-            try
-            {
-                logger.Debug("Trying to start process watcher.");
-                Program.StartWatch.Start();
-                Program.StopWatch.Start();
-                logger.Debug("Process watcher has been started.");
-                LeagueLogger.Okay("Process watcher started.");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, Strings.exceptionThrown + " while trying to start process watcher: " + Environment.NewLine);
-                MessageBox.Show($"There was an fatal error.{Environment.NewLine}Please restart the program.{Environment.NewLine}Check log for details.{Environment.NewLine}Program will now close.", "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(0);
-            }
+            LeaguePriority.StartWatcher();
             
 
             Loaded = true;
             logger.Debug("Main window has been loaded.");
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
-            if (Program.FirstRun.Value) new Thread(() => { Thread.Sleep(1000); MessageBox.Show("If you like the program a small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
-            UpdateCheckTimer = new System.Timers.Timer
-            {
-                Interval = 5 * 60 * 1000
-            };
-            UpdateCheckTimer.Elapsed += UpdateCheckTimer_Elapsed;
+            if (Program.FirstRun.Value)
+                Task.Run(() => { FirstRunDonationMessageBox(); });
 
-            BoostCheckTimer = new System.Timers.Timer
-            {
-                Interval = 1 * 60 * 1000
-            };
-            BoostCheckTimer.Elapsed += BoostCheckTimer_Elapsed;
+            UpdateManager.InitAndCheckForUpdates();
+            BringFormToFront();
+        }
 
-            BoostCheckTimer.Start();
+        private void FirstRunDonationMessageBox()
+        {
+            Thread.Sleep(1000);
+            MessageBox.Show("If you like the program a small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (this.InvokeRequired)
+                this.Invoke(new Action(BringFormToFront));
+            else
+                this.BringFormToFront();
+        }
 
-            CheckForUpdates();
+        public void BringFormToFront()
+        {
             this.BringToFront();
+            this.Activate();
         }
 
         private void SaveLastActivePowerPlan(Guid currentLastActivePP)
@@ -182,127 +170,8 @@ namespace LeagueFPSBoost.GUI
             }
         }
 
-        private void BoostCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if(Process.GetProcessesByName(Strings.GameProcessName).Length != 0)
-            {
-                logger.Debug($"Timer is trying to boost game. Interval: {BoostCheckTimer.Interval}ms");
-                ProcessManagement.LeaguePriority.CheckAndBoost(Program.NoClient);
-            }
-            else if(boostCheckEventCount >= 5)
-            {
-                logger.Debug($"Timer is trying to return client to normal priority. Interval: {BoostCheckTimer.Interval}ms");
-                ProcessManagement.LeaguePriority.CheckAndBoost(Program.NoClient);
-                boostCheckEventCount = 0;
-            }
-
-            boostCheckEventCount++;
-        }
-
-        public static void StopUpdateCheckTimer()
-        {
-            logger.Debug("Stopping timer for update checking.");
-            UpdateCheckTimer.Stop();
-        }
-
-        public static void StartUpdateCheckTimer()
-        {
-            logger.Debug("Starting timer for update checking.");
-            UpdateCheckTimer.Start();
-        }
-
-        private void UpdateCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            UpdateCheckFinished = false;
-            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.Start(Strings.Updater_XML_URL);
-        }
-
-        private void CheckForUpdates()
-        {
-            //fix for #3
-            //ServicePointManager.SecurityProtocol = (ServicePointManager.SecurityProtocol & SecurityProtocolType.Ssl3) | (SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12);
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-
-            //AutoUpdater.ReportErrors = Program.DebugBuild;
-            AutoUpdater.RunUpdateAsAdmin = true;
-            AutoUpdater.LetUserSelectRemindLater = true;
-            AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Days;
-            AutoUpdater.RemindLaterAt = 1;
-            AutoUpdater.DownloadPath = Environment.CurrentDirectory;
-            var xmlUrl = Strings.Updater_XML_URL; //Settings.Default.UpdaterXML_URL;
-            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            logger.Debug("Checking for updates...");
-            AutoUpdater.Start(xmlUrl);
-            //AutoUpdater.Start("file:///H:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/updater.xml");
-            UpdateCheckFinished = true;
-            UpdateCheckTimer.Start();
-        }
         
-        private void AutoUpdater_ApplicationExitEvent()
-        {
-            logger.Info("Update pending. Closing application.");
-            Application.Exit();
-        }
 
-        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
-        {
-            UpdateCheckFinished = false;
-            logger.Debug("Checking for updates...");
-            if (args != null)
-            {
-                if(args.IsUpdateAvailable)
-                {
-                    StopUpdateCheckTimer();
-                    logger.Info($@"There is new version { args.CurrentVersion } available. Current installed version is { args.InstalledVersion }.");
-                    if (DialogResult.Yes == MessageBox.Show(
-                        $@"There is new version {args.CurrentVersion} available. You are using version {
-                                args.InstalledVersion
-                            }. Do you want to update the application now?", @"Update Available",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information))
-                    {
-                        logger.Info("User agreed to update now.");
-                        if (!Application.MessageLoop)
-                        {
-                            logger.Debug("Message loop doesn't exist on this thread. Enabling visual styles.");
-                            Application.EnableVisualStyles();
-                        }
-                        if (Thread.CurrentThread.GetApartmentState().Equals(ApartmentState.STA))
-                        {
-                            logger.Debug("Showing update form.");
-                            AutoUpdater.ShowUpdateForm();
-                        }
-                        else
-                        {
-                            logger.Debug("Current thread's apartment state is not STA. Creating new thread with apartment state STA.");
-                            Thread thread = new Thread(AutoUpdater.ShowUpdateForm);
-                            thread.CurrentCulture = thread.CurrentUICulture = CultureInfo.CurrentCulture;
-                            thread.SetApartmentState(ApartmentState.STA);
-                            thread.Start();
-                            thread.Join();
-                        }
-                    }
-                    else
-                    {
-                        logger.Info("User declined to update now.");
-                    }
-                }
-                else
-                {
-                    logger.Info("There is no update available please try again later.");
-                }
-            }
-            else
-            {
-                logger.Warn("There is a problem reaching update server please check your internet connection and try again later.");
-            }
-            AutoUpdater.CheckForUpdateEvent -= AutoUpdaterOnCheckForUpdateEvent;
-            UpdateCheckFinished = true;
-            StartUpdateCheckTimer();
-        }
-        
         private void DebuggerChangedGUI(object sender, DebugEventArgs e)
         {
             if(e.Attached)
@@ -332,32 +201,6 @@ namespace LeagueFPSBoost.GUI
                 }
             }
             Refresh();
-        }
-
-        private void OpenFolder(string path)
-        {
-            if(Directory.Exists(path))
-            {
-                var startInfo = new ProcessStartInfo
-                {
-                    Arguments = path,
-                    FileName = "explorer.exe",
-                    Verb = "runas"
-                };
-                try
-                {
-                    Process.Start(startInfo);
-                    logger.Info("Folder opened: " + path);
-                }
-                catch (Exception ex)
-                {
-                    logger.Warn(ex, Strings.exceptionThrown + " while opening folder: " + path);
-                }
-            }
-            else
-            {
-                logger.Warn("Can't open folder because it doesn't exist: " + path);
-            }
         }
 
         private void DarkThemeToggle_CheckedChanged(object sender, EventArgs e)
@@ -587,7 +430,7 @@ namespace LeagueFPSBoost.GUI
             saving = false;
         }
 
-        private void BoardsLink_Click(object sender, EventArgs e)
+        private void OpenMoreInfoWindowForm(object sender, EventArgs e)
         {
             logger.Debug("Opening More Information Window.");
             using (var moreInfoForm = new InformationWindow(metroStyleManager1))
@@ -602,17 +445,8 @@ namespace LeagueFPSBoost.GUI
         private void MetroLink2_Click(object sender, EventArgs e)
         {
             logger.Debug("Opening op.gg link: " + @"https://goo.gl/sEYLbe");
-            try
-            {
-                Process.Start(@"https://goo.gl/sEYLbe");
-                logger.Debug("Successfully opened op.gg link.");
-                LeagueLogger.Okay(@"Opened op.gg link: https://goo.gl/sEYLbe");
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, Strings.exceptionThrown + " while opening op.gg link " + @"https://goo.gl/sEYLbe :" + Environment.NewLine);
-                LeagueLogger.Error("Error while opening op.gg link: " + ex.Message);
-            }
+
+            OpenUrl.Open(@"https://goo.gl/sEYLbe");
         }
 
         private void SetGameConfigData(string a, string b, string val)
@@ -728,22 +562,23 @@ namespace LeagueFPSBoost.GUI
 
         private void MetroButton1_Click(object sender, EventArgs e)
         {
-            OpenFolder(Program.LeagueLogFileDirPath);
+            OpenFolder.Open(Program.LeagueLogFileDirPath);
         }
 
         private void MetroButton2_Click(object sender, EventArgs e)
         {
-            OpenFolder(Program.LeagueConfigDirPath);
+            OpenFolder.Open(Program.LeagueConfigDirPath);
         }
 
         private void MetroButton3_Click(object sender, EventArgs e)
         {
-            OpenFolder(Program.AppConfigDir);
+            //OpenFolder(Program.AppConfigDir);
+            OpenFolder.Open(Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath));
         }
 
         private void MetroButton4_Click(object sender, EventArgs e)
         {
-            BoardsLink_Click(sender, e);
+            OpenMoreInfoWindowForm(sender, e);
         }
 
         private void HighPerformanceToggle1_CheckedChanged(object sender, EventArgs e)
@@ -792,7 +627,7 @@ namespace LeagueFPSBoost.GUI
             if (currentLastActivePowerPlan == NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID)
             {
                 logger.Info("Old power plan was also high performance.");
-                MessageBox.Show("Old power plan was also high performance. Try double clicking on 'High Performance PP' and selecting your default plan and then click on 'High Performance PP' and reset last active power plan.", "LeagueFPSBoost: PowerManager Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Old power plan was also high performance. Try to right click on 'High Performance PP' and then select your default plan and then left click on 'High Performance PP' and reset last active power plan.", "LeagueFPSBoost: PowerManager Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (highPerformanceToggle.Checked)
             {
@@ -832,7 +667,7 @@ namespace LeagueFPSBoost.GUI
 
         private void MetroLabel2_DoubleClick(object sender, EventArgs e)
         {
-            logger.Info("High Performance PP label has been double clicked. Trying to open Power Options in Control Panel: " + Strings.POWER_OPTIONS_CPL);
+            logger.Info("High Performance PP label has been clicked with right click. Trying to open Power Options in Control Panel: " + Strings.POWER_OPTIONS_CPL);
             try
             {
                 Process.Start(Strings.POWER_OPTIONS_CPL);
@@ -847,11 +682,34 @@ namespace LeagueFPSBoost.GUI
 
         private void MetroLabel2_Click(object sender, EventArgs e)
         {
+            logger.Info("High Performance PP label has been clicked with left click. Showing reset confirmation dialog.");
             if (DialogResult.Yes == MessageBox.Show("Are you sure that you want to reset last active power plan?", "LeagueFPSBoost: PowerManager", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
+                logger.Info("Resetting current last active power plan.");
                 SaveLastActivePowerPlan(Guid.Empty);
                 currentLastActivePowerPlan = PowerManager.GetActivePlan();
-            }            
+                logger.Info("Finished resetting current last active power plan.");
+            }      
+            else
+            {
+                logger.Info("User declined to reset current last active power plan");
+            }
+        }
+
+        private void metroLabel2_MouseClick(object sender, MouseEventArgs e)
+        {
+            logger.Info("High Performance PP label has been clicked. Mouse button: " + e.Button);
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    MetroLabel2_Click(null, EventArgs.Empty);
+                    break;
+                case MouseButtons.Right:
+                    MetroLabel2_DoubleClick(null, EventArgs.Empty);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

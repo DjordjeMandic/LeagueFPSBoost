@@ -1,6 +1,7 @@
 ﻿using AutoUpdaterDotNET;
 using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Text;
+using LeagueFPSBoost.Updater;
 using MetroFramework.Components;
 using MetroFramework.Forms;
 using NLog;
@@ -37,6 +38,8 @@ namespace LeagueFPSBoost.GUI
             exitEarlyCheckBox1.Checked = Program.ExitBeforeMainWindow;
             configRstRsnCheckBox1.Checked = Program.RestartReasonParsed == Program.RestartReason.Configuration;
             adminRstRsnCheckBox1.Checked = Program.RestartReasonParsed == Program.RestartReason.SelfElevation;
+            this.BringToFront();
+            this.Activate();
             logger.Debug("Information window loaded.");
         }
 
@@ -108,6 +111,7 @@ namespace LeagueFPSBoost.GUI
         private void InformationWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             logger.Debug("Information window closed.");
+            Application.OpenForms["MainWindow"].BringToFront();
             Application.OpenForms["MainWindow"].Activate();
         }
 
@@ -137,7 +141,7 @@ namespace LeagueFPSBoost.GUI
         private void UpdateCheckMethod(object StateInfo)
         {
             checkingForUpdate = true;
-            while (!MainWindow.UpdateCheckFinished)
+            while (!UpdateManager.UpdateCheckFinished)
             {
                 logger.Debug("Checking for updates.");
                 logger.Warn("Automatic update check is currently in progress. Sleeping this thread for 500ms.");
@@ -145,7 +149,7 @@ namespace LeagueFPSBoost.GUI
             }
             AutoUpdater.ReportErrors = true;
             logger.Debug("Starting auto updater.");
-            AutoUpdater.Start(Strings.Updater_XML_URL);
+            UpdateManager.Start();
             Thread.Sleep(500);
             checkingForUpdate = false;
         }
@@ -171,6 +175,7 @@ namespace LeagueFPSBoost.GUI
         {
             logger.Debug("Console button clicked.");
             console = !Program.ConsoleState(console);
+            this.BringToFront();
             this.Activate();
         }
 

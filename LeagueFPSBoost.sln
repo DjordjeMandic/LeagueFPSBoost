@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringCipher", "..\LeagueFP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectForTesting", "..\LeagueFPSBoostLib\Testing\ProjectForTesting\ProjectForTesting.csproj", "{7DFD4F04-66ED-47E6-9CF1-6E3200225B35}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LeagueFPSBoostInstaller", "LeagueFPSBoostInstaller\LeagueFPSBoostInstaller.vdproj", "{A22894E2-6A37-4E7E-9F54-A73E201E6543}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,13 @@ Global
 		{7DFD4F04-66ED-47E6-9CF1-6E3200225B35}.Release|x64.Build.0 = Release|Any CPU
 		{7DFD4F04-66ED-47E6-9CF1-6E3200225B35}.Release|x86.ActiveCfg = Release|Any CPU
 		{7DFD4F04-66ED-47E6-9CF1-6E3200225B35}.Release|x86.Build.0 = Release|Any CPU
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Debug|Any CPU.ActiveCfg = Debug
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Debug|x64.ActiveCfg = Debug
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Debug|x86.ActiveCfg = Debug
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Release|Any CPU.ActiveCfg = Release
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Release|Any CPU.Build.0 = Release
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Release|x64.ActiveCfg = Release
+		{A22894E2-6A37-4E7E-9F54-A73E201E6543}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

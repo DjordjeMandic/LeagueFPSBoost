@@ -22,3 +22,6 @@ Used libraries:
   - [NDesk.Options](http://www.ndesk.org/Options)
   - [PowerManagerAPI](https://github.com/Ravatsaas/PowerManagerAPI)
   - [Json.NET](https://www.newtonsoft.com/json)
+  - [Handlebars.Net](https://github.com/rexm/Handlebars.Net)
+  - [ExceptionReporterNet](http://exceptionreporter.net/)
+  - [ExceptionReporter.NET](https://github.com/PandaWood/ExceptionReporter.NET)

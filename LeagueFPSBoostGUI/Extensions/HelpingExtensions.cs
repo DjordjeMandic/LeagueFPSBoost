@@ -1,5 +1,7 @@
-﻿using System;
+﻿using LeagueFPSBoost.Text;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -11,6 +13,16 @@ namespace LeagueFPSBoost.Extensions
         public static bool IsAssemblyDebugBuild(this Assembly assembly)
         {
             return assembly.GetCustomAttributes(false).OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled);
+        }
+
+        public static string GetTempFilePath(string extension, string type)
+        {
+            return GetTempFilePath(Path.GetTempPath(), extension, type);
+        }
+
+        public static string GetTempFilePath(this string path, string extension, string type)
+        {
+            return Path.Combine(path, "LeagueFPSBoost_" + type + "_" + Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.ToString(Strings.logDateTimeFormat) + extension);
         }
 
         /// <summary>Indicates whether the specified array is null or has a length of zero.</summary>

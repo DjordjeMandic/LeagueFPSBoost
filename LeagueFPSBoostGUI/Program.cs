@@ -1,5 +1,7 @@
 ﻿using ByteSizeLib;
 using CrashReporterDotNET;
+using ExceptionReporting;
+using ExceptionReporting.Network.Events;
 using LeagueFPSBoost.Configuration;
 using LeagueFPSBoost.Cryptography;
 using LeagueFPSBoost.Diagnostics.Debugger;
@@ -176,6 +178,12 @@ namespace LeagueFPSBoost
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Start recording all user input actions
+            ER.Report.StartInputLogging(10,true);
+
+            // Start capturing performance data
+            ER.Report.StartPerformanceLogging(60);
+
             if (!SelfElevation.Elevate()) { return; }
             PreNLog("Current process is in role administrator.");
 
@@ -241,8 +249,13 @@ namespace LeagueFPSBoost
         private static void DeleteTempUpdaterFilesAndCreateUpdateFolder(string folderPath)
         {
             var dir = "";
+
             var zipFileName = "LeagueFPSBoost.zip";
             var zipExtractorName = "ZipExtractor.exe";
+
+            var setupFileName = "LeagueFPSBoostSetup.exe";
+            var installerFileName = "LeagueFPSBoostInstaller.msi";
+
             var fileToCompress = Assembly.GetExecutingAssembly().Location;
             var downloadedZip = Path.Combine(Directory.GetCurrentDirectory(), zipFileName);
             var zipExtractorPath = Path.Combine(Directory.GetCurrentDirectory(), zipExtractorName);
@@ -333,9 +346,30 @@ namespace LeagueFPSBoost
 
                         PreNLog("Created update zip file: " + zipFilePath);
 
+                        var solutionDir = Directory.GetParent(dir).FullName;
+                        var installerReleaseDirPath = Path.Combine(solutionDir, "LeagueFPSBoostInstaller", "Release");
+                        var installerFilePath = Path.Combine(installerReleaseDirPath, installerFileName);
+                        var setupFilePath = Path.Combine(installerReleaseDirPath, "setup.exe");
+
+                        var updateInstallerDir = Path.Combine(dir, "Installer");
+                        PreNLog("Trying to create installer update directory at: " + updateInstallerDir);
+                        Directory.CreateDirectory(updateInstallerDir);
+                        PreNLog("Created installer update directory successfully.");
+
+                        var updateInstallerFilePath = Path.Combine(updateInstallerDir, installerFileName);
+                        var updateSetupFilePath = Path.Combine(updateInstallerDir, setupFileName);
+
+                        PreNLog($"Trying to copy msi installer from {installerFilePath} to {updateInstallerFilePath}.");
+                        File.Copy(installerFilePath, updateInstallerFilePath, true);
+                        PreNLog("Successfully copied msi installer.");
+
+                        PreNLog($"Trying to copy setup from {setupFilePath} to {updateSetupFilePath}.");
+                        File.Copy(setupFilePath, updateSetupFilePath, true);
+                        PreNLog("Successfully copied setup.");
+
                         var checksum = new Checksum();
 
-                        using (var fs = File.OpenRead(zipFilePath))
+                        using (var fs = File.OpenRead(updateSetupFilePath))
                         {
                             checksum = new Checksum(fs, ChecksumType.SHA512);
                         }
@@ -354,6 +388,10 @@ namespace LeagueFPSBoost
                             PreNLog("Created update json file: " + jsonFilePath);
                         else
                             PreNLog("Couldnt create json file: " + jsonFilePath);
+
+
+                        
+
 
                         if (!DebugBuild)
                         {
@@ -755,7 +793,9 @@ namespace LeagueFPSBoost
                 Logger.Error(ex, Strings.exceptionThrown + " while creating/sending crash report: " + Environment.NewLine);
                 MessageBox.Show("Unknown error: \n" + ex, "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            throw e.Exception;
+            Logger.Debug("Exiting with code: " + e.Exception.HResult);
+            MessageBox.Show("Program will now exit. Error code: " + e.Exception.HResult + " ( 0x" + e.Exception.HResult.ToString("X") + " )", "LeagueFPSBoost: ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Environment.Exit(e.Exception.HResult);
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -799,7 +839,6 @@ namespace LeagueFPSBoost
             {
                 Logger.Error(ex, Strings.exceptionThrown + " while building crash string for crash report: " + Environment.NewLine);
             }
-            throw exception;
         }
 
         public static void OnApplicationExit(object sender, EventArgs e)
@@ -810,6 +849,8 @@ namespace LeagueFPSBoost
 
         public static void ReportCrash2(Exception exception, string developerMessage = "")
         {
+            Logger.Debug("Showing crash report message box.");
+            MessageBox.Show("Application has crashed. Error report will be sent to developer right now so that he can fix this issue easier. Please wait minute or two. You will be notified when its finished.", "LeagueFPSBoost Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             Logger.Debug("Creating crash report using CrashReporter.Net");
             var reportCrash = new ReportCrash(StringCipher.Decrypt(
                                                             DeveloperData.CrashReport_cipherText,
@@ -819,7 +860,8 @@ namespace LeagueFPSBoost
                 DeveloperMessage = developerMessage,
                 CaptureScreen = true,
                 EmailRequired = false,
-                IncludeScreenshot = true
+                IncludeScreenshot = true,
+                Silent = true
             };
             var sb = new StringBuilder();
             sb.AppendLine(Strings.tabWithLine + "Crash report:");
@@ -827,17 +869,161 @@ namespace LeagueFPSBoost
             sb.AppendLine(Strings.doubleTabWithLine + "Email required: " + reportCrash.EmailRequired);
             sb.Append(Strings.doubleTabWithLine + "Include screenshot: " + reportCrash.IncludeScreenshot);
             Logger.Debug("Crash report has been created: " + Environment.NewLine + sb);
-            Logger.Debug("Displaying crash report window.");
+
+            Logger.Debug("Creating crash report using Exception Reporters.");
+            var FilesToEmail = new List<string>();
+            var htmlReportPath = HelpingExtensions.GetTempFilePath(".html", "crashInfo");
+            var errorReport = ER.Report.GetErrorReport(exception);
+            var zipFileName = string.Empty;
             try
             {
-                reportCrash.Send(exception);
-                Logger.Debug("Crash report window has been closed. Developer message: " + Environment.NewLine + reportCrash.DeveloperMessage);
+                if (!string.IsNullOrEmpty(LeagueLogFileDirPath) && Directory.Exists(LeagueLogFileDirPath))
+                {
+                    htmlReportPath = Path.Combine(LeagueLogFileDirPath, "MainLog").GetTempFilePath(".html", "crashInfo");
+                    FilesToEmail.AddRange(Directory.GetFiles(LeagueLogFileDirPath, "*.*", SearchOption.AllDirectories).Where(name => !name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToList());
+                }
+                File.WriteAllText(htmlReportPath, errorReport.Html);
+                FilesToEmail.Add(htmlReportPath);
+                Logger.Debug("Successfully created crash reports.");
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
-                Logger.Error(ex, Strings.exceptionThrown + " while displaying crash report window: " + Environment.NewLine);
+                Logger.Error(exc, Strings.exceptionThrown + " while creating files to attach list: " + Environment.NewLine);
+            }
+            
+            Logger.Debug("Sending silent CrashReporter.NET crash report.");
+            try
+            {
+                reportCrash.SendSilently(exception);
+                Logger.Debug("Successfully sent CrashReporter.NET crash report.");
+            }
+            catch (Exception excreportCrash)
+            {
+                Logger.Error(excreportCrash, Strings.exceptionThrown + " while sending CrashReporter.NET crash report: " + Environment.NewLine);
+            }
+
+            Logger.Debug("Creating ExceptionReporter.NET crash report for sending via mail.");
+            try
+            {
+                var er = new ExceptionReporter
+                {
+                    Config =
+                    {
+                        AppName = "LeagueFPSBoost",
+                        CompanyName = "http://youtube.com/+ncky",
+                        TitleText = "LeagueFPSBoost Error Report",
+                        FilesToAttach = FilesToEmail.ToArray(),
+                        ReportTemplateFormat = TemplateFormat.Html,
+                        EmailReportAddress = StringCipher.Decrypt(DeveloperData.CrashReport_cipherText, DeveloperData.CrashReport_passPharse, DeveloperData.CrashReport_keySize),
+
+                        SendMethod = ReportSendMethod.SMTP,
+                        SmtpServer = "smtp.gmail.com",
+                        SmtpPort = 587,
+                        SmtpUsername = StringCipher.Decrypt(DeveloperData.ExceptionReporter_chipterText1, DeveloperData.ExceptionReporter_passPharse1, DeveloperData.ExceptionReporter_keySize1),
+                        SmtpPassword = StringCipher.Decrypt(DeveloperData.ExceptionReporter_chipterText2, DeveloperData.ExceptionReporter_passPharse2, DeveloperData.ExceptionReporter_keySize2),
+                        SmtpFromAddress = StringCipher.Decrypt(DeveloperData.ExceptionReporter_chipterText1, DeveloperData.ExceptionReporter_passPharse1, DeveloperData.ExceptionReporter_keySize1),
+                        SmtpUseSsl = true,
+
+
+
+                        ShowAssembliesTab = true,
+                        ShowEmailButton = true,
+                        ShowGeneralTab = true,
+                        ShowSysInfoTab = true,
+                        ShowExceptionsTab = true,
+                        TakeScreenshot = true,
+                        TopMost = true,
+                    }
+                };
+
+                Logger.Debug("Created ExceptionReporter.NET crash report. Sending now...");
+
+                er.Send(new ExceptionReporterSendEvent(), exception);
+
+                /*var er2 = new ExceptionReporter();
+                Logger.Debug("Showing ExceptionReporter.NET dialog.");
+                er2.Show(exception);*/
+            }
+            catch (Exception excExcReport)
+            {
+                Logger.Error(excExcReport, Strings.exceptionThrown + " while sending ExceptionReporter.NET crash report: " + Environment.NewLine);
+            }
+
+            Logger.Debug("Showing crash report window.");
+            try
+            {
+                ER.Report.ShowException(null, exception, null);
+                Logger.Debug("Crash report window has been closed.");
+            }
+            catch (Exception excReport)
+            {
+                Logger.Error(excReport, Strings.exceptionThrown + " while showing crash report window: " + Environment.NewLine);
+            }
+
+            Logger.Debug("Deleting current crash report html file: " + htmlReportPath);
+            var successChk = false;
+            var countChk = 0;
+            while (!successChk && ++countChk < 5)
+            {
+                try
+                {
+                    if (File.Exists(htmlReportPath))
+                    {
+                        Logger.Debug("Current crash report file exists. Deleting..");
+                        File.Delete(htmlReportPath);
+                        Logger.Debug("Deleted: " + htmlReportPath);
+                    }
+                    else
+                    {
+                        Logger.Debug("Current crash report file doesn't exist. Skipping deleting.");
+                    }
+                    successChk = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, Strings.exceptionThrown + " while deleting current crash report file: " + Environment.NewLine);
+                    Logger.Info("Trying again to delete current crash report file.");
+                    successChk = true;
+                }
             }
         }
+
+        class ExceptionReporterSendEvent : IReportSendEvent
+        {
+            public void Completed(bool success)
+            {
+                var txt = "Error";
+                if (success)
+                {
+                    txt = "Sending error report via email has finished successfully.";
+                    Logger.Debug(txt);
+                    Task.Run(() =>
+                    {
+                        MessageBox.Show(txt, "LeagueFPSBoost Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    });
+                }
+                else
+                {
+                    txt = "Sending error report via email has failed.";
+                    Logger.Error(txt);
+                    Task.Run(() =>
+                    {
+                        MessageBox.Show(txt, "LeagueFPSBoost Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
+                }
+            }
+
+            public void ShowError(string message, Exception exception)
+            {
+                var txt = Strings.exceptionThrown + " while sending error report via email: " + Environment.NewLine + "Message: " + message + Environment.NewLine;
+                Logger.Error(exception, txt);
+                Task.Run(() =>
+                {
+                    MessageBox.Show(txt + exception, "LeagueFPSBoost Crash Report Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                });
+            }
+        }
+
 
         static void PathMissing(bool showMsgBox)
         {
