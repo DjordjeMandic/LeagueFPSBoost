@@ -1,5 +1,6 @@
 ﻿using LeagueFPSBoost.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using System;
 using System.IO;
@@ -42,14 +43,15 @@ namespace LeagueFPSBoost.Updater.Json
 
         private static string JsonString(UpdaterData data)
         {
-            return JsonConvert.SerializeObject(data, Formatting.Indented);
+            var jsonUpdaterDataObject = JObject.FromObject(data);
+            jsonUpdaterDataObject.Property(nameof(data.FileName)).Remove();
+            jsonUpdaterDataObject.Property(nameof(data.UpdaterDataType)).Remove();
+            return JsonConvert.SerializeObject(jsonUpdaterDataObject, Formatting.Indented);
         }
 
         private static void WriteTextToFile(string filename, string text)
         {
             logger.Info("Trying to save json updater data file: " + filename);
-            if (string.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename), "Cannot save serialize object to file because it's file path is unknown.");
-
             File.WriteAllText(filename, text);
             logger.Info("Successfully saved json updater data file.");
         }

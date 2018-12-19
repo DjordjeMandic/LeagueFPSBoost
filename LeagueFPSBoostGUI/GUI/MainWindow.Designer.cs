@@ -123,7 +123,8 @@
             this.metroLabel2.TabIndex = 28;
             this.metroLabel2.Text = "High Performance PP";
             this.metroLabel2.UseStyleColors = true;
-            this.metroLabel2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.metroLabel2_MouseClick);
+            this.metroLabel2.Click += new System.EventHandler(this.MetroLabel2_Click);
+            this.metroLabel2.DoubleClick += new System.EventHandler(this.MetroLabel2_DoubleClick);
             // 
             // highPerformanceToggle
             // 
@@ -143,7 +144,7 @@
             this.metroButton3.Name = "metroButton3";
             this.metroButton3.Size = new System.Drawing.Size(72, 23);
             this.metroButton3.TabIndex = 26;
-            this.metroButton3.Text = "User Config";
+            this.metroButton3.Text = "App Config";
             this.metroButton3.Click += new System.EventHandler(this.MetroButton3_Click);
             // 
             // metroButton2

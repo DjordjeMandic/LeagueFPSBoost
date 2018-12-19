@@ -2,8 +2,6 @@
 using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater.Json;
 using LeagueFPSBoost.Updater.Xml;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using NLog;
 using System;
 
@@ -15,38 +13,19 @@ namespace LeagueFPSBoost.Updater
         JavaScriptObjectNotation
     }
 
-    [JsonObject(MemberSerialization.OptIn)]
     public class UpdaterData
     {
-        [JsonProperty]
         public bool Mandatory { get; private set; } = true;
-        [JsonProperty]
-        [JsonConverter(typeof(VersionConverter))]
         public Version Version { get; private set; } = Program.Version;
-        [JsonProperty]
-        public string DownloadURL { get; private set; } = Strings.Updater_Download_URL;
-        [JsonProperty]
-        public string ChangelogURL { get; private set; } = Strings.Updater_Changelog_URL;
-        [JsonProperty]
+        public string DownloadURL { get; private set; } = Strings.Updater_XML_Download_URL;
+        public string ChangelogURL { get; private set; } = Strings.Updater_XML_Changelog_URL;
         public string CommandLineArguments { get; private set; } = string.Empty;
-        [JsonProperty]
+
         public Checksum Checksum { get; private set; } = new Checksum();
         public UpdaterDataTypeFormat UpdaterDataType { get; private set; } = UpdaterDataTypeFormat.XDocument;
         public string FileName { get; private set; } = "";
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        [JsonConstructor]
-        public UpdaterData(bool mandatory, Version version, string downloadURL, string changelogURL, string commandlineArgs, Checksum checksum)
-            : this("WEB", UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, mandatory, downloadURL, version, changelogURL, commandlineArgs)
-        {
-            /*Mandatory = mandatory;
-            Version = version;
-            DownloadURL = downloadURL;
-            ChangelogURL = changelogURL;
-            CommandLineArguments = commandlineArgs;
-            Checksum = checksum;*/
-        }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory, string downloadURL, Version version, string changelogURL, string commandlineArguments)
         {
@@ -77,37 +56,37 @@ namespace LeagueFPSBoost.Updater
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory, string downloadURL, Version version)
-            : this(fileName, updaterDataType, checksum, mandatory, downloadURL, version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, checksum, mandatory, downloadURL, version, Strings.Updater_XML_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory, string downloadURL)
-            : this(fileName, updaterDataType, checksum, mandatory, downloadURL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, checksum, mandatory, downloadURL, Program.Version, Strings.Updater_XML_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory)
-            : this(fileName, updaterDataType, checksum, mandatory, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, checksum, mandatory, Strings.Updater_XML_Download_URL, Program.Version, Strings.Updater_XML_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum)
-            : this(fileName, updaterDataType, checksum, true, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, checksum, true, Strings.Updater_XML_Download_URL, Program.Version, Strings.Updater_XML_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType)
-            : this(fileName, updaterDataType, new Checksum(), true, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, new Checksum(), true, Strings.Updater_XML_Download_URL, Program.Version, Strings.Updater_XML_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName)
-            : this(fileName, UpdaterDataTypeFormat.XDocument, new Checksum(), true, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, UpdaterDataTypeFormat.XDocument, new Checksum(), true, Strings.Updater_XML_Download_URL, Program.Version, Strings.Updater_XML_Changelog_URL)
         {
 
         }
