@@ -1,11 +1,11 @@
 {
   "Mandatory": false,
-  "Version": "3.5.6928.357",
+  "Version": "3.6.6928.1494",
   "DownloadURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/Installer/LeagueFPSBoostSetup.exe",
   "ChangelogURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/releases",
   "CommandLineArguments": "",
   "Checksum": {
     "Type": "SHA512",
-    "Value": "88cd24f52af08889ebd65ee20680a9f072a1aac1b94d3c6498fa973c7ebf0d135e972ed41a4ebed06154e81741fcf309f0e4e6dcb25651b35fbda163694393b1"
+    "Value": "e9c03fa3733ff018420307986721cba8fa9550833b3cb1810a63e36156fc33779f18041a21a35af8cc5e27567334233ffb9bfbc3b354fc1142692e0edabcd5ed"
   }
 }
