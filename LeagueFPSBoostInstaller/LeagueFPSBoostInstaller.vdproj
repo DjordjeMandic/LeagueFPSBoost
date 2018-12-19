@@ -208,24 +208,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B843920C9240A1045E78D80E1736DDC1"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_03B186AA398563398C5318A572B4D483"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5765F12FCF3E2CAB9CEC8E5B76271D2B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_2A5AE7CBD6E014226F4D5FB2578B11C8"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -304,7 +286,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B843920C9240A1045E78D80E1736DDC1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_84D021CE724A7D02F14E5825EC3F9192"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_03B186AA398563398C5318A572B4D483"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -317,6 +311,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DAD8B1E1260A70CE1478DAECA1AD566D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_5765F12FCF3E2CAB9CEC8E5B76271D2B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1238,15 +1238,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:LeagueFPSBoost"
-        "ProductCode" = "8:{70B3B1FB-29E3-4AA1-BC10-8F8CEA09F302}"
-        "PackageCode" = "8:{C10ABC7A-0B6C-4734-8349-81934B24B113}"
+        "ProductCode" = "8:{7F3C1E62-A515-4F53-B6C1-4DB755B33A1B}"
+        "PackageCode" = "8:{4402A231-B7A4-456E-9C7D-131F65A3C6CD}"
         "UpgradeCode" = "8:{68720F2E-E171-4597-9EE3-8917FD68E3EF}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:3.5.6927"
+        "ProductVersion" = "8:3.5.6928"
         "Manufacturer" = "8:IShunpoYourFace"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/djordjemandic/leaguefpsboost"
@@ -1788,7 +1788,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3E2D88A8A33C415C87131AF7CF3D20A9"
             {
-            "SourcePath" = "8:..\\LeagueFPSBoostGUI\\obj\\Release\\LeagueFPSBoost.exe"
+            "SourcePath" = "8:..\\LeagueFPSBoostGUI\\obj\\Debug\\LeagueFPSBoost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F0CC0E19CE704E08B10CC0A505FF5FBA"
