@@ -268,7 +268,6 @@
             this.MinimizeBox = false;
             this.Name = "InformationWindow";
             this.Resizable = false;
-            this.ShowIcon = false;
             this.Text = "More Information";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.InformationWindow_FormClosed);
             this.Load += new System.EventHandler(this.InformationWindow_Load);

@@ -1,9 +1,12 @@
-﻿using LeagueFPSBoost.GUI;
+﻿using LeagueFPSBoost.Logging;
 using LeagueFPSBoost.Text;
+using LeagueFPSBoost.Updater;
 using NLog;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Timers;
+using System.Windows.Forms;
 
 namespace LeagueFPSBoost.ProcessManagement
 {
@@ -44,6 +47,54 @@ namespace LeagueFPSBoost.ProcessManagement
         public static event EventHandler<LeagueBoostErrorEventArgs> GameBoostFail = delegate { };
         public static event EventHandler<LeagueBoostEventArgs> ClientNormalOk = delegate { };
         public static event EventHandler<LeagueBoostErrorEventArgs> ClientNormalFail = delegate { };
+
+
+        public static System.Timers.Timer BoostCheckTimer { get; private set; }
+        public static readonly int BoostCheckTimerInterval = 1 * 60 * 1000;
+        static int boostCheckEventCount;
+
+        public static void StartWatcher()
+        {
+            try
+            {
+                logger.Debug("Trying to start process watcher.");
+                Program.StartWatch.Start();
+                Program.StopWatch.Start();
+                logger.Debug("Process watcher has been started.");
+                LeagueLogger.Okay("Process watcher started.");
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, Strings.exceptionThrown + " while trying to start process watcher: " + Environment.NewLine);
+                MessageBox.Show($"There was an fatal error.{Environment.NewLine}Please restart the program.{Environment.NewLine}Check log for details.{Environment.NewLine}Program will now close.", "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(0);
+            }
+
+            BoostCheckTimer = new System.Timers.Timer
+            {
+                Interval = BoostCheckTimerInterval
+            };
+            BoostCheckTimer.Elapsed += BoostCheckTimer_Elapsed;
+
+            BoostCheckTimer.Start();
+        }
+
+        private static void BoostCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (Process.GetProcessesByName(Strings.GameProcessName).Length != 0)
+            {
+                logger.Debug($"Timer is trying to boost game. Interval: {BoostCheckTimer.Interval}ms");
+                ProcessManagement.LeaguePriority.CheckAndBoost(Program.NoClient);
+            }
+            else if (boostCheckEventCount >= 5)
+            {
+                logger.Debug($"Timer is trying to return client to normal priority. Interval: {BoostCheckTimer.Interval}ms");
+                ProcessManagement.LeaguePriority.CheckAndBoost(Program.NoClient);
+                boostCheckEventCount = 0;
+            }
+
+            boostCheckEventCount++;
+        }
 
         private static void Boost(bool clientRunning)
         {
@@ -153,11 +204,11 @@ namespace LeagueFPSBoost.ProcessManagement
         {
             if (ppclass == ProcessPriorityClass.BelowNormal)
             {
-                MainWindow.StopUpdateCheckTimer();
+                UpdateManager.StopUpdateCheckTimer();
             }
             else
             {
-                MainWindow.StartUpdateCheckTimer();
+                UpdateManager.StartUpdateCheckTimer();
             }
             logger.Debug("Changing client priority to: " + ppclass);
             foreach (string clientProcessName in Strings.ClientProcessNames)
@@ -182,7 +233,7 @@ namespace LeagueFPSBoost.ProcessManagement
         {
             if(ppclass == ProcessPriorityClass.High)
             {
-                MainWindow.StopUpdateCheckTimer();
+                UpdateManager.StopUpdateCheckTimer();
             }
             logger.Debug("Changing game priority to: " + ppclass);
             foreach (Process proc in Process.GetProcessesByName(Strings.GameProcessName))
