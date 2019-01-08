@@ -31,6 +31,8 @@ namespace LeagueFPSBoost.GUI
         public static IniData GameConfigData { get; private set; }
 
         public static bool Loaded;
+
+        public static bool FirstDonationMessageBoxClosed = false;
         
 
         public static Guid currentLastActivePowerPlan;
@@ -132,7 +134,16 @@ namespace LeagueFPSBoost.GUI
             LeagueLogger.Okay("Main window loaded.");
             Program.MainWindowLoaded = true;
             if (Program.FirstRun.Value)
+            {
+                UpdaterActionsSettings.Default.Reset();
+                UpdaterActionsSettings.Default.Save();
+
+                UpdaterMessageBoxSettings.Default.Reset();
+                UpdaterMessageBoxSettings.Default.Save();
+                logger.Debug("Reseted updater actions and message box settings to their default values.");
                 Task.Run(() => { FirstRunDonationMessageBox(); });
+            }
+                
 
             UpdateManager.InitAndCheckForUpdates();
             BringFormToFront();
@@ -146,6 +157,7 @@ namespace LeagueFPSBoost.GUI
                 this.Invoke(new Action(BringFormToFront));
             else
                 this.BringFormToFront();
+            FirstDonationMessageBoxClosed = true;
         }
 
         public void BringFormToFront()

@@ -116,7 +116,7 @@
     <StartupObject>LeagueFPSBoost.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>
@@ -163,6 +163,7 @@
     <Reference Include="MetroFramework.Fonts, Version=1.2.0.3, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroFramework.Fonts.1.2.0.3\lib\net40\MetroFramework.Fonts.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAudio, Version=1.8.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
     </Reference>
@@ -243,6 +244,7 @@
     <Compile Include="GUI\InformationWindow.Designer.cs">
       <DependentUpon>InformationWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Native\Framework.cs" />
     <Compile Include="Native\Unmanaged\NativeMethods.cs" />
     <Compile Include="Native\NativeDefinitions.cs" />
     <Compile Include="ProcessManagement\OpenFolder.cs" />
@@ -268,6 +270,7 @@
     </Compile>
     <Compile Include="ProcessManagement\ProcessEvents.cs" />
     <Compile Include="ProcessManagement\ProcessExtensions.cs" />
+    <Compile Include="ProcessManagement\Restart.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProcessManagement\SelfElevation.cs" />
@@ -277,8 +280,27 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
+    <Compile Include="Properties\UpdaterActionsSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>UpdaterActionsSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\UpdaterMessageBoxSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>UpdaterMessageBoxSettings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Text\Strings.cs" />
     <Compile Include="Updater\Json\UpdaterJson.cs" />
+    <Compile Include="Updater\MessageBoxCollection\FailedUpdateSorryMessageBox.cs" />
+    <Compile Include="Updater\MessageBoxCollection\IUpdaterMessageBox.cs" />
+    <Compile Include="Updater\MessageBoxCollection\ManuallyDownloadLeagueFPSBoostMessageBox.cs" />
+    <Compile Include="Updater\MessageBoxCollection\MessageBoxData.cs" />
+    <Compile Include="Updater\MessageBoxCollection\MessageBoxList.cs" />
+    <Compile Include="Updater\PostUpdateAction\Actions.cs" />
+    <Compile Include="Updater\PostUpdateAction\IPostUpdateAction.cs" />
+    <Compile Include="Updater\PostUpdateAction\PostUpdateActionData.cs" />
+    <Compile Include="Updater\PostUpdateAction\RestartPostUpdateAction.cs" />
     <Compile Include="Updater\UpdateManager.cs" />
     <Compile Include="Updater\UpdaterData.cs" />
     <Compile Include="Cryptography\Checksum.cs" />
@@ -306,6 +328,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Properties\UpdaterActionsSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UpdaterActionsSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Properties\UpdaterMessageBoxSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UpdaterMessageBoxSettings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\notiFail.mp3" />
@@ -344,7 +374,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release1 "$(TargetPath)" -u="$(SolutionDir)\AutoUpdater" -e</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Release "$(TargetPath)" -u="$(SolutionDir)\AutoUpdater" -e</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

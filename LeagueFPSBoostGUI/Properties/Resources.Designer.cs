@@ -65,8 +65,7 @@ namespace LeagueFPSBoost.Properties {
         ///&lt;configuration&gt;
         ///    &lt;configSections&gt;
         ///        &lt;sectionGroup name=&quot;userSettings&quot; type=&quot;System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot;&gt;
-        ///            &lt;section name=&quot;LeagueFPSBoost.Properties.Settings&quot; type=&quot;System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; allowExeDefinition=&quot;MachineToLocalUser&quot; requirePermission=&quot;false&quot;/&gt;
-        ///        &lt;/s [rest of string was truncated]&quot;;.
+        ///            &lt;section name=&quot;LeagueFPSBoost.Properties.UpdaterMessageBoxSettings&quot; type=&quot;System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; allowExeDefinition=&quot;MachineToLocalUser&quot; requirePermission=&quot;fals [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string App_Config {
             get {

@@ -91,13 +91,12 @@ namespace LeagueFPSBoost.Configuration
                 Change(appConfigPath);
                 Settings.Default.Reload();
             }
-
-            appConfigLogger.Warn("Deleting temporary configuration file has been disabled due to repeated windows installer repair.");
-            /*if (File.Exists(configFile))
+            
+            if (File.Exists(configFile))
             {
                 appConfigLogger.Debug("Deleting temporary configuration file: " + configFile);
                 File.Delete(configFile);
-            }*/
+            }
         }
 
         /// <summary>

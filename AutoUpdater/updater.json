@@ -1,11 +1,23 @@
 {
-  "Mandatory": false,
-  "Version": "3.5.6928.357",
-  "DownloadURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/Installer/LeagueFPSBoostSetup.exe",
+  "CreationTime": "2019-01-08T07:03:40.2353788+01:00",
+  "Version": "3.6.6947.12709",
+  "DownloadURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip",
   "ChangelogURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/releases",
-  "CommandLineArguments": "",
+  "Mandatory": false,
   "Checksum": {
     "Type": "SHA512",
-    "Value": "88cd24f52af08889ebd65ee20680a9f072a1aac1b94d3c6498fa973c7ebf0d135e972ed41a4ebed06154e81741fcf309f0e4e6dcb25651b35fbda163694393b1"
-  }
+    "Value": "8077af6ced187a2255132f374e3e51e6e8eeddbbd1e55a716e96ef408670191576fd819726b40daa2655d89f106730741822961b6ab631a7ea00ea88cab64504"
+  },
+  "CommandLineArguments": "",
+  "PostUpdate": [],
+  "MessageBoxes": [
+    {
+      "Caption": "LeagueFPSBoost: Developer Message",
+      "MessageBoxIcon": 64,
+      "MessageBoxButton": 0,
+      "Message": "I'm sorry for the failed update that may have broke yours LeagueFPSBoost installation.\r\nI have removed installer and reverted all back to normal updater like it was before.\r\nIf you have any problems with LeagueFPSBoost contact me: leaguefpsboost@gmail.com",
+      "RequiresSpecialCall": false,
+      "RunOnce": true
+    }
+  ]
 }

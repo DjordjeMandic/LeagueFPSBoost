@@ -8,11 +8,13 @@ using LeagueFPSBoost.Diagnostics.Debugger;
 using LeagueFPSBoost.Extensions;
 using LeagueFPSBoost.GUI;
 using LeagueFPSBoost.Logging;
+using LeagueFPSBoost.Native;
 using LeagueFPSBoost.Native.Unmanaged;
 using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater;
+using LeagueFPSBoost.Updater.MessageBoxCollection;
 using Microsoft.Win32;
 using NAudio.Wave;
 using NDesk.Options;
@@ -187,6 +189,16 @@ namespace LeagueFPSBoost
             if (!SelfElevation.Elevate()) { return; }
             PreNLog("Current process is in role administrator.");
 
+            if(!CheckFrameworkVer())
+            {
+                if(DialogResult.Yes == MessageBox.Show("This program cannot run without .NET Framework 4.7.2 installed. Do you want to download it?", "LeagueFPSBoost: Cannot find .NET Framework version", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
+                {
+                    Process.Start(@"https://dotnet.microsoft.com/download/thank-you/net472");
+                }
+                MessageBox.Show("Program will now exit!", "LeagueFPSBoost: Cannot find .NET Framework version", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             DeleteTempUpdaterFilesAndCreateUpdateFolder(UpdateFolderPath);
 
             CodeStep = 1; // LeagueFPSBoost: Fatal Error While Checking Mutex
@@ -246,23 +258,37 @@ namespace LeagueFPSBoost
             Logger.Debug("Shutting down program.");
         }
 
+        private static bool CheckFrameworkVer()
+        {
+            PreNLog("Checking for framework version 4.7.2 or later.");
+            try
+            {
+                if (Framework.Net472OrLaterInstalled())
+                {
+                    PreNLog("Version 4.7.2 or later is found!");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                PreNLog(Strings.exceptionThrown + " while checking for framework version: " + Environment.NewLine + ex);
+            }
+            PreNLog("Couldn't find required framework version.");
+            return false;
+        }
+
         private static void DeleteTempUpdaterFilesAndCreateUpdateFolder(string folderPath)
         {
             var dir = "";
-
             var zipFileName = "LeagueFPSBoost.zip";
             var zipExtractorName = "ZipExtractor.exe";
-
-            var setupFileName = "LeagueFPSBoostSetup.exe";
-            var installerFileName = "LeagueFPSBoostInstaller.msi";
-
             var fileToCompress = Assembly.GetExecutingAssembly().Location;
             var downloadedZip = Path.Combine(Directory.GetCurrentDirectory(), zipFileName);
             var zipExtractorPath = Path.Combine(Directory.GetCurrentDirectory(), zipExtractorName);
 
             var successTmp = false;
             var countTmp = 0;
-            while(!successTmp && ++countTmp < 5)
+            while (!successTmp && ++countTmp < 5)
             {
                 try
                 {
@@ -291,7 +317,7 @@ namespace LeagueFPSBoost
             if (PathSpecified)
             {
                 PreNLog("Update directory path has been specified.");
-                
+
                 var successChk = false;
                 var countChk = 0;
                 var validChk = false;
@@ -312,7 +338,7 @@ namespace LeagueFPSBoost
                     }
                 }
 
-                if(validChk)
+                if (validChk)
                 {
                     dir = Path.Combine(folderPath);
                     PreNLog("Specified update directory path is valid: " + dir);
@@ -323,7 +349,7 @@ namespace LeagueFPSBoost
                     PreNLog("Specified update directory path is not valid. Using default one: " + dir);
                 }
 
-                
+
                 var zipFilePath = Path.Combine(dir, zipFileName);
                 var xmlFilePath = Path.Combine(dir, "updater.xml");
                 var jsonFilePath = Path.Combine(dir, "updater.json");
@@ -346,30 +372,9 @@ namespace LeagueFPSBoost
 
                         PreNLog("Created update zip file: " + zipFilePath);
 
-                        var solutionDir = Directory.GetParent(dir).FullName;
-                        var installerReleaseDirPath = Path.Combine(solutionDir, "LeagueFPSBoostInstaller", "Release");
-                        var installerFilePath = Path.Combine(installerReleaseDirPath, installerFileName);
-                        var setupFilePath = Path.Combine(installerReleaseDirPath, "setup.exe");
-
-                        var updateInstallerDir = Path.Combine(dir, "Installer");
-                        PreNLog("Trying to create installer update directory at: " + updateInstallerDir);
-                        Directory.CreateDirectory(updateInstallerDir);
-                        PreNLog("Created installer update directory successfully.");
-
-                        var updateInstallerFilePath = Path.Combine(updateInstallerDir, installerFileName);
-                        var updateSetupFilePath = Path.Combine(updateInstallerDir, setupFileName);
-
-                        PreNLog($"Trying to copy msi installer from {installerFilePath} to {updateInstallerFilePath}.");
-                        File.Copy(installerFilePath, updateInstallerFilePath, true);
-                        PreNLog("Successfully copied msi installer.");
-
-                        PreNLog($"Trying to copy setup from {setupFilePath} to {updateSetupFilePath}.");
-                        File.Copy(setupFilePath, updateSetupFilePath, true);
-                        PreNLog("Successfully copied setup.");
-
                         var checksum = new Checksum();
 
-                        using (var fs = File.OpenRead(updateSetupFilePath))
+                        using (var fs = File.OpenRead(zipFilePath))
                         {
                             checksum = new Checksum(fs, ChecksumType.SHA512);
                         }
@@ -377,21 +382,18 @@ namespace LeagueFPSBoost
                         bool mandatory = false;
 
                         var xmlUpdaterData = new UpdaterData(xmlFilePath, UpdaterDataTypeFormat.XDocument, checksum, mandatory);
-                        
+
                         xmlUpdaterData.Save();
 
                         PreNLog("Created update xml file: " + xmlFilePath);
 
                         var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, mandatory);
+                        jsonUpdaterData.AddMessageBox(MessageBoxList.FailedUpdateSorry);
 
                         if (jsonUpdaterData.Save())
                             PreNLog("Created update json file: " + jsonFilePath);
                         else
                             PreNLog("Couldnt create json file: " + jsonFilePath);
-
-
-                        
-
 
                         if (!DebugBuild)
                         {
@@ -851,7 +853,10 @@ namespace LeagueFPSBoost
         {
             Logger.Debug("Showing crash report message box.");
             MessageBox.Show("Application has crashed. Error report will be sent to developer right now so that he can fix this issue easier. Please wait minute or two. You will be notified when its finished.", "LeagueFPSBoost Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            var contactInfo = Microsoft.VisualBasic.Interaction.InputBox("Please enter your contact information like email address or facebook profile link.. so that developer can contact you. Developer's contact email is leaguefpsboost@gmail.com", "Crash contact information", "Default", -1, -1);
             Logger.Debug("Creating crash report using CrashReporter.Net");
+            Logger.Debug("Contact info: " + contactInfo);
+            developerMessage += Environment.NewLine + "Contact: " + contactInfo;
             var reportCrash = new ReportCrash(StringCipher.Decrypt(
                                                             DeveloperData.CrashReport_cipherText,
                                                             DeveloperData.CrashReport_passPharse,
