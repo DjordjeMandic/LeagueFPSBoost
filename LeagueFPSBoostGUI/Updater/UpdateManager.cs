@@ -1,10 +1,14 @@
 ﻿using AutoUpdaterDotNET;
+using LeagueFPSBoost.GUI;
 using LeagueFPSBoost.Text;
+using LeagueFPSBoost.Updater.MessageBoxCollection;
+using LeagueFPSBoost.Updater.PostUpdateAction;
 using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -17,11 +21,56 @@ namespace LeagueFPSBoost.Updater
         public static System.Timers.Timer UpdateCheckTimer { get; private set; }
         public static bool UpdateCheckFinished { get; private set; }
         public static readonly bool UseJSONParser = true;
+        public static UpdaterData JsonParsedUpdaterData { get; private set; }
+        public static bool JsonParsedUpdaterDataReady { get; private set; } = false;
 
         public static void InitAndCheckForUpdates()
         {
             Init();
             CheckForUpdates();
+            Task.Run(() => {
+                while (true)
+                {
+                    Thread.Sleep(100);
+                    if(JsonParsedUpdaterDataReady)
+                    {
+                        if(Program.FirstRun)
+                        {
+                            while(!MainWindow.FirstDonationMessageBoxClosed)
+                            {
+                                Thread.Sleep(100);
+                            }
+                            break;
+                        }
+                        break;
+                    }
+                }
+                foreach (var msgbox in JsonParsedUpdaterData.MessageBoxes)
+                {
+                    if(msgbox == MessageBoxList.ManuallyDownloadLeagueFPSBoost)
+                    {
+                        if(DialogResult.Yes == MessageBoxList.ManuallyDownloadLeagueFPSBoost.ShowMessageBox())
+                        {
+                            ManuallyDownloadLeagueFPSBoostMessageBox.OpenLatestReleaseURL();
+                            continue;
+                        }
+                    }
+                    else if(msgbox == MessageBoxList.FailedUpdateSorry)
+                    {
+                        MessageBoxList.FailedUpdateSorry.ShowMessageBox();
+                    }
+                    else if(!msgbox.GetRequiresSpecialCall())
+                    {
+                        msgbox.ShowMessageBox();
+                    }
+                }
+
+                foreach(var action in JsonParsedUpdaterData.PostUpdate)
+                {
+                    if (action == Actions.RestartPostUpdate_StabilityReason) Actions.RestartPostUpdate_StabilityReason.Run();
+                    if (action == Actions.RestartPostUpdate_NoReason) Actions.RestartPostUpdate_NoReason.Run();
+                }
+            });
         }
 
         public static void Init()
@@ -57,22 +106,22 @@ namespace LeagueFPSBoost.Updater
 
         public static void Start()
         {
-            
             AutoUpdater.Start(UseJSONParser ? Strings.Updater_JSON_URL : Strings.Updater_XML_URL);
         }
 
         static void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
-            var data = JsonConvert.DeserializeObject<UpdaterData>(args.RemoteData);
+            JsonParsedUpdaterData = JsonConvert.DeserializeObject<UpdaterData>(args.RemoteData);
+            JsonParsedUpdaterDataReady = true;
             args.UpdateInfo = new UpdateInfoEventArgs
             {
-                CurrentVersion = data.Version,
-                ChangelogURL = data.ChangelogURL,
-                Mandatory = data.Mandatory,
-                DownloadURL = data.DownloadURL,
-                Checksum = data.Checksum.Value,
-                HashingAlgorithm = data.Checksum.Type.ToString(),
-                InstallerArgs = data.CommandLineArguments
+                CurrentVersion = JsonParsedUpdaterData.Version,
+                ChangelogURL = JsonParsedUpdaterData.ChangelogURL,
+                Mandatory = JsonParsedUpdaterData.Mandatory,
+                DownloadURL = JsonParsedUpdaterData.DownloadURL,
+                Checksum = JsonParsedUpdaterData.Checksum.Value,
+                HashingAlgorithm = JsonParsedUpdaterData.Checksum.Type.ToString(),
+                InstallerArgs = JsonParsedUpdaterData.CommandLineArguments
             };
         }
         static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
@@ -155,6 +204,11 @@ namespace LeagueFPSBoost.Updater
         {
             logger.Info("Update pending. Closing application.");
             Application.Exit();
+        }
+
+        public static void ShowMessageBoxes()
+        {
+
         }
     }
 }
