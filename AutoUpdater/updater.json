@@ -1,12 +1,12 @@
 {
-  "CreationTime": "2019-01-08T06:56:45.553712+01:00",
-  "Version": "3.5.6947.12501",
+  "CreationTime": "2019-01-08T07:03:40.2353788+01:00",
+  "Version": "3.6.6947.12709",
   "DownloadURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip",
   "ChangelogURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/releases",
   "Mandatory": false,
   "Checksum": {
     "Type": "SHA512",
-    "Value": "172dd639bc5222294e13863b98f4b461ad5b477b78263efd1784de098cc3250ddfb9522d7533e6441f1312d1b2a107b8d94c9e948886d43a2b2645c37beb002b"
+    "Value": "8077af6ced187a2255132f374e3e51e6e8eeddbbd1e55a716e96ef408670191576fd819726b40daa2655d89f106730741822961b6ab631a7ea00ea88cab64504"
   },
   "CommandLineArguments": "",
   "PostUpdate": [],
