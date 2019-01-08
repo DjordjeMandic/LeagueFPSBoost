@@ -2,11 +2,7 @@
 
 ## :arrow_forward:**If you can't update because of "SSL/TLS" error or you can't run the program you'll have to install [.NET Framework 4.7.2 (click here)](https://dotnet.microsoft.com/download/thank-you/net472)**:heavy_exclamation_mark:
 
-## By: IShunpoYourFace - EUNE
-
 ### [Download here](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest)
-
-
 
 Simple tool written in C# that should help with increasing frame rate in league of legends.
 More info till this page gets updated can be found on [boards page](https://goo.gl/bpxbGV)
