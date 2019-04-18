@@ -50,6 +50,7 @@ namespace LeagueFPSBoost.Text
         public const string Facebook_URL = @"https://goo.gl/MjQp43";
         public const string OPGG_URL = @"https://goo.gl/sEYLbe";
         public const string DONATE_URL = @"https://paypal.me/DjordjeMandic";
+        public const string DOT_NET_FRAMEWORK_URL = @"https://dotnet.microsoft.com/download/thank-you/net472";
 
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
