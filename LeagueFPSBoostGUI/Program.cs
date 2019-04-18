@@ -14,7 +14,6 @@ using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater;
-using LeagueFPSBoost.Updater.MessageBoxCollection;
 using Microsoft.Win32;
 using NAudio.Wave;
 using NDesk.Options;
@@ -90,7 +89,7 @@ namespace LeagueFPSBoost
         public static bool MainWindowLoaded;
         static readonly bool WaitForDebugger = false;
 
-        public static readonly bool MandatoryUpdate = false;
+        public static readonly bool MandatoryUpdate = true;
 
         public static WriteOnce<bool> FirstRun = new WriteOnce<bool>();
 
@@ -193,7 +192,17 @@ namespace LeagueFPSBoost
             {
                 if(DialogResult.Yes == MessageBox.Show("This program cannot run without .NET Framework 4.7.2 installed. Do you want to download it?", "LeagueFPSBoost: Cannot find .NET Framework version", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
                 {
-                    Process.Start(@"https://dotnet.microsoft.com/download/thank-you/net472");
+                    
+                    PreNLog("Trying to open .net framework url: " + Strings.DOT_NET_FRAMEWORK_URL);
+                    if (OpenUrl.Open(Strings.DOT_NET_FRAMEWORK_URL))
+                    {
+                        PreNLog("Success!");
+                    }
+                    else
+                    {
+                        PreNLog("Opening .net framework url failed. If this machine is running windows 7 it can be machine specific problem. Try downloading .NET Framework VER>4.7.2 manually.");
+                    }
+
                 }
                 MessageBox.Show("Program will now exit!", "LeagueFPSBoost: Cannot find .NET Framework version", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -378,22 +387,20 @@ namespace LeagueFPSBoost
                         {
                             checksum = new Checksum(fs, ChecksumType.SHA512);
                         }
-
-                        bool mandatory = false;
-
-                        var xmlUpdaterData = new UpdaterData(xmlFilePath, UpdaterDataTypeFormat.XDocument, checksum, mandatory);
+                        
+                        var xmlUpdaterData = new UpdaterData(xmlFilePath, UpdaterDataTypeFormat.XDocument, checksum, MandatoryUpdate);
 
                         xmlUpdaterData.Save();
 
                         PreNLog("Created update xml file: " + xmlFilePath);
 
-                        var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, mandatory);
-                        jsonUpdaterData.AddMessageBox(MessageBoxList.FailedUpdateSorry);
+                        var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, MandatoryUpdate);
+                        //jsonUpdaterData.AddMessageBox(MessageBoxList.FailedUpdateSorry);
 
                         if (jsonUpdaterData.Save())
                             PreNLog("Created update json file: " + jsonFilePath);
                         else
-                            PreNLog("Couldnt create json file: " + jsonFilePath);
+                            PreNLog("Couldn't create json file: " + jsonFilePath);
 
                         if (!DebugBuild)
                         {
@@ -828,6 +835,7 @@ namespace LeagueFPSBoost
                 CrashSb.Append("League path var: ").AppendLine(LeaguePath);
                 CrashSb.Append("League configuration directory path var: ").AppendLine(LeagueConfigDirPath);
                 CrashSb.Append("League log directory path var: ").AppendLine(LeagueLogFileDirPath);
+                CrashSb.Append("Log: " + Environment.NewLine + PreNLogMessages);
 
                 LeagueLogger.Error("A crash has been detected: " + Environment.NewLine + Environment.NewLine + exception + Environment.NewLine);
                 LeagueLogger.Info("Developer message: " + Environment.NewLine + Environment.NewLine + CrashSb);
@@ -853,7 +861,7 @@ namespace LeagueFPSBoost
         {
             Logger.Debug("Showing crash report message box.");
             MessageBox.Show("Application has crashed. Error report will be sent to developer right now so that he can fix this issue easier. Please wait minute or two. You will be notified when its finished.", "LeagueFPSBoost Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            var contactInfo = Microsoft.VisualBasic.Interaction.InputBox("Please enter your contact information like email address or facebook profile link.. so that developer can contact you. Developer's contact email is leaguefpsboost@gmail.com", "Crash contact information", "Default", -1, -1);
+            var contactInfo = Microsoft.VisualBasic.Interaction.InputBox("Please enter your contact information like email address or facebook profile link.. so that developer can contact you. Developer's contact email is leaguefpsboost@gmail.com", "Crash contact information", "", -1, -1);
             Logger.Debug("Creating crash report using CrashReporter.Net");
             Logger.Debug("Contact info: " + contactInfo);
             developerMessage += Environment.NewLine + "Contact: " + contactInfo;
@@ -878,6 +886,7 @@ namespace LeagueFPSBoost
             Logger.Debug("Creating crash report using Exception Reporters.");
             var FilesToEmail = new List<string>();
             var htmlReportPath = HelpingExtensions.GetTempFilePath(".html", "crashInfo");
+            var additionalInfoFilePath = HelpingExtensions.GetTempFilePath(".txt", "info");
             var errorReport = ER.Report.GetErrorReport(exception);
             var zipFileName = string.Empty;
             try
@@ -888,7 +897,9 @@ namespace LeagueFPSBoost
                     FilesToEmail.AddRange(Directory.GetFiles(LeagueLogFileDirPath, "*.*", SearchOption.AllDirectories).Where(name => !name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)).ToList());
                 }
                 File.WriteAllText(htmlReportPath, errorReport.Html);
+                File.WriteAllText(additionalInfoFilePath, "If there is only html file in this report then LeagueLogFileDirPath is null or empty or it does not exist.");
                 FilesToEmail.Add(htmlReportPath);
+                FilesToEmail.Add(additionalInfoFilePath);
                 Logger.Debug("Successfully created crash reports.");
             }
             catch (Exception exc)
@@ -918,7 +929,7 @@ namespace LeagueFPSBoost
                         CompanyName = "http://youtube.com/+ncky",
                         TitleText = "LeagueFPSBoost Error Report",
                         FilesToAttach = FilesToEmail.ToArray(),
-                        ReportTemplateFormat = TemplateFormat.Html,
+                        ReportTemplateFormat = TemplateFormat.Markdown,
                         EmailReportAddress = StringCipher.Decrypt(DeveloperData.CrashReport_cipherText, DeveloperData.CrashReport_passPharse, DeveloperData.CrashReport_keySize),
 
                         SendMethod = ReportSendMethod.SMTP,

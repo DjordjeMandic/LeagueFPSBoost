@@ -20,7 +20,18 @@ namespace LeagueFPSBoost.ProcessManagement
             catch (Exception ex)
             {
                 logger.Error(ex, Strings.exceptionThrown + " while opening url: " + url + Environment.NewLine);
-                return false;
+                try
+                {
+                    logger.Info("Trying to open url via explorer.");
+                    Process.Start(@"explorer " + url);
+                    logger.Info("Url successfully opened via explorer: " + url);
+                    return true;
+                }
+                catch(Exception e)
+                {
+                    logger.Error(e, Strings.exceptionThrown + " while opening url via explorer: " + url + Environment.NewLine);
+                    return false;
+                }
             }
         }
     }

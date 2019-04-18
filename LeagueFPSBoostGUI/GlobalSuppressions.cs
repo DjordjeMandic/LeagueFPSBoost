@@ -18,4 +18,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Redundancies in Symbol Declarations", "RECS0154:Parameter is never used", Justification = "<Pending>", Scope = "member", Target = "~M:LeagueFPSBoost.ProcessManagement.ProcessEvents.StartCheckWatch_EventArrived(System.Object,System.Management.EventArrivedEventArgs)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Redundancies in Symbol Declarations", "RECS0154:Parameter is never used", Justification = "<Pending>", Scope = "member", Target = "~M:LeagueFPSBoost.ProcessManagement.ProcessEvents.StopCheckWatch_EventArrived(System.Object,System.Management.EventArrivedEventArgs)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Compiler Warnings", "RECS0081:Validate Xml docs", Justification = "<Pending>")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Redundancies in Symbol Declarations", "RECS0122:Initializing field with default value is redundant", Justification = "<Pending>", Scope = "member", Target = "~F:LeagueFPSBoost.Program.WaitForDebugger")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Redundancies in Symbol Declarations", "RECS0122:Initializing field with default value is redundant", Justification = "<Pending>", Scope = "member", Target = "~F:LeagueFPSBoost.Program.MandatoryUpdate")]
 
