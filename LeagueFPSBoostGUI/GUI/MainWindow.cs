@@ -141,10 +141,8 @@ namespace LeagueFPSBoost.GUI
                 UpdaterMessageBoxSettings.Default.Reset();
                 UpdaterMessageBoxSettings.Default.Save();
                 logger.Debug("Reseted updater actions and message box settings to their default values.");
-                Task.Run(() => { FirstRunDonationMessageBox(); });
+                Task.Run(new Action(FirstRunDonationMessageBox));
             }
-                
-
             UpdateManager.InitAndCheckForUpdates();
             BringFormToFront();
         }
@@ -153,10 +151,10 @@ namespace LeagueFPSBoost.GUI
         {
             Thread.Sleep(1000);
             MessageBox.Show("If you like the program a small donation would be helpful! Check More Information window in about tab for donate button.", "LeagueFPSBoost: Support Developer", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            if (this.InvokeRequired)
-                this.Invoke(new Action(BringFormToFront));
+            if (InvokeRequired)
+                Invoke(new Action(BringFormToFront));
             else
-                this.BringFormToFront();
+                BringFormToFront();
             FirstDonationMessageBoxClosed = true;
         }
 

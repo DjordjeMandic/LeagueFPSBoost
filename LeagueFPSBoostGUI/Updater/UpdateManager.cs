@@ -91,7 +91,7 @@ namespace LeagueFPSBoost.Updater
             AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Days;
             AutoUpdater.RemindLaterAt = 1;
             AutoUpdater.DownloadPath = Environment.CurrentDirectory;
-            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
+            //AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             if (UseJSONParser)
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
             else

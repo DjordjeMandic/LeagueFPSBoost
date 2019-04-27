@@ -3,6 +3,7 @@ using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater;
 using NLog;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Timers;
@@ -249,6 +250,29 @@ namespace LeagueFPSBoost.ProcessManagement
                     logger.Debug($"Process info: {Environment.NewLine}{proc.GetProcessInfoForLogging(Program.PrintProcessModules)}");
                 }
             }
+        }
+
+        public static bool CheckForFreeMemory(ulong requiredMemoryInBytes = 1048576)
+        {
+            try
+            {
+                logger.Debug("Reading available physical memory...");
+                var freemem = new Microsoft.VisualBasic.Devices.ComputerInfo().AvailablePhysicalMemory;
+                logger.Debug("Available physical memory: " + freemem + " Bytes");
+                logger.Debug("Specified required memory: " + requiredMemoryInBytes + " Bytes");
+                if(freemem > requiredMemoryInBytes)
+                {
+                    logger.Info("There is enough memory for the game. Remaining: " + (freemem - requiredMemoryInBytes) + " Bytes");
+                    return true;
+                }
+                logger.Warn("There is not enough memory for the game. Missing: " + (requiredMemoryInBytes - freemem) + " Bytes");
+                System.Media.SystemSounds.Beep.Play();
+            }
+            catch (Win32Exception win32ex)
+            {
+                logger.Error(win32ex, Strings.exceptionThrown + " while trying to read available physical memory:" + Environment.NewLine);
+            }
+            return false;
         }
     }
 }

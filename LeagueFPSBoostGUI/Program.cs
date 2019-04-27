@@ -89,7 +89,7 @@ namespace LeagueFPSBoost
         public static bool MainWindowLoaded;
         static readonly bool WaitForDebugger = false;
 
-        public static readonly bool MandatoryUpdate = true;
+        public static readonly bool MandatoryUpdate = false;
 
         public static WriteOnce<bool> FirstRun = new WriteOnce<bool>();
 
@@ -294,10 +294,8 @@ namespace LeagueFPSBoost
             var fileToCompress = Assembly.GetExecutingAssembly().Location;
             var downloadedZip = Path.Combine(Directory.GetCurrentDirectory(), zipFileName);
             var zipExtractorPath = Path.Combine(Directory.GetCurrentDirectory(), zipExtractorName);
-
-            var successTmp = false;
-            var countTmp = 0;
-            while (!successTmp && ++countTmp < 5)
+            
+            for(int i = 0; i < 5; i++)
             {
                 try
                 {
@@ -313,7 +311,7 @@ namespace LeagueFPSBoost
                         PreNLog("Old temporary zip extractor file is found and deleted: " + zipExtractorPath);
                     }
                     PreNLog("Done.");
-                    successTmp = true;
+                    break;
                 }
                 catch (Exception ex)
                 {
@@ -327,10 +325,9 @@ namespace LeagueFPSBoost
             {
                 PreNLog("Update directory path has been specified.");
 
-                var successChk = false;
-                var countChk = 0;
+                
                 var validChk = false;
-                while (!successChk && ++countChk < 5)
+                for(int i = 0; i < 5; i++)
                 {
                     try
                     {
@@ -338,7 +335,7 @@ namespace LeagueFPSBoost
                         if (Directory.Exists(folderPath)) Directory.Delete(folderPath, true);
                         Directory.CreateDirectory(folderPath);
                         validChk = Directory.Exists(folderPath);
-                        successChk = validChk;
+                        if (validChk) break;
                     }
                     catch (Exception ex)
                     {
@@ -364,9 +361,8 @@ namespace LeagueFPSBoost
                 var jsonFilePath = Path.Combine(dir, "updater.json");
 
 
-                var success = false;
-                var count = 0;
-                while (!success && ++count < 5)
+                
+                for(int i = 0; i < 5; i++)
                 {
                     try
                     {
@@ -412,7 +408,7 @@ namespace LeagueFPSBoost
                             Logger.Info("Exit argument has been specified. Exiting before checking for league's config.");
                             Environment.Exit(0);
                         }
-                        success = true;
+                        break;
                     }
                     catch (Exception ex)
                     {

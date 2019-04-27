@@ -66,6 +66,7 @@ namespace LeagueFPSBoost.ProcessManagement
                     if (proc.ProcessName.ToLower().Contains("league"))
                     {
                         logger.Debug("Started process: " + Environment.NewLine + proc.GetProcessInfoForLogging(Program.PrintProcessModules));
+                        LeaguePriority.CheckForFreeMemory();
                         LeaguePriority.CheckAndBoost(Program.NoClient);
                     }
                 }
