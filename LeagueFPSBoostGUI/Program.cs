@@ -60,6 +60,9 @@ namespace LeagueFPSBoost
 
         public static int CodeStep { get; private set; }
 
+        public static event EventHandler<CrashUploadReportEventArgs> OnCrashUploadReport = delegate { };
+
+
 
         public static string LeaguePath { get; private set; }
         public static string LeagueLogFileDirPath { get; private set; }
@@ -181,7 +184,6 @@ namespace LeagueFPSBoost
 
             // Start recording all user input actions
             ER.Report.StartInputLogging(10,true);
-
             // Start capturing performance data
             ER.Report.StartPerformanceLogging(60);
 
@@ -226,7 +228,8 @@ namespace LeagueFPSBoost
             {
                 MessageBox.Show("Cant find LoL folder path.", "LeagueFPSBoost: Fatal Error While Finding League Folder Path", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            } // logger enabled
+            }
+            // logger enabled
 
             if (ExitBeforeMainWindow)
             {
@@ -533,6 +536,7 @@ namespace LeagueFPSBoost
             // Step 4. Activate the configuration
             LogManager.Configuration = config;
             LogManager.ReconfigExistingLoggers();
+            PreNLog("NLogger enabled!");
 
             Logger.Info("Printing info that happened before logger has been initialized.");
             foreach (string s in PreNLogMessages)
@@ -658,10 +662,10 @@ namespace LeagueFPSBoost
             sb.AppendLine(GpuSB.ToString());
             sb.AppendLine("Current process information:");
             sb.AppendLine(PiSB.ToString());
-            sb.AppendLine("LeagueFPSBoost information:");
-            sb.AppendLine(GetLeagueFPSBoostInformation());
             sb.AppendLine("League client information:");
-            sb.Append(GetLeagueClientInformation(Path.Combine(LeaguePath, "LeagueClient.exe")));
+            sb.AppendLine(GetLeagueClientInformation(Path.Combine(LeaguePath, "LeagueClient.exe")));
+            sb.AppendLine("LeagueFPSBoost information:");
+            sb.Append(GetLeagueFPSBoostInformation());
             return sb.ToString();
         }
 
@@ -678,7 +682,7 @@ namespace LeagueFPSBoost
             PreNLog("Initializing AppDomain UnhandledException Event.");
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            
+            //throw new Exception();
             PreNLog("Initializing LeaguePriority events.");
             LeaguePriority.GameBoostOk += OnGameBoostOk;
             LeaguePriority.GameBoostFail += OnGameBoostFail;
@@ -821,25 +825,46 @@ namespace LeagueFPSBoost
 
         public static void ReportCrash(Exception exception)
         {
+            try
+            {
+                Thread thread = new Thread(() =>
+                {
+                    var progressForm = new ProgressBarWindow();
+                    if (!Application.MessageLoop)
+                        Application.Run(progressForm);
+                    else
+                        progressForm.Show();
+                });
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, Strings.exceptionThrown + " while opening progress bar form: " + Environment.NewLine);
+            }
+            
             Logger.Debug("Building crash string for crash report.");
             try
             {
-                foreach (string s in PreLogWarnings)
-                {
-                    CrashSb.AppendLine(s);
-                }
+                CrashSb.AppendLine("PreLogWarnings: ");
+                CrashSb.AppendLine(string.Join(Environment.NewLine, PreLogWarnings.ToArray()) + Environment.NewLine + "End of pre log warnings.");
+
+                CrashSb.AppendLine();
+
                 CrashSb.Append("League path var: ").AppendLine(LeaguePath);
                 CrashSb.Append("League configuration directory path var: ").AppendLine(LeagueConfigDirPath);
                 CrashSb.Append("League log directory path var: ").AppendLine(LeagueLogFileDirPath);
-                CrashSb.Append("Log: " + Environment.NewLine + PreNLogMessages);
 
-                LeagueLogger.Error("A crash has been detected: " + Environment.NewLine + Environment.NewLine + exception + Environment.NewLine);
-                LeagueLogger.Info("Developer message: " + Environment.NewLine + Environment.NewLine + CrashSb);
-                LeagueLogger.Okay("Starting CrashReporter.Net");
+                CrashSb.AppendLine();
+
+                Logger.Error("A crash has been detected: " + Environment.NewLine + Environment.NewLine + exception + Environment.NewLine);
+                Logger.Info("Developer message: " + Environment.NewLine + Environment.NewLine + CrashSb);
+                Logger.Debug("Starting CrashReporter.Net");
 
                 ReportCrash2(exception, CrashSb.ToString());
-                LeagueLogger.Okay("Crash report dialog has been closed.");
-                LeagueLogger.Warning("Program will now terminate.");
+                Logger.Debug("Crash report dialog has been closed.");
+                Logger.Warn("Program will now terminate.");
             }
             catch (Exception ex)
             {
@@ -857,10 +882,20 @@ namespace LeagueFPSBoost
         {
             Logger.Debug("Showing crash report message box.");
             MessageBox.Show("Application has crashed. Error report will be sent to developer right now so that he can fix this issue easier. Please wait minute or two. You will be notified when its finished.", "LeagueFPSBoost Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            var contactInfo = Microsoft.VisualBasic.Interaction.InputBox("Please enter your contact information like email address or facebook profile link.. so that developer can contact you. Developer's contact email is leaguefpsboost@gmail.com", "Crash contact information", "", -1, -1);
+            var contactInfo = Microsoft.VisualBasic.Interaction.InputBox("Please enter your contact information like email address or summoner name and region... so that developer can contact you. Developer's contact email is leaguefpsboost@gmail.com", "Crash contact information", "", -1, -1);
             Logger.Debug("Creating crash report using CrashReporter.Net");
             Logger.Debug("Contact info: " + contactInfo);
-            developerMessage += Environment.NewLine + "Contact: " + contactInfo;
+            developerMessage += Environment.NewLine + "Contact: " + (string.IsNullOrEmpty(contactInfo) ? "Not provided" : contactInfo) + Environment.NewLine;
+            
+            var tmpcrashsb = new StringBuilder();
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(20, "Creating 1st report.."));
+            tmpcrashsb.AppendLine();
+            tmpcrashsb.Append("Log: " + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, PreNLogMessages.ToArray()) + Environment.NewLine + "End of pre nlog messages.");
+            tmpcrashsb.AppendLine();
+
+            tmpcrashsb.AppendLine();
+            developerMessage += tmpcrashsb.ToString();
+
             var reportCrash = new ReportCrash(StringCipher.Decrypt(
                                                             DeveloperData.CrashReport_cipherText,
                                                             DeveloperData.CrashReport_passPharse,
@@ -872,6 +907,7 @@ namespace LeagueFPSBoost
                 IncludeScreenshot = true,
                 Silent = true
             };
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(30, "Creating 2st report.."));
             var sb = new StringBuilder();
             sb.AppendLine(Strings.tabWithLine + "Crash report:");
             sb.AppendLine(Strings.doubleTabWithLine + "Capture screen: " + reportCrash.CaptureScreen);
@@ -885,6 +921,7 @@ namespace LeagueFPSBoost
             var additionalInfoFilePath = HelpingExtensions.GetTempFilePath(".txt", "info");
             var errorReport = ER.Report.GetErrorReport(exception);
             var zipFileName = string.Empty;
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(40, "Archiving files for 2nd report.."));
             try
             {
                 if (!string.IsNullOrEmpty(LeagueLogFileDirPath) && Directory.Exists(LeagueLogFileDirPath))
@@ -897,17 +934,19 @@ namespace LeagueFPSBoost
                 FilesToEmail.Add(htmlReportPath);
                 FilesToEmail.Add(additionalInfoFilePath);
                 Logger.Debug("Successfully created crash reports.");
+                OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(50, "Done archiving files.."));
             }
             catch (Exception exc)
             {
                 Logger.Error(exc, Strings.exceptionThrown + " while creating files to attach list: " + Environment.NewLine);
             }
-            
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(60, "Sending 1st report.."));
             Logger.Debug("Sending silent CrashReporter.NET crash report.");
             try
             {
                 reportCrash.SendSilently(exception);
                 Logger.Debug("Successfully sent CrashReporter.NET crash report.");
+                OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(65, "1st report sent.."));
             }
             catch (Exception excreportCrash)
             {
@@ -917,6 +956,7 @@ namespace LeagueFPSBoost
             Logger.Debug("Creating ExceptionReporter.NET crash report for sending via mail.");
             try
             {
+                OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(70, "Sending 2nd report.."));
                 var er = new ExceptionReporter
                 {
                     Config =
@@ -960,6 +1000,7 @@ namespace LeagueFPSBoost
             {
                 Logger.Error(excExcReport, Strings.exceptionThrown + " while sending ExceptionReporter.NET crash report: " + Environment.NewLine);
             }
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(80, "Opening 2nd report.."));
 
             Logger.Debug("Showing crash report window.");
             try
@@ -971,6 +1012,7 @@ namespace LeagueFPSBoost
             {
                 Logger.Error(excReport, Strings.exceptionThrown + " while showing crash report window: " + Environment.NewLine);
             }
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(90, "Deleting local report.."));
 
             Logger.Debug("Deleting current crash report html file: " + htmlReportPath);
             var successChk = false;
@@ -998,6 +1040,9 @@ namespace LeagueFPSBoost
                     successChk = true;
                 }
             }
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(95, "Local report deleted..."));
+            OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(95, "Wait for 2nd report...."));
+
         }
 
         class ExceptionReporterSendEvent : IReportSendEvent
@@ -1009,6 +1054,7 @@ namespace LeagueFPSBoost
                 {
                     txt = "Sending error report via email has finished successfully.";
                     Logger.Debug(txt);
+                    OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(100, "2nd report sent.."));
                     Task.Run(() =>
                     {
                         MessageBox.Show(txt, "LeagueFPSBoost Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1018,11 +1064,14 @@ namespace LeagueFPSBoost
                 {
                     txt = "Sending error report via email has failed.";
                     Logger.Error(txt);
+                    OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(100, "2nd report not sent.."));
                     Task.Run(() =>
                     {
                         MessageBox.Show(txt, "LeagueFPSBoost Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     });
                 }
+                OnCrashUploadReport?.Invoke(null, new CrashUploadReportEventArgs(100, "Done.."));
+
             }
 
             public void ShowError(string message, Exception exception)
@@ -1412,7 +1461,26 @@ namespace LeagueFPSBoost
                 sb.AppendLine(Strings.doubleTabWithLine + "Copyright: " + fvi.LegalCopyright);
                 sb.AppendLine(Strings.doubleTabWithLine + "Size: " + GetHumanReadableFileSize(assembly.Location));
                 sb.AppendLine(Strings.doubleTabWithLine + "Original file name: " + fvi.OriginalFilename);
-                sb.Append(Strings.doubleTabWithLine + "MD5 checksum: " + CalculateMD5(assembly.Location));
+                //sb.Append(Strings.doubleTabWithLine + "MD5 checksum: " + CalculateMD5(assembly.Location));
+                sb.AppendLine(Strings.doubleTabWithLine + "Checksum: ");
+                try
+                {
+                    var location = assembly.Location;
+                    using (var fs = new FileStream(location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        var calc = new ChecksumCalculator(fs);
+                        sb.AppendLine(Strings.tripleTabWithLine + "MD5: " + calc.CalculateMD5());
+                        sb.AppendLine(Strings.tripleTabWithLine + "SHA1: " + calc.CalculateSHA1());
+                        sb.AppendLine(Strings.tripleTabWithLine + "SHA256: " + calc.CalculateSHA256());
+                        sb.AppendLine(Strings.tripleTabWithLine + "SHA384: " + calc.CalculateSHA384());
+                        sb.Append(Strings.tripleTabWithLine + "SHA512: " + calc.CalculateSHA512());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, Strings.exceptionThrown + " while calculating hash for leaguefpsboost file: " + assembly.Location + Environment.NewLine);
+                    sb.Append(Strings.tripleTabWithLine + "Error while calculating hash.");
+                }
 
                 return sb.ToString();
             }
@@ -1429,6 +1497,7 @@ namespace LeagueFPSBoost
             {
                 var sb = new StringBuilder();
                 var fvi = FileVersionInfo.GetVersionInfo(clientPath);
+                
 
                 sb.AppendLine(Strings.tabWithLine + "Path: " + clientPath);
                 sb.AppendLine(Strings.doubleTabWithLine + "File description: " + fvi.FileDescription);
@@ -1438,10 +1507,33 @@ namespace LeagueFPSBoost
                 sb.AppendLine(Strings.doubleTabWithLine + "Copyright: " + fvi.LegalCopyright);
                 sb.AppendLine(Strings.doubleTabWithLine + "Size: " + GetHumanReadableFileSize(clientPath));
                 sb.AppendLine(Strings.doubleTabWithLine + "Original file name: " + fvi.OriginalFilename);
-                sb.Append(Strings.doubleTabWithLine + "MD5 checksum: " + CalculateMD5(clientPath));
+                //sb.AppendLine(Strings.doubleTabWithLine + "MD5 checksum: " + CalculateMD5(clientPath));
+                sb.AppendLine(Strings.doubleTabWithLine + "Checksum: ");
+                try
+                {
+                    var location = clientPath;
+                    
+                    using(var fs = new FileStream(location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        var calc = new ChecksumCalculator(fs);
+                        sb.AppendLine(Strings.tripleTabWithLine + "MD5: " + calc.CalculateMD5());
+                        sb.AppendLine(Strings.tripleTabWithLine + "SHA1: " + calc.CalculateSHA1());
+                        sb.AppendLine(Strings.tripleTabWithLine + "SHA256: " + calc.CalculateSHA256());
+                        sb.AppendLine(Strings.tripleTabWithLine + "SHA384: " + calc.CalculateSHA384());
+                        sb.Append(Strings.tripleTabWithLine + "SHA512: " + calc.CalculateSHA512());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, Strings.exceptionThrown + " while calculating hash for client file: " + clientPath + Environment.NewLine);
+                    sb.Append(Strings.tripleTabWithLine + "Error while calculating hash.");
+                }
+                
 
                 LeagueClientInfo = sb.ToString();
-                CrashSb.AppendLine(LeagueClientInfo).AppendLine();
+                CrashSb.AppendLine("LeagueClient info:");
+                CrashSb.AppendLine(LeagueClientInfo.ToString().TrimEnd());
+                CrashSb.AppendLine();
                 return LeagueClientInfo;
             }
             catch (Exception ex)
@@ -1639,6 +1731,18 @@ namespace LeagueFPSBoost
             var hasConsole = handle != IntPtr.Zero;
             Logger.Debug("HasConsole: " + hasConsole);
             return hasConsole;
+        }
+    }
+
+    public class CrashUploadReportEventArgs : EventArgs
+    {
+        public int Percentage { get; private set; }
+        public string Status { get; private set; }
+
+        public CrashUploadReportEventArgs(int perct, string status)
+        {
+            Percentage = perct;
+            Status = status;
         }
     }
 }

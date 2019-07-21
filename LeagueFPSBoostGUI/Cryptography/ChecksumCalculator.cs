@@ -6,7 +6,10 @@ namespace LeagueFPSBoost.Cryptography
 {
     public class ChecksumCalculator : ICheckSumCalculator
     {
+
         public Stream Stream { get; private set; }
+
+        public bool StreamRead { get; private set; }
 
         public ChecksumCalculator(Stream stream)
         {
@@ -17,6 +20,7 @@ namespace LeagueFPSBoost.Cryptography
         {
             using (var md5 = MD5.Create())
             {
+                CheckStream();
                 return GetHashString(md5.ComputeHash(Stream));
             }
         }
@@ -25,6 +29,7 @@ namespace LeagueFPSBoost.Cryptography
         {
             using (var sha1 = new SHA1Managed())
             {
+                CheckStream();
                 return GetHashString(sha1.ComputeHash(Stream));
             }
         }
@@ -33,6 +38,7 @@ namespace LeagueFPSBoost.Cryptography
         {
             using (var sha256 = new SHA256Managed())
             {
+                CheckStream();
                 return GetHashString(sha256.ComputeHash(Stream));
             }
         }
@@ -41,6 +47,7 @@ namespace LeagueFPSBoost.Cryptography
         {
             using (var sha384 = new SHA384Managed())
             {
+                CheckStream();
                 return GetHashString(sha384.ComputeHash(Stream));
             }
         }
@@ -49,6 +56,7 @@ namespace LeagueFPSBoost.Cryptography
         {
             using (var sha512 = new SHA512Managed())
             {
+                CheckStream();
                 return GetHashString(sha512.ComputeHash(Stream));
             }
         }
@@ -66,6 +74,13 @@ namespace LeagueFPSBoost.Cryptography
         public void Dispose()
         {
             Stream.Dispose();
+        }
+
+        private void CheckStream()
+        {
+            if (Stream.CanSeek) { Stream.Position = 0; }
+            else if (StreamRead) { throw new InvalidOperationException("Stream does not support seeking, cannot read again."); }
+            else StreamRead = true;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace LeagueFPSBoost.GUI
             InitializeComponent();
             aboutTXT = metroLabel9.Text;
             metroTabControl1.SelectedIndex = 0;
-            metroLink2.Text = metroLink2.Text + Program.CurrentVersionFull;
+            metroLink2.Text += Program.CurrentVersionFull;
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
@@ -145,6 +145,7 @@ namespace LeagueFPSBoost.GUI
             }
             UpdateManager.InitAndCheckForUpdates();
             BringFormToFront();
+            //throw new Exception();
         }
 
         private void FirstRunDonationMessageBox()
@@ -558,6 +559,7 @@ namespace LeagueFPSBoost.GUI
             catch (Exception ex)
             {
                 logger.Error(ex, Strings.exceptionThrown + " while reading game's configuration file: " + Environment.NewLine);
+                Program.PlayNoti(false);
             }
         }
 
