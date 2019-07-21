@@ -219,5 +219,13 @@ namespace LeagueFPSBoost.GUI
         {
             OpenUrl.Open(Strings.DONATE_URL);
         }
+
+        private void TriggerCrashButton_Click(object sender, EventArgs e)
+        {
+            logger.Debug("Crash report button clicked. Showing message box: " + Strings.UserTriggeredExceptionMessage);
+            MessageBox.Show(Strings.UserTriggeredExceptionMessage, "LeagueFPSBoost: Crash", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            logger.Debug("Throwing new UserTriggeredCrashException.");
+            throw new Diagnostics.UserTriggeredCrashException();
+        }
     }
 }

@@ -238,6 +238,7 @@
   <ItemGroup>
     <Compile Include="Cryptography\ChecksumCalculator.cs" />
     <Compile Include="Cryptography\ICheckSumCalculator.cs" />
+    <Compile Include="Diagnostics\UserTriggeredCrashException.cs" />
     <Compile Include="GUI\InformationWindow.cs">
       <SubType>Form</SubType>
     </Compile>

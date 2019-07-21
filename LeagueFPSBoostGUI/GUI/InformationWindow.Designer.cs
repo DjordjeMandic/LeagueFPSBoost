@@ -48,6 +48,7 @@
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.metroButton3 = new MetroFramework.Controls.MetroButton();
+            this.triggerCrashButton = new MetroFramework.Controls.MetroButton();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.SuspendLayout();
@@ -127,7 +128,7 @@
             this.exitEarlyCheckBox1.AutoSize = true;
             this.exitEarlyCheckBox1.Location = new System.Drawing.Point(6, 18);
             this.exitEarlyCheckBox1.Name = "exitEarlyCheckBox1";
-            this.exitEarlyCheckBox1.Size = new System.Drawing.Size(69, 15);
+            this.exitEarlyCheckBox1.Size = new System.Drawing.Size(70, 15);
             this.exitEarlyCheckBox1.TabIndex = 9;
             this.exitEarlyCheckBox1.Text = "Exit Early";
             this.exitEarlyCheckBox1.UseStyleColors = true;
@@ -211,7 +212,7 @@
             // 
             // rstButton1
             // 
-            this.rstButton1.Location = new System.Drawing.Point(191, 102);
+            this.rstButton1.Location = new System.Drawing.Point(191, 97);
             this.rstButton1.Name = "rstButton1";
             this.rstButton1.Size = new System.Drawing.Size(73, 23);
             this.rstButton1.TabIndex = 7;
@@ -224,7 +225,7 @@
             // 
             // metroButton1
             // 
-            this.metroButton1.Location = new System.Drawing.Point(191, 131);
+            this.metroButton1.Location = new System.Drawing.Point(191, 126);
             this.metroButton1.Name = "metroButton1";
             this.metroButton1.Size = new System.Drawing.Size(73, 23);
             this.metroButton1.TabIndex = 5;
@@ -233,27 +234,37 @@
             // 
             // metroButton2
             // 
-            this.metroButton2.Location = new System.Drawing.Point(191, 207);
+            this.metroButton2.Location = new System.Drawing.Point(191, 213);
             this.metroButton2.Name = "metroButton2";
-            this.metroButton2.Size = new System.Drawing.Size(75, 23);
+            this.metroButton2.Size = new System.Drawing.Size(73, 23);
             this.metroButton2.TabIndex = 8;
             this.metroButton2.Text = "Console";
             this.metroButton2.Click += new System.EventHandler(this.MetroButton2_Click);
             // 
             // metroButton3
             // 
-            this.metroButton3.Location = new System.Drawing.Point(191, 160);
+            this.metroButton3.Location = new System.Drawing.Point(191, 155);
             this.metroButton3.Name = "metroButton3";
             this.metroButton3.Size = new System.Drawing.Size(73, 23);
             this.metroButton3.TabIndex = 9;
             this.metroButton3.Text = "Donate";
             this.metroButton3.Click += new System.EventHandler(this.MetroButton3_Click);
             // 
+            // triggerCrashButton
+            // 
+            this.triggerCrashButton.Location = new System.Drawing.Point(191, 184);
+            this.triggerCrashButton.Name = "triggerCrashButton";
+            this.triggerCrashButton.Size = new System.Drawing.Size(73, 23);
+            this.triggerCrashButton.TabIndex = 10;
+            this.triggerCrashButton.Text = "Crash report";
+            this.triggerCrashButton.Click += new System.EventHandler(this.TriggerCrashButton_Click);
+            // 
             // InformationWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(287, 329);
+            this.Controls.Add(this.triggerCrashButton);
             this.Controls.Add(this.metroButton3);
             this.Controls.Add(this.metroButton2);
             this.Controls.Add(this.rstButton1);
@@ -298,5 +309,6 @@
         private MetroFramework.Controls.MetroCheckBox cleanCheckBox1;
         private MetroFramework.Controls.MetroButton metroButton2;
         private MetroFramework.Controls.MetroButton metroButton3;
+        private MetroFramework.Controls.MetroButton triggerCrashButton;
     }
 }

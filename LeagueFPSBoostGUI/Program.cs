@@ -223,6 +223,15 @@ namespace LeagueFPSBoost
 
             PreNLog("This is only instance of LeagueFPSBoost.");
 
+            PreNLog("Checking for program's filename."); // Must be "LeagueFPSBoost.exe" becuase of updater
+            if(!Assembly.GetEntryAssembly().Location.EndsWith("LeagueFPSBoost.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                PreNLog("Program's filename is incorrect, updates will fail to relaunch program. Please rename the program executable to 'LeagueFPSBoost'.");
+                MessageBox.Show("Program's filename is incorrect, updates will fail to relaunch program. Please rename the program executable to 'LeagueFPSBoost'. If you don't rename program's file you cant' run it. Program will exit after clicking on 'OK'.", "LeagueFPSBoost: Wrong Filename", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            PreNLog("Program's filename is correct.");
+
             CodeStep = 2; // LeagueFPSBoost: Fatal Error While Finding League Folder Path
             if (!FindPath())
             {
@@ -662,10 +671,11 @@ namespace LeagueFPSBoost
             sb.AppendLine(GpuSB.ToString());
             sb.AppendLine("Current process information:");
             sb.AppendLine(PiSB.ToString());
-            sb.AppendLine("League client information:");
-            sb.AppendLine(GetLeagueClientInformation(Path.Combine(LeaguePath, "LeagueClient.exe")));
             sb.AppendLine("LeagueFPSBoost information:");
             sb.Append(GetLeagueFPSBoostInformation());
+            sb.AppendLine("League client information:");
+            sb.AppendLine(GetLeagueClientInformation(Path.Combine(LeaguePath, "LeagueClient.exe")));
+            
             return sb.ToString();
         }
 

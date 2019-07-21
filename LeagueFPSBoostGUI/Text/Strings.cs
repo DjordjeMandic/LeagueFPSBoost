@@ -52,6 +52,7 @@ namespace LeagueFPSBoost.Text
         public const string DONATE_URL = @"https://paypal.me/DjordjeMandic";
         public const string DOT_NET_FRAMEWORK_URL = @"https://dotnet.microsoft.com/download/thank-you/net472";
 
+        public const string UserTriggeredExceptionMessage = @"This is user triggered crash used to create and send crash report with logs. Application is working fine, just restart it after crash reporting is done.";
 
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
         static Dictionary<int, string> _FieldLookup;
