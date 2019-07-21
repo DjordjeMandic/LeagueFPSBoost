@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <item>
-  <version>3.7.7141.14158</version>
+  <version>3.7.7141.14415</version>
   <url>https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip</url>
   <changelog>https://github.com/DjordjeMandic/LeagueFPSBoost/releases</changelog>
   <mandatory>false</mandatory>
-  <checksum algorithm="SHA512">9115934492ba643a54ea9c3e65d9d722270b3eab405f31abcdbaaa03d16c17ccb6ed8ff76e9fe87c5eca6510e7fe9bfcede198fc6d872e007014eb3540656359</checksum>
+  <checksum algorithm="SHA512">1fde0eaba26837d9c1867befa0a582cfb41976fed5ae7fdf4b44ce644a688617910cf9d15354d9bc20fd2c540eec6dd5d44b37f3122ad178c7eaea6620735d00</checksum>
 </item>

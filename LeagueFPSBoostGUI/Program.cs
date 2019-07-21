@@ -1481,6 +1481,9 @@ namespace LeagueFPSBoost
                     Logger.Error(ex, Strings.exceptionThrown + " while calculating hash for leaguefpsboost file: " + assembly.Location + Environment.NewLine);
                     sb.Append(Strings.tripleTabWithLine + "Error while calculating hash.");
                 }
+                CrashSb.AppendLine("LeagueFPSBoost info:");
+                CrashSb.AppendLine(sb.ToString().TrimEnd());
+                CrashSb.AppendLine();
 
                 return sb.ToString();
             }
