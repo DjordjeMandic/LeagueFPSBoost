@@ -8,5 +8,8 @@
     <Setting Name="FailedUpdateSorryMessageBox_Ran" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="GameBarAndFullScrOptimMessageBox_Ran" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("LeagueFPSBoost")]
-[assembly: AssemblyDescription("Program That Changes Priority And Some GFX Settings To Increase FPS")]
+[assembly: AssemblyDescription("Program made to simplify making changes to system and game in order to improve League of Legends game's preformance.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("https://github.com/DjordjeMandic")]
 [assembly: AssemblyProduct("LeagueFPSBoost")]
-[assembly: AssemblyCopyright("IShunpoYourFace © 2017-2019")]
+[assembly: AssemblyCopyright("Djordje Mandic © 2017-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.7.*")]
-[assembly: AssemblyFileVersion("3.7.0.0")]
+[assembly: AssemblyVersion("4.0.*")]
+[assembly: AssemblyFileVersion("4.0.0.0")]
 [assembly: NeutralResourcesLanguage("en")]
 

@@ -1,14 +1,23 @@
 {
-  "CreationTime": "2019-07-21T16:54:33.4266999+02:00",
-  "Version": "3.7.7141.29825",
+  "CreationTime": "2019-10-14T22:12:34.3527005+02:00",
+  "Version": "4.0.7226.39891",
   "DownloadURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip",
   "ChangelogURL": "https://github.com/DjordjeMandic/LeagueFPSBoost/releases",
   "Mandatory": false,
   "Checksum": {
     "Type": "SHA512",
-    "Value": "dd7cdb563c0bb992b5eba53caa4f09d32c19ca00dec410fdd6a0ed382be21cdb8ae0c8acb70cb590d75a72761a315a91e94e6005d936150f6645ae422be6aa7a"
+    "Value": "ba49f229c91d969d990c1120ada83a02090c760cfd6a78e95f3d7d86ed9c46c0e7d73d9ce81ccd4d45dc4e448a8928bff430d2c53807c60a6eefe8de1290e84b"
   },
   "CommandLineArguments": "",
   "PostUpdate": [],
-  "MessageBoxes": []
+  "MessageBoxes": [
+    {
+      "Caption": "LeagueFPSBoost: Game Bar And Full Screen Optimization Feature",
+      "MessageBoxIcon": 64,
+      "MessageBoxButton": 0,
+      "Message": "New feature has been added for Windows 10 users. Disabling Game Bar and Full Screen Optimizations should give a little bit more fps gain.",
+      "RequiresSpecialCall": true,
+      "RunOnce": true
+    }
+  ]
 }

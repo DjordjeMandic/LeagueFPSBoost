@@ -14,6 +14,8 @@ using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
 using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater;
+using LeagueFPSBoost.Updater.MessageBoxCollection;
+using LeagueFPSBoost.Updater.PostUpdateAction;
 using Microsoft.Win32;
 using NAudio.Wave;
 using NDesk.Options;
@@ -65,6 +67,7 @@ namespace LeagueFPSBoost
 
 
         public static string LeaguePath { get; private set; }
+        public static string LeagueGamePath { get; private set; }
         public static string LeagueLogFileDirPath { get; private set; }
         public static string LeagueConfigDirPath { get; private set; }
         public static string AppConfigDir { get; set; }
@@ -226,7 +229,22 @@ namespace LeagueFPSBoost
             PreNLog("Checking for program's filename."); // Must be "LeagueFPSBoost.exe" becuase of updater
             if(!Assembly.GetEntryAssembly().Location.EndsWith("LeagueFPSBoost.exe", StringComparison.OrdinalIgnoreCase))
             {
-                PreNLog("Program's filename is incorrect, updates will fail to relaunch program. Please rename the program executable to 'LeagueFPSBoost'.");
+                try
+                {
+                    PreNLog("Trying to check if LeagueFPSBoost.exe exists in this directory.");
+                    var path = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "LeagueFPSBoost.exe");
+                    if (File.Exists(path))
+                    {
+                        PreNLog("Launching correctly named file.");
+                        Restart.RestartNow(path);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    PreNLog("Failed: " + Environment.NewLine + ex);
+                }
+                
+                PreNLog("Program's filename is incorrect, updater will fail to relaunch program. Please rename the program executable to 'LeagueFPSBoost'.");
                 MessageBox.Show("Program's filename is incorrect, updates will fail to relaunch program. Please rename the program executable to 'LeagueFPSBoost'. If you don't rename program's file you cant' run it. Program will exit after clicking on 'OK'.", "LeagueFPSBoost: Wrong Filename", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -403,7 +421,7 @@ namespace LeagueFPSBoost
                         PreNLog("Created update xml file: " + xmlFilePath);
 
                         var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, MandatoryUpdate);
-                        //jsonUpdaterData.AddMessageBox(MessageBoxList.FailedUpdateSorry);
+                        jsonUpdaterData.AddMessageBox(MessageBoxList.GameBarAndFullScrOptim);
 
                         if (jsonUpdaterData.Save())
                             PreNLog("Created update json file: " + jsonFilePath);
@@ -672,7 +690,7 @@ namespace LeagueFPSBoost
             sb.AppendLine("Current process information:");
             sb.AppendLine(PiSB.ToString());
             sb.AppendLine("LeagueFPSBoost information:");
-            sb.Append(GetLeagueFPSBoostInformation());
+            sb.AppendLine(GetLeagueFPSBoostInformation());
             sb.AppendLine("League client information:");
             sb.AppendLine(GetLeagueClientInformation(Path.Combine(LeaguePath, "LeagueClient.exe")));
             
@@ -865,6 +883,8 @@ namespace LeagueFPSBoost
                 CrashSb.Append("League path var: ").AppendLine(LeaguePath);
                 CrashSb.Append("League configuration directory path var: ").AppendLine(LeagueConfigDirPath);
                 CrashSb.Append("League log directory path var: ").AppendLine(LeagueLogFileDirPath);
+                CrashSb.Append("League game path: ").AppendLine(LeagueGamePath);
+                CrashSb.Append("OS Version: " ).AppendLine(Environment.OSVersion.Version.ToString());
 
                 CrashSb.AppendLine();
 
@@ -1115,7 +1135,7 @@ namespace LeagueFPSBoost
             {
                 var settingsLeaguePath = Settings.Default.LeaguePath;
                 PreNLog("Got settingsLeaguePath from settings: " + settingsLeaguePath);
-                if (settingsLeaguePath == "") throw new ArgumentException("League's root directory path from settings is empty.");
+                if (string.IsNullOrEmpty(settingsLeaguePath)) throw new ArgumentException("League's root directory path from settings is empty.");
                 PreNLog("Checking if path from settings exists.");
                 if (Directory.Exists(settingsLeaguePath))
                 {
@@ -1345,15 +1365,18 @@ namespace LeagueFPSBoost
                 PreNLog("Updating directory paths.");
 
                 LeaguePath = lolpath;
-                PreNLog("leaguePath: " + LeaguePath);
+                PreNLog("LeaguePath: " + LeaguePath);
 
                 LeagueLogFileDirPath = Path.Combine(LeaguePath, @"Logs\LeagueFPSBoost Logs\");
-                PreNLog("leagueLogFileDirPath: " + LeagueLogFileDirPath);
+                PreNLog("LeagueLogFileDirPath: " + LeagueLogFileDirPath);
 
                 if (ClearLogs) ClearLog(LeagueLogFileDirPath);
 
                 LeagueConfigDirPath = Path.Combine(LeaguePath, @"Config\");
-                PreNLog("leagueConfigDirPath: " + LeagueConfigDirPath);
+                PreNLog("LeagueConfigDirPath: " + LeagueConfigDirPath);
+
+                LeagueGamePath = Path.Combine(LeaguePath, "Game", "League of Legends.exe");
+                PreNLog("LeagueGamePath: " + LeagueGamePath);
 
                 PathFound = true;
                 try

@@ -4,12 +4,26 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LeagueFPSBoost.Extensions
 {
 
     public static class HelpingExtensions
     {
+        public static Task WaitForExitAsync(this Process process,
+    CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var tcs = new TaskCompletionSource<object>();
+            process.EnableRaisingEvents = true;
+            process.Exited += (sender, args) => tcs.TrySetResult(null);
+            if (cancellationToken != default(CancellationToken))
+                cancellationToken.Register(tcs.SetCanceled);
+
+            return tcs.Task;
+        }
+
         public static bool IsAssemblyDebugBuild(this Assembly assembly)
         {
             return assembly.GetCustomAttributes(false).OfType<DebuggableAttribute>().Any(da => da.IsJITTrackingEnabled);
@@ -22,7 +36,7 @@ namespace LeagueFPSBoost.Extensions
 
         public static string GetTempFilePath(this string path, string extension, string type)
         {
-            return Path.Combine(path, "LeagueFPSBoost_" + type + "_" + Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.ToString(Strings.logDateTimeFormat) + extension);
+            return Path.Combine(path, Assembly.GetEntryAssembly().GetName().Name + "_" + type + "_" + Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.ToString(Strings.logDateTimeFormat) + extension);
         }
 
         /// <summary>Indicates whether the specified array is null or has a length of zero.</summary>

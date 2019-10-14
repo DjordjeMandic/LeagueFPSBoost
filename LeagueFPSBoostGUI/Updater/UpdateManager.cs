@@ -59,6 +59,10 @@ namespace LeagueFPSBoost.Updater
                     {
                         MessageBoxList.FailedUpdateSorry.ShowMessageBox();
                     }
+                    else if (msgbox == MessageBoxList.GameBarAndFullScrOptim)
+                    {
+                        MessageBoxList.GameBarAndFullScrOptim.ShowMessageBox();
+                    }
                     else if(!msgbox.GetRequiresSpecialCall())
                     {
                         msgbox.ShowMessageBox();
@@ -67,8 +71,8 @@ namespace LeagueFPSBoost.Updater
 
                 foreach(var action in JsonParsedUpdaterData.PostUpdate)
                 {
-                    if (action == Actions.RestartPostUpdate_StabilityReason) Actions.RestartPostUpdate_StabilityReason.Run();
-                    if (action == Actions.RestartPostUpdate_NoReason) Actions.RestartPostUpdate_NoReason.Run();
+                    if (action == ActionList.RestartPostUpdate_StabilityReason) ActionList.RestartPostUpdate_StabilityReason.Run();
+                    if (action == ActionList.RestartPostUpdate_NoReason) ActionList.RestartPostUpdate_NoReason.Run();
                 }
             });
         }

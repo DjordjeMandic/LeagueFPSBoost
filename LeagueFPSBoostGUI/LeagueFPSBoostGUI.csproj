@@ -44,6 +44,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <LangVersion>7.3</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,6 +56,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\lcu.ico</ApplicationIcon>
@@ -204,6 +206,7 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq">
       <Private>False</Private>
@@ -254,6 +257,13 @@
     <Compile Include="Native\Framework.cs" />
     <Compile Include="Native\Unmanaged\NativeMethods.cs" />
     <Compile Include="Native\NativeDefinitions.cs" />
+    <Compile Include="Native\Unmanaged\ServiceHelper.cs" />
+    <Compile Include="Native\WMI\WinMgmtResources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WinMgmtResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Native\WMI\WMIManagment.cs" />
     <Compile Include="ProcessManagement\OpenFolder.cs" />
     <Compile Include="ProcessManagement\OpenUrl.cs" />
     <Compile Include="Diagnostics\Debugger\DebuggerWatcher.cs" />
@@ -297,14 +307,18 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>UpdaterMessageBoxSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RegistryManagment\CompabilityFlagLayers.cs" />
+    <Compile Include="RegistryManagment\GameBar.cs" />
+    <Compile Include="RegistryManagment\LeagueGameCompabilityFlagLayers.cs" />
     <Compile Include="Text\Strings.cs" />
     <Compile Include="Updater\Json\UpdaterJson.cs" />
     <Compile Include="Updater\MessageBoxCollection\FailedUpdateSorryMessageBox.cs" />
+    <Compile Include="Updater\MessageBoxCollection\GameBarAndFullScrOptimMessageBox.cs" />
     <Compile Include="Updater\MessageBoxCollection\IUpdaterMessageBox.cs" />
     <Compile Include="Updater\MessageBoxCollection\ManuallyDownloadLeagueFPSBoostMessageBox.cs" />
     <Compile Include="Updater\MessageBoxCollection\MessageBoxData.cs" />
     <Compile Include="Updater\MessageBoxCollection\MessageBoxList.cs" />
-    <Compile Include="Updater\PostUpdateAction\Actions.cs" />
+    <Compile Include="Updater\PostUpdateAction\ActionList.cs" />
     <Compile Include="Updater\PostUpdateAction\IPostUpdateAction.cs" />
     <Compile Include="Updater\PostUpdateAction\PostUpdateActionData.cs" />
     <Compile Include="Updater\PostUpdateAction\RestartPostUpdateAction.cs" />
@@ -320,6 +334,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ProgressBarWindow.resx">
       <DependentUpon>ProgressBarWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Native\WMI\WinMgmtResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WinMgmtResources1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

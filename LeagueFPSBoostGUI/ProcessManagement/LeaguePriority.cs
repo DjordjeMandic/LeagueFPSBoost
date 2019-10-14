@@ -1,4 +1,6 @@
 ﻿using LeagueFPSBoost.Logging;
+using LeagueFPSBoost.Native.Unmanaged;
+using LeagueFPSBoost.Native.WMI;
 using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater;
 using NLog;
@@ -6,6 +8,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.ServiceProcess;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 
@@ -39,6 +44,18 @@ namespace LeagueFPSBoost.ProcessManagement
         }
     }
 
+    public class ProcessPriorityWatcherEnabledEventArgs : EventArgs
+    {
+        /// <summary>
+        /// True if Enabled.
+        /// </summary>
+        public bool Enabled { get; private set; }
+
+        public ProcessPriorityWatcherEnabledEventArgs(bool _Enabled)
+        {
+            Enabled = _Enabled;
+        }
+    }
     public static class LeaguePriority
     {
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -49,35 +66,193 @@ namespace LeagueFPSBoost.ProcessManagement
         public static event EventHandler<LeagueBoostEventArgs> ClientNormalOk = delegate { };
         public static event EventHandler<LeagueBoostErrorEventArgs> ClientNormalFail = delegate { };
 
+        /// <summary>
+        /// Fired when ProcessWatcher enabled changes state.
+        /// </summary>
+        public static event EventHandler<ProcessPriorityWatcherEnabledEventArgs> ProcessPriorityWatcherEnabled = delegate { };
+
 
         public static System.Timers.Timer BoostCheckTimer { get; private set; }
         public static readonly int BoostCheckTimerInterval = 1 * 60 * 1000;
         static int boostCheckEventCount;
 
-        public static void StartWatcher()
+        private static bool WMIVerifyReceived;
+        private static bool WMIVerifyConsistent;
+
+        private static bool WMISalvageReceived;
+        private static bool WMISalvageSuccess;
+
+        private static bool WMIResetReceived;
+        private static bool WMIResetSuccess;
+
+        public static bool ProcessWatcherEnabled { get; private set; }
+
+
+        /// <summary>
+        /// Returns true if watcher has been started successfully, false otherwise.
+        /// </summary>
+        /// <returns></returns>
+        public static bool InitAndStartWatcher()
         {
+            ProcessPriorityWatcherEnabled += LeaguePriority_ProcessPriorityWatcherEnabled;
+            InitBoostCheckTimer();
             try
             {
-                logger.Debug("Trying to start process watcher.");
-                Program.StartWatch.Start();
-                Program.StopWatch.Start();
-                logger.Debug("Process watcher has been started.");
-                LeagueLogger.Okay("Process watcher started.");
+                StartProcessWatcher();
+                return true;
             }
             catch (Exception ex)
             {
                 logger.Error(ex, Strings.exceptionThrown + " while trying to start process watcher: " + Environment.NewLine);
-                MessageBox.Show($"There was an fatal error.{Environment.NewLine}Please restart the program.{Environment.NewLine}Check log for details.{Environment.NewLine}Program will now close.", "LeagueFPSBoost: Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(0);
-            }
+                MessageBox.Show($"WMI repository seems to be bad. (WMI is something important in windows for correct functionality) " +
+                    $"Program will now preform consistency check on the WMI repository. If WMI repository is not consistent then league process management wont work.", "LeagueFPSBoost: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                WMIManagment.WMIVerifyResultReceived += WMIManagment_WMIVerifyResultReceived;
+                WMIManagment.VerifyRepository();
+                WMIManagment.WMIVerifyResultReceived -= WMIManagment_WMIVerifyResultReceived;
 
+                while (!WMIVerifyReceived) Thread.Sleep(100);
+                if(WMIVerifyConsistent)
+                {
+                    var rslt = MessageBox.Show("WMI repository is consistent but program cannot access wmi. Do you want to set Winmgmt service startup type to automatic?", "LeagueFPSBoost: WMI Result", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if(rslt == DialogResult.Yes)
+                    {
+                        logger.Debug("Changing WMI service startup type to automatic.");
+                        try
+                        {
+                            var svc = new ServiceController(WinMgmtResources.ServiceName);
+                            ServiceHelper.ChangeStartMode(svc, ServiceStartMode.Automatic);
+                            logger.Debug("WMI service startup type changed to automatic successfully.");
+                            return RetryStartProcessWatcher();
+                        }
+                        catch(Exception ex2)
+                        {
+                            logger.Error(ex2, Strings.exceptionThrown + " while trying to change WMI service startup type: " + Environment.NewLine);
+                            MessageBox.Show("Could not access WMI. Check logs for more details. Process priority managment will not work until this problem is fixed.", "LeagueFPSBoost: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if(DialogResult.Yes == MessageBox.Show("WMI repository is not consistent. Would you like to try salvaging repository(try to repair it)?"
+                        + Environment.NewLine + "If you select No then no changes will be made to your WMI repository but game process priority management will not work.", "LeagueFPSBoost: Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
+                    {
+                        WMIManagment.WMISalvageResultReceived += WMIManagment_WMISalvageResultReceived;
+                        WMIManagment.SalvageRepository();
+                        WMIManagment.WMISalvageResultReceived -= WMIManagment_WMISalvageResultReceived;
+                        while (!WMISalvageReceived) Thread.Sleep(100);
+                        if(WMISalvageSuccess)
+                        {
+                            MessageBox.Show("WMI repository salvaged successfully. Trying to restart process watcher.", "LeagueFPSBoost: WMI Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return RetryStartProcessWatcher();
+                        }
+                        else
+                        {
+                            if (DialogResult.Yes == MessageBox.Show("WMI salvaging failed, check logs for more deatils. Would you like to reset wmi repository to initial state when system was installed?", "LeagueFPSBoost: Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
+                            {
+                                WMIManagment.WMIResetResultReceived += WMIManagment_WMIResetResultReceived;
+                                WMIManagment.ResetRepository();
+                                WMIManagment.WMIResetResultReceived -= WMIManagment_WMIResetResultReceived;
+                                while (!WMIResetReceived) Thread.Sleep(100);
+                                if(WMIResetSuccess)
+                                {
+                                    MessageBox.Show("WMI repository has been reset successfully. Trying to restart process watcher.", "LeagueFPSBoost: WMI Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    return RetryStartProcessWatcher();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("WMI repository resetting failed. See logs for more details. Process priority management will not work until problem is fixed.", "LeagueFPSBoost: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        private static void LeaguePriority_ProcessPriorityWatcherEnabled(object sender, ProcessPriorityWatcherEnabledEventArgs e)
+        {
+            ProcessWatcherEnabled = e.Enabled;
+        }
+
+        private static void WMIManagment_WMIResetResultReceived(object sender, WMIResetResultReceivedEventArgs e)
+        {
+            WMIResetSuccess = e.Success;
+            WMIResetReceived = true;
+        }
+
+        private static bool RetryStartProcessWatcher()
+        {
+            try
+            {
+                StartProcessWatcher();
+                return true;
+            }
+            catch (Exception ex1)
+            {
+                logger.Error(ex1, Strings.exceptionThrown + " while trying to start process watcher after wmi repair: " + Environment.NewLine);
+                MessageBox.Show("Starting process watcher failed again. Please check logs for more detail or try to restart system.", "LeagueFPSBoost: Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public static void StartProcessWatcher()
+        {
+            logger.Debug("Trying to start process watcher.");
+            Program.StartWatch.Start();
+            Program.StopWatch.Start();
+            BoostCheckTimer.Start();
+            ProcessWatcherEnabled = true;
+            ProcessPriorityWatcherEnabled?.Invoke(null, new ProcessPriorityWatcherEnabledEventArgs(true));
+            logger.Debug("Process watcher has been started.");
+            LeagueLogger.Okay("Process watcher started.");
+        }
+
+        public static void StopProcessWatcher()
+        {
+            logger.Debug("Trying to stop process watcher.");
+            Program.StartWatch.Stop();
+            Program.StopWatch.Stop();
+            BoostCheckTimer.Stop();
+            ProcessWatcherEnabled = false;
+            ProcessPriorityWatcherEnabled?.Invoke(null, new ProcessPriorityWatcherEnabledEventArgs(false));
+            logger.Debug("Process watcher has been stopped.");
+        }
+
+        private static void InitBoostCheckTimer()
+        {
+            logger.Debug("Initializing BoostCheckTimer.");
             BoostCheckTimer = new System.Timers.Timer
             {
                 Interval = BoostCheckTimerInterval
             };
             BoostCheckTimer.Elapsed += BoostCheckTimer_Elapsed;
+            logger.Debug("BoostCheckTimer initialized.");
+        }
 
-            BoostCheckTimer.Start();
+        private static void WMIManagment_WMISalvageResultReceived(object sender, WMISalvageResultReceivedEventArgs e)
+        {
+            WMISalvageSuccess = e.Success;
+            WMISalvageReceived = true;
+        }
+
+        private static void WMIManagment_WMIVerifyResultReceived(object sender, WMIVerifyResultReceivedEventArgs e)
+        {
+            WMIVerifyConsistent = e.Consistent;
+            WMIVerifyReceived = true;
         }
 
         private static void BoostCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -252,7 +427,7 @@ namespace LeagueFPSBoost.ProcessManagement
             }
         }
 
-        public static bool CheckForFreeMemory(ulong requiredMemoryInBytes = 1048576)
+        public static bool CheckForFreeMemory(ulong requiredMemoryInBytes = 1073741824)
         {
             try
             {

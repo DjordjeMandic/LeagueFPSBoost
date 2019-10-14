@@ -1,10 +1,14 @@
 ﻿using IniParser;
 using IniParser.Model;
 using LeagueFPSBoost.Diagnostics.Debugger;
+using LeagueFPSBoost.Extensions;
 using LeagueFPSBoost.Logging;
 using LeagueFPSBoost.Native;
+using LeagueFPSBoost.Native.Unmanaged;
+using LeagueFPSBoost.Native.WMI;
 using LeagueFPSBoost.ProcessManagement;
 using LeagueFPSBoost.Properties;
+using LeagueFPSBoost.RegistryManagment;
 using LeagueFPSBoost.Text;
 using LeagueFPSBoost.Updater;
 using MetroFramework;
@@ -41,6 +45,7 @@ namespace LeagueFPSBoost.GUI
         static string aboutTXT = "";
         static string aboutTXTDebug = "";
         public static bool saving;
+
         public MainWindow()
         {
             logger.Trace("Initializing main window.");
@@ -112,21 +117,92 @@ namespace LeagueFPSBoost.GUI
 
             SaveLastActivePowerPlan(currentLastActivePowerPlan);
 
-            
+
 
             //Notification
+            notificationsToggle.CheckedChanged -= NotificationsToggle_CheckedChanged;
             notification = Properties.Settings.Default.Notifications;
             notificationsToggle.Checked = notification;
             Program.PlayNotiAllow = notification;
             logger.Debug("Loaded notification settings.");
             LeagueLogger.Okay("Loaded notification settings.");
-            
+            notificationsToggle.CheckedChanged -= NotificationsToggle_CheckedChanged;
+
+
+            disableGameBarMetroToggle.CheckedChanged -= DisableGameBarMetroToggle_CheckedChanged;
+            disableFullScreenOptimizationsMetroToggle.CheckedChanged -= DisableFullScreenOptimizationsMetroToggle_CheckedChanged;
+            if (Environment.OSVersion.Version.Major != 10)
+            {
+                logger.Debug("OS major version is not 10. Disabling game bar and fullscropt toggle.");
+                disableGameBarMetroToggle.Enabled = false;
+                metroLabel8.Enabled = false;
+
+                disableFullScreenOptimizationsMetroToggle.Enabled = false;
+                metroLabel7.Enabled = false;
+            }
+            disableGameBarMetroToggle.Checked = !GameBar.IsEnabled();
+            disableFullScreenOptimizationsMetroToggle.Checked = !LeagueGameCompabilityFlagLayers.Instance.GetFullScreenOptimizationsFlag();
+
+            disableGameBarMetroToggle.CheckedChanged += DisableGameBarMetroToggle_CheckedChanged;
+            disableFullScreenOptimizationsMetroToggle.CheckedChanged += DisableFullScreenOptimizationsMetroToggle_CheckedChanged;
+
+            metroToggleProcessPriority.CheckedChanged -= MetroToggleProcessPriority_CheckedChanged;
+            metroToggleProcessPriority.Enabled = metroLabelManageProcPriority.Enabled = metroToggleProcessPriority.Checked = false;
+            //Watcher
+            Task.Factory.StartNew(() => {
+                logger.Debug("Starting process watcher for first time.");
+                var wmierror = !LeaguePriority.InitAndStartWatcher();
+                if(wmierror)
+                {
+                    metroToggleProcessPriority.Enabled = metroLabelManageProcPriority.Enabled = metroToggleProcessPriority.Checked = false;
+                    return;
+                }
+                metroToggleProcessPriority.Checked = LeaguePriority.ProcessWatcherEnabled;
+
+                logger.Debug("Checking the saved state of process watcher enabled setting.");
+                if (!Settings.Default.ProcessWatcherEnable)
+                {
+                    try
+                    {
+                        logger.Debug("Trying to disable process watcher because its disabled in settings.");
+                        LeaguePriority.StopProcessWatcher();
+                        metroToggleProcessPriority.Checked = LeaguePriority.ProcessWatcherEnabled;
+                        logger.Debug("Disabling process watcher completed successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, Strings.exceptionThrown + " while trying to stop process watcher: " + Environment.NewLine);
+                        metroToggleProcessPriority.Checked = false;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        logger.Debug("Trying to enable process watcher because its enabled in settings.");
+                        LeaguePriority.StartProcessWatcher();
+                        metroToggleProcessPriority.Checked = LeaguePriority.ProcessWatcherEnabled;
+                        logger.Debug("Enabling process watcher completed successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, Strings.exceptionThrown + " while trying to stop process watcher: " + Environment.NewLine);
+                        try
+                        {
+                            LeaguePriority.StopProcessWatcher();
+                        }
+                        catch { }
+                        metroToggleProcessPriority.Checked = false;
+                    }
+                }
+
+                metroToggleProcessPriority.Enabled = metroLabelManageProcPriority.Enabled  = true;
+                metroToggleProcessPriority.CheckedChanged += MetroToggleProcessPriority_CheckedChanged;
+            });
 
             //Ini-Praser
             ReadGameConfigData();
 
-            //Watcher
-            LeaguePriority.StartWatcher();
             
 
             Loaded = true;
@@ -145,7 +221,6 @@ namespace LeagueFPSBoost.GUI
             }
             UpdateManager.InitAndCheckForUpdates();
             BringFormToFront();
-            //throw new Exception();
         }
 
         private void FirstRunDonationMessageBox()
@@ -530,9 +605,14 @@ namespace LeagueFPSBoost.GUI
                 //GameConfigData["Performance"]["EnableGrassSwaying"] = "0";
                 SetGameConfigData("Performance", "EnableGrassSwaying", "0");
             }
-        }       
+        }
 
         private void ReadGameConfigData()
+        {
+            ReadGameConfigData(true);
+        }
+
+        private void ReadGameConfigData(bool logSuccess)
         {
             try
             {
@@ -549,7 +629,7 @@ namespace LeagueFPSBoost.GUI
                     hudAnimationsToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["EnableHUDAnimations"]));
                     shadowsToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["ShadowsEnabled"]));
                     grassSwayingToggle.Checked = Convert.ToBoolean(int.Parse(GameConfigData["Performance"]["EnableGrassSwaying"]));
-                    logger.Debug("Successfully read game's configuration from file: " + Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
+                    if(logSuccess) logger.Debug("Successfully read game's configuration from file: " + Path.Combine(Program.LeagueConfigDirPath, "game.cfg"));
                 }
                 else
                 {
@@ -565,11 +645,32 @@ namespace LeagueFPSBoost.GUI
 
         private void MainWindow_Activated(object sender, EventArgs e)
         {
-            ReadGameConfigData();
+            RefreshControls();
+            
+        }
+
+        private void RefreshControls()
+        {
             highPerformanceToggle.CheckedChanged -= HighPerformanceToggle1_CheckedChanged;
-            if(currentLastActivePowerPlan != NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID) currentLastActivePowerPlan = PowerManager.GetActivePlan();
+            if (currentLastActivePowerPlan != NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID) currentLastActivePowerPlan = PowerManager.GetActivePlan();
             highPerformanceToggle.Checked = PowerManager.GetActivePlan() == NativeGUIDs.HIGH_PERFORMANCE_POWER_PLAN_GUID;
             highPerformanceToggle.CheckedChanged += HighPerformanceToggle1_CheckedChanged;
+
+            disableGameBarMetroToggle.CheckedChanged -= DisableGameBarMetroToggle_CheckedChanged;
+            disableGameBarMetroToggle.Checked = !GameBar.IsEnabled(false);
+            disableGameBarMetroToggle.CheckedChanged += DisableGameBarMetroToggle_CheckedChanged;
+
+            disableFullScreenOptimizationsMetroToggle.CheckedChanged -= DisableFullScreenOptimizationsMetroToggle_CheckedChanged;
+            disableFullScreenOptimizationsMetroToggle.Checked = !LeagueGameCompabilityFlagLayers.Instance.GetFullScreenOptimizationsFlag(false);
+            disableFullScreenOptimizationsMetroToggle.CheckedChanged += DisableFullScreenOptimizationsMetroToggle_CheckedChanged;
+
+            notificationsToggle.CheckedChanged -= NotificationsToggle_CheckedChanged;
+            notificationsToggle.Checked = notification;
+            Program.PlayNotiAllow = notification;
+            Properties.Settings.Default.Notifications = notification;
+            notificationsToggle.CheckedChanged += NotificationsToggle_CheckedChanged;
+
+            ReadGameConfigData(false);
         }
 
         private void MetroButton1_Click(object sender, EventArgs e)
@@ -708,7 +809,7 @@ namespace LeagueFPSBoost.GUI
             }
         }
 
-        private void metroLabel2_MouseClick(object sender, MouseEventArgs e)
+        private void MetroLabel2_MouseClick(object sender, MouseEventArgs e)
         {
             logger.Info("High Performance PP label has been clicked. Mouse button: " + e.Button);
             switch (e.Button)
@@ -721,6 +822,207 @@ namespace LeagueFPSBoost.GUI
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void DisableGameBarMetroToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.Debug("Disable Game Bar toggle has been checked: " + disableGameBarMetroToggle.Checked);
+
+            ShowRegistryAgreement();
+
+            if (Settings.Default.RegistryAgreement)
+            {
+                try
+                {
+                    if (!GameBar.Set(!disableGameBarMetroToggle.Checked, true)) Program.PlayNoti(false);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while setting game bar to: " + !disableGameBarMetroToggle.Checked);
+                }
+            }
+
+            disableGameBarMetroToggle.CheckedChanged -= DisableGameBarMetroToggle_CheckedChanged;
+            disableGameBarMetroToggle.Checked = !GameBar.IsEnabled(true);
+            disableGameBarMetroToggle.CheckedChanged += DisableGameBarMetroToggle_CheckedChanged;
+        }
+
+        private void ShowRegistryAgreement()
+        {
+            if (!Settings.Default.RegistryAgreement)
+            {
+                logger.Debug("User wants to modify registry without agreement.");
+                logger.Debug("Showing registry mod agreement msgbox.");
+                if (DialogResult.Yes == MessageBox.Show("This will modify registry. " +
+                    "Disabling Game Bar may cause some conflicts. " +
+                    "By clicking on Yes you agree that developer is not responsible for any change in behavior of windows or damage to the windows registry. " +
+                    "It's always good idea to create registry backup from time to time...", "LeagueFPSBoost: Registry Modification Agreement", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                {
+                    logger.Info("User has agreed to registry modifications.");
+                    try
+                    {
+                        Settings.Default.RegistryAgreement = true;
+                        logger.Debug("Saving registry agreement to settings.");
+                        Settings.Default.Save();
+                        logger.Debug("Successfully saved registry agreement.");
+                    }
+                    catch (Exception ex)
+                    {
+
+                        logger.Error(ex, Strings.exceptionThrown + " while saving registryagreement to settings: " + Environment.NewLine);
+                    }
+                }
+                else
+                {
+                    logger.Info("User declined registry agreement.");
+                }
+            }
+        }
+
+        private void MetroLabel8_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void DisableFullScreenOptimizationsMetroToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            logger.Debug("Disable FullScrOptim toggle has been clicked: " + disableFullScreenOptimizationsMetroToggle.Checked);
+            ShowRegistryAgreement();
+
+            if (Settings.Default.RegistryAgreement)
+            {
+                try
+                {
+                    if (!LeagueGameCompabilityFlagLayers.Instance.SetFullScreenOptimizationsFlag(!disableFullScreenOptimizationsMetroToggle.Checked, true)) Program.PlayNoti(false);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while setting FullScrOptim to: " + !disableGameBarMetroToggle.Checked);
+                }
+            }
+
+            disableFullScreenOptimizationsMetroToggle.CheckedChanged -= DisableFullScreenOptimizationsMetroToggle_CheckedChanged;
+            disableFullScreenOptimizationsMetroToggle.Checked = !LeagueGameCompabilityFlagLayers.Instance.GetFullScreenOptimizationsFlag(true);
+            disableFullScreenOptimizationsMetroToggle.CheckedChanged += DisableFullScreenOptimizationsMetroToggle_CheckedChanged;
+        }
+
+        private void MainWindow_MouseEnter(object sender, EventArgs e)
+        {
+            //if(ActiveForm != this)
+            //RefreshControls();
+        }
+
+        private void MetroLabel7_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void MetroLabel1_Click(object sender, EventArgs e)
+        {
+        }
+        
+        private void MetroLabel2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MetroLabel7_MouseClick(object sender, MouseEventArgs e)
+        {
+            logger.Debug("Disable FullScrOptim label clicked.");
+            if (e.Button == MouseButtons.Right)
+            { 
+                try
+                {
+                    logger.Debug("Mouse button = right. Opening league game's file properties.");
+                    NativeMethods.ShowFileProperties(Program.LeagueGamePath);
+                    logger.Debug("Successfully opened league game file properties.");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while trying to open league game file properties. Path: " + Program.LeagueGamePath);
+                    Program.PlayNoti(false);
+                }
+            }
+        }
+
+        private void MetroLabel8_MouseClick(object sender, MouseEventArgs e)
+        {
+            logger.Debug("Disable Game Bar label clicked.");
+            if (e.Button == MouseButtons.Right)
+            {
+                logger.Debug("Mouse button = right. Opening game bar settings.");
+                try
+                {
+                    Process.Start("ms-settings:gaming-gamebar");
+                    logger.Debug("Successfully opened game bar settings.");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while trying to open game bar settings.");
+                    Program.PlayNoti(false);
+                }
+            }
+        }
+
+        private void MetroToggleProcessPriority_CheckedChanged(object sender, EventArgs e)
+        {
+            metroToggleProcessPriority.CheckedChanged -= MetroToggleProcessPriority_CheckedChanged;
+
+            if(metroToggleProcessPriority.Checked)
+            {
+                try
+                {
+                    logger.Debug("Trying to start process priority watcher.");
+                    LeaguePriority.StartProcessWatcher();
+                    metroToggleProcessPriority.Checked = LeaguePriority.ProcessWatcherEnabled;
+                    logger.Debug("Process watcher started successfully.");
+                }
+                catch(Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while trying to start process priority watcher: " + Environment.NewLine);
+                    metroToggleProcessPriority.Checked = false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    logger.Debug("Trying to stop process priority watcher.");
+                    LeaguePriority.StopProcessWatcher();
+                    metroToggleProcessPriority.Checked = LeaguePriority.ProcessWatcherEnabled;
+                    logger.Debug("Process watcher stopped successfully.");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, Strings.exceptionThrown + " while trying to stop process priority watcher: " + Environment.NewLine);
+                    metroToggleProcessPriority.Checked = true;
+                }
+            }
+
+            logger.Debug("Saving process priority enabled state in settings.");
+            Settings.Default.ProcessWatcherEnable = metroToggleProcessPriority.Checked;
+            SaveSettings();
+            metroToggleProcessPriority.CheckedChanged += MetroToggleProcessPriority_CheckedChanged;
+        }
+
+        /// <summary>
+        /// Saves settings and returns true if successful.
+        /// </summary>
+        /// <returns>True if saving was successful.</returns>
+        public bool SaveSettings()
+        {
+            try
+            {
+                logger.Debug("Trying to save settings");
+                Settings.Default.Save();
+                logger.Debug("Saved settings successfully.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, Strings.exceptionThrown + " while trying to save settings: " + Environment.NewLine);
+                return false;
             }
         }
     }

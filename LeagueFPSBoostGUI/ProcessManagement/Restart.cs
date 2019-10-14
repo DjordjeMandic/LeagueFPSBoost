@@ -12,10 +12,15 @@ namespace LeagueFPSBoost.ProcessManagement
 
         public static bool RestartNow()
         {
+            return RestartNow(Application.ExecutablePath);
+        }
+
+        public static bool RestartNow(string path)
+        {
             logger.Info("Trying to restart!");
             try
             {
-                Process.Start(Application.ExecutablePath);
+                Process.Start(path);
                 logger.Info("Successfully started new instance. Closing this one.");
                 Environment.Exit(0);
                 return true;
@@ -26,5 +31,6 @@ namespace LeagueFPSBoost.ProcessManagement
                 return false;
             }
         }
+
     }
 }

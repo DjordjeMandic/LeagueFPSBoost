@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+
 namespace LeagueFPSBoost.Text
 {
     public static class Strings
@@ -39,8 +40,11 @@ namespace LeagueFPSBoost.Text
         public const string ColorStyleSetTo = "Color style set to ";
         
         public const string Updater_XML_URL = @"https://raw.githubusercontent.com/DjordjeMandic/LeagueFPSBoost/master/AutoUpdater/updater.xml";
+#if !DEBUG
         public const string Updater_JSON_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/updater.json";
-        //public const string Updater_JSON_URL = @"file:///H:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/updater.json";
+#else
+        public const string Updater_JSON_URL = @"file:///F:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/updater.json";
+#endif
         public const string Updater_Download_URL_ZIP = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip";
         public const string Updater_Download_URL = Updater_Download_URL_ZIP;
         public const string Updater_Changelog_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/releases";

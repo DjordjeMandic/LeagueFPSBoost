@@ -7,21 +7,8 @@
 Simple tool written in C# that should help with increasing frame rate in league of legends.
 More info till this page gets updated can be found on [boards page](https://goo.gl/bpxbGV)
 
-If you like the program a small donation would be helpful. Donate via [PayPal](https://paypal.me/DjordjeMandic)
+* By downloading this you agree to the following:
+  * The software is provided "AS IS" without any warranty, either expressed or implied, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose. The author will not be liable for any special, incidental, consequential or indirect damages due to loss of data or any other reason.
+  * Performance improvement is not guaranteed but it is possible.
 
-Used libraries:
-  - [AutoUpdater.NET](https://github.com/ravibpatel/AutoUpdater.NET)
-  - [ByteSize](https://github.com/omar/ByteSize)
-  - [Costura.Fody](https://github.com/Fody/Costura)
-  - [CrashReporter.NET](https://github.com/ravibpatel/CrashReporter.NET)
-  - [Fody](https://github.com/Fody/Fody)
-  - [ini-parser](https://github.com/rickyah/ini-parser)
-  - [MetroFramework](https://github.com/thielj/MetroFramework)
-  - [NAudio](https://github.com/naudio/NAudio)
-  - [NLog](http://nlog-project.org/)
-  - [NDesk.Options](http://www.ndesk.org/Options)
-  - [PowerManagerAPI](https://github.com/Ravatsaas/PowerManagerAPI)
-  - [Json.NET](https://www.newtonsoft.com/json)
-  - [Handlebars.Net](https://github.com/rexm/Handlebars.Net)
-  - [ExceptionReporterNet](http://exceptionreporter.net/)
-  - [ExceptionReporter.NET](https://github.com/PandaWood/ExceptionReporter.NET)
+If you like the program a small donation would be helpful. Donate via [PayPal](https://paypal.me/DjordjeMandic)

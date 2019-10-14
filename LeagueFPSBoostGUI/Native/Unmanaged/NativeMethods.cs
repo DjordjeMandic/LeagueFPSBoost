@@ -5,6 +5,36 @@ namespace LeagueFPSBoost.Native.Unmanaged
 {
     public static class NativeMethods
     {
+        [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern Boolean ChangeServiceConfig(
+            IntPtr hService,
+            UInt32 nServiceType,
+            UInt32 nStartType,
+            UInt32 nErrorControl,
+            String lpBinaryPathName,
+            String lpLoadOrderGroup,
+            IntPtr lpdwTagId,
+            [In] char[] lpDependencies,
+            String lpServiceStartName,
+            String lpPassword,
+            String lpDisplayName);
+
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr OpenService(
+            IntPtr hSCManager, string lpServiceName, uint dwDesiredAccess);
+
+        [DllImport("advapi32.dll", EntryPoint = "OpenSCManagerW", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern IntPtr OpenSCManager(
+            string machineName, string databaseName, uint dwAccess);
+
+        [DllImport("advapi32.dll", EntryPoint = "CloseServiceHandle")]
+        public static extern int CloseServiceHandle(IntPtr hSCObject);
+
+        public const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
+        public const uint SERVICE_QUERY_CONFIG = 0x00000001;
+        public const uint SERVICE_CHANGE_CONFIG = 0x00000002;
+        public const uint SC_MANAGER_ALL_ACCESS = 0x000F003F;
+
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hWnd);
 
@@ -65,5 +95,45 @@ namespace LeagueFPSBoost.Native.Unmanaged
 
         public const int SW_HIDE = 0;
         public const int SW_SHOW = 5;
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct SHELLEXECUTEINFO
+        {
+            public int cbSize;
+            public uint fMask;
+            public IntPtr hwnd;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpVerb;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpFile;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpParameters;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpDirectory;
+            public int nShow;
+            public IntPtr hInstApp;
+            public IntPtr lpIDList;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpClass;
+            public IntPtr hkeyClass;
+            public uint dwHotKey;
+            public IntPtr hIcon;
+            public IntPtr hProcess;
+        }
+
+        private const uint SEE_MASK_INVOKEIDLIST = 12;
+        public static bool ShowFileProperties(string Filename)
+        {
+            SHELLEXECUTEINFO info = new SHELLEXECUTEINFO();
+            info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(info);
+            info.lpVerb = "properties";
+            info.lpFile = Filename;
+            info.nShow = SW_SHOW;
+            info.fMask = SEE_MASK_INVOKEIDLIST;
+            return ShellExecuteEx(ref info);
+        }
     }
 }
