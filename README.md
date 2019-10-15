@@ -27,21 +27,26 @@ A step by step series of examples that tell you how to get a program running
 3. One final step
    - Now after program has loaded up you just can leave it there and run the League Of Legends Client and leave the program running in background until you finish playing League Of Legends(not one game but for the day... and etc). It's important to leave program running in background at same time that League Of Legends Client does. Program works like supervisor for the game so leave it running.
 
-This is how it should look like with toggles set for best performance
+This is how it should look like with toggles set for best performance.
+
 ![Example of LeagueFPSBoost Version 4.0.0.0 set for best performance](ImagesForReadme/BestPerformanceExample.png)
 
 ## What tab and is for what
 
 Settings tab contains the main control of the program. They affect the game's performance.
+
 ![Example of LeagueFPSBoost Version 4.0.0.0 settings tab](ImagesForReadme/SettingsTabExample.png)
 
 Theme tab contains buttons and switch used to change the theme of the program.
+
 ![Example of LeagueFPSBoost Version 4.0.0.0 theme tab](ImagesForReadme/ThemeTabExample.png)
 
 About tab contains information about program and link at the bottom that shows current version. More information button opens new window with advanced controls of the program. More about it down below.
+
 ![Example of LeagueFPSBoost Version 4.0.0.0 about tab](ImagesForReadme/AboutTabExample.png)
 
 More Information window contains custom advanced program controls.
+
 ![Example of LeagueFPSBoost Version 4.0.0.0 more information window](ImagesForReadme/MoreInformationWindowExample.png)
 
 ### Settings Tab
