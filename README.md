@@ -5,7 +5,7 @@ LeagueFPSBoost is a program written in C# that makes it easier to manage stuff o
 
 These instructions will get you a copy of the built project up and running on your local machine.
 
-### Prerequisites
+## Prerequisites
 
 What things you need to install the software and how to install them
 
@@ -14,7 +14,7 @@ What things you need to install the software and how to install them
 
 Download .NET Framework 4.7.2 [here](https://dotnet.microsoft.com/download/thank-you/net472)
 
-### Installing
+## Installing
 
 A step by step series of examples that tell you how to get a program running
 
@@ -49,7 +49,7 @@ More Information window contains custom advanced program controls.
 
 ![Example of LeagueFPSBoost Version 4.0.0.0 more information window](ImagesForReadme/MoreInformationWindowExample.png)
 
-### Settings Tab
+## Settings Tab
 
 All toggles above 4 buttons on the settings tab are used for tweaking the system options to improve game performance, toggles under the buttons are used to tweak game visual options.
 
@@ -80,15 +80,15 @@ All toggles above 4 buttons on the settings tab are used for tweaking the system
  - **Grass Swaying:**
    - This option makes grass move in game like when wind is blowing. Again, disabling this will improve the performance(decrease load on graphics card). If you don't notice any difference after disabling this you can enable it back.
 
-### Theme Tab
+## Theme Tab
 
 Theme tab contains controls used to change program's appearance. Clicking on colored buttons changes the foreground color and clicking on the toggle changes the background color(bright or dark mode).
 
-### About Tab
+## About Tab
 
 About tab contains button to open `More Information` window and little bit of text with developer's name and program's version on bottom. Clicking on the developer's name opens op.gg page of developer's account.
 
-### More Information Window
+## More Information Window
 
 More Information window contains few buttons, links and startup options(command line arguments) for the program.
 
