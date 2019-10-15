@@ -14,7 +14,7 @@ What things you need to install the software and how to install them
 
 Download .NET Framework 4.7.2 [here](https://dotnet.microsoft.com/download/thank-you/net472)
 
-## Installing
+## Installing ![GitHub Release Date](https://img.shields.io/github/release-date/DjordjeMandic/LeagueFPSBoost) ![GitHub All Releases](https://img.shields.io/github/downloads/DjordjeMandic/LeagueFPSBoost/total)
 
 A step by step series of examples that tell you how to get a program running
 
