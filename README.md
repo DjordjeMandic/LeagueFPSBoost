@@ -28,7 +28,6 @@ A step by step series of examples that tell you how to get a program running
    - Now after program has loaded up you just can leave it there and run the League Of Legends Client and leave the program running in background until you finish playing League Of Legends(not one game but for the day... and etc). It's important to leave program running in background at same time that League Of Legends Client does. Program works like supervisor for the game so leave it running.
 
 This is how it should look like with toggles set for best performance
-
 ![Example of LeagueFPSBoost Version 4.0.0.0 set for best performance](ImagesForReadme/BestPerformanceExample.png)
 
 ## What tab and is for what
@@ -130,7 +129,7 @@ Versioning system:
 
 ## Donate [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/DjordjeMandic)
 
-A donation would be appreciated. 
+A donation would be appreciated to support the project.
 
 ## License
 
