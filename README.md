@@ -33,21 +33,17 @@ This is how it should look like with toggles set for best performance.
 
 ## What tab and is for what
 
-Settings tab contains the main control of the program. They affect the game's performance.
+ - Settings tab contains the main control of the program. They affect the game's performance.
+    > ![Example of LeagueFPSBoost Version 4.0.0.0 settings tab](ImagesForReadme/SettingsTabExample.png)
 
-![Example of LeagueFPSBoost Version 4.0.0.0 settings tab](ImagesForReadme/SettingsTabExample.png)
+ - Theme tab contains buttons and switch used to change the theme of the program.
+    > ![Example of LeagueFPSBoost Version 4.0.0.0 theme tab](ImagesForReadme/ThemeTabExample.png)
+    
+ - About tab contains information about program and link at the bottom that shows current version. More information button opens new window with advanced controls of the program. More about it down below.
+    > ![Example of LeagueFPSBoost Version 4.0.0.0 about tab](ImagesForReadme/AboutTabExample.png)
 
-Theme tab contains buttons and switch used to change the theme of the program.
-
-![Example of LeagueFPSBoost Version 4.0.0.0 theme tab](ImagesForReadme/ThemeTabExample.png)
-
-About tab contains information about program and link at the bottom that shows current version. More information button opens new window with advanced controls of the program. More about it down below.
-
-![Example of LeagueFPSBoost Version 4.0.0.0 about tab](ImagesForReadme/AboutTabExample.png)
-
-More Information window contains custom advanced program controls.
-
-![Example of LeagueFPSBoost Version 4.0.0.0 more information window](ImagesForReadme/MoreInformationWindowExample.png)
+ - More Information window contains custom advanced program controls.
+    > ![Example of LeagueFPSBoost Version 4.0.0.0 more information window](ImagesForReadme/MoreInformationWindowExample.png)
 
 ## Settings Tab
 
