@@ -12,17 +12,17 @@ What things you need to install the software and how to install them
 - .NET Framework 4.7.2 or newer
 - Windows Vista, 7, 8, 8.1 or 10
 
-Download .NET Framework 4.7.2 [here](https://dotnet.microsoft.com/download/thank-you/net472)
+Download .NET Framework 4.7.2 from [here](https://dotnet.microsoft.com/download/thank-you/net472)
 
 ## Installing ![GitHub Release Date](https://img.shields.io/github/release-date/DjordjeMandic/LeagueFPSBoost) ![GitHub All Releases](https://img.shields.io/github/downloads/DjordjeMandic/LeagueFPSBoost/total)
 
 A step by step series of examples that tell you how to get a program running
 
 1. Download the exe file from [releases](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest)
-   - Download the exe file from releases. After downloading finishes open the folder containing the program and place the program on your desktop or where you want. Make sure that the program's file name is exactly like original "LeagueFPSBoost".
+   - Download the exe file from releases. After downloading finishes open the folder containing the program and place the program on your desktop or where ever you want. Make sure that the program's file name is exactly like on the releases page "LeagueFPSBoost".
 
 2. Double click on the program to run it for first time.
-   - When you run the program for first time it will try to locate folder where league of legends client is located. If it can't find it you will be prompted to select the file named LeagueClient.exe. After that a message box will pop up. That message box pops up after every update and sometimes some more message boxes if needed.
+   - When you run the program for first time it will try to locate folder where League Of Legends Client is located. If it can't find it you will be prompted to select the file named `LeagueClient.exe`. After that a message box will pop up. That message box pops up after every update and sometimes some more message boxes if needed.
 
 3. One final step
    - Now after program has loaded up you just can leave it there and run the League Of Legends Client and leave the program running in background until you finish playing League Of Legends(not one game but for the day... and etc). It's important to leave program running in background at same time that League Of Legends Client does. Program works like supervisor for the game so leave it running.
@@ -31,15 +31,15 @@ This is how it should look like with toggles set for best performance.
 
 ![Example of LeagueFPSBoost Version 4.0.0.0 set for best performance](ImagesForReadme/BestPerformanceExample.png)
 
-## What tab and is for what
+## What tab and window is for what
 
- - Settings tab contains the main control of the program. They affect the game's performance.
+ - Settings tab contains the main controls of the program. They affect the game's performance.
     > ![Example of LeagueFPSBoost Version 4.0.0.0 settings tab](ImagesForReadme/SettingsTabExample.png)
 
  - Theme tab contains buttons and switch used to change the theme of the program.
     > ![Example of LeagueFPSBoost Version 4.0.0.0 theme tab](ImagesForReadme/ThemeTabExample.png)
     
- - About tab contains information about program and link at the bottom that shows current version. More information button opens new window with advanced controls of the program. More about it down below.
+ - About tab contains information about program and link at the bottom that shows current version. More information button opens new window with advanced controls for the program. More about it down below.
     > ![Example of LeagueFPSBoost Version 4.0.0.0 about tab](ImagesForReadme/AboutTabExample.png)
 
  - More Information window contains custom advanced program controls.
@@ -47,34 +47,34 @@ This is how it should look like with toggles set for best performance.
 
 ## Settings Tab
 
-All toggles above 4 buttons on the settings tab are used for tweaking the system options to improve game performance, toggles under the buttons are used to tweak game visual options.
+All toggles above 4 buttons on the settings tab are used for tweaking the system options to improve game's performance, toggles under the buttons are used to tweak game's visual options.
 
  - **High Performance PP (where PP means Performance Plan):**
-   - Windows sets all PCs to a “Balanced” power plan by default. But there are also “Power saver” and “High performance” plans. Your PC     manufacturer may have even created their own power plans. High Performance mode doesn’t lower your CPU’s speed when it isn’t being used, running it at higher speeds most of the time. It also increases screen brightness. Other components, such as your Wi-Fi or disk drive, may also not go into power-saving modes. Using high performance mode will lower your battery lifespan and drain it faster if you are on laptop and produce more heat. Right clicking on `High Performance PP` will open Power Options in old classic control panel, left click will reset last active power plan(current power plan that will be set when turning off the high performance control). If your pc is not overheating you can enable this option. If you're not sure what it does then don't touch it.
+   - Windows sets all PCs to a “Balanced” power plan by default. But there are also “Power saver” and “High performance” plans. Your PC     manufacturer may have even created their own power plans. High Performance mode doesn’t lower your CPU’s speed when it isn’t being used, running it at higher speeds most of the time. It also increases screen brightness. Other components, such as your Wi-Fi or disk drive, may also not go into power-saving modes. Using high performance mode will lower your battery's lifespan and drain it faster if you are on laptop and produce more heat. Right clicking on `High Performance PP` will open Power Options in old classic control panel, left click will reset last active power plan(current power plan that will be set when turning off the high performance control). If your PC is not overheating you can enable this option. If you're not sure what it does then don't touch it.
  - **Manage Proc. Priority (where Proc. is short for Process):**
-   - Windows shares processor resources between all running processes based upon their priority level. If a process (application) has a higher priority level, it gets more processor resources for better performance compared to a process having lower priority. Turning this on will set League Of Legends Game process to High priority and League Of Legends Client to Below Normal priority when the game starts. When the game ends then League Of Legends Client priority will be set back to Normal. This is recommend on machines where cpu is weak. This works by monitoring starting process via WMI(Windows Management Instrumentation), if the WMI is broken program will prompt you to fix the problem, if problem is not fixed you will be able to use the program but this option will be grayed out. (unusable)
+   - Windows shares processor resources between all running processes based upon their priority level. If a process (application) has a higher priority level, it gets more processor resources for better performance compared to a process having lower priority. Turning this on will set League Of Legends Game's process to High priority and League Of Legends Client's process to Below Normal priority when the game starts. When the game ends then League Of Legends Client's process priority will be set back to Normal priority. This is recommend on machines that have weak cpu. This works by monitoring starting processes via WMI(Windows Management Instrumentation), if the WMI is broken program will prompt you to fix the problem, if problem is not fixed you will be able to use the program but this option will be grayed out. (unusable)
  - **Sound Notifications:**
-   - When this is enabled on every try to change game's process priority or if there is an error sound notification will be played. Program will try to look for a file notiSuccess.mp3 or notiFail.mp3 in LeagueFPSBoost folder located withing Config folder which you can open by pressing `LoL Config` button. If there is no file found then default notification sound will be played(integrated in the program).
+   - When this is enabled on every try to change game's process priority or if there is an error sound notification will be played. Program will try to look for a file named `notiSuccess.mp3` or `notiFail.mp3` in `LeagueFPSBoost` folder located withing `Config` folder which you can open by pressing `LoL Config` button. If there is no file found then default notification sound will be played(integrated in the program).
  - **Disable FullScr Optim. (where FullScr Optim. means Full Screen Optimizations):**
-   - Full screen optimization lets your operating system optimize applications and games that take over the whole screen. It's part of the Windows 10 Anniversary Update, and it's on by default. Sometimes it makes things worse, so you can disable it by clicking on the toggle switch. Right clicking on `Disable FullScr Optim.` will open up League Of Legends Game's file properties. This only works in Windows 10 and on other operating system version it will be grayed out. (unusable)
+   - Full screen optimization lets your operating system optimize applications and games that take over the whole screen. It's part of the Windows 10 Anniversary Update, and it's on by default. Sometimes it makes things worse, so you can disable it by clicking on the toggle switch. Right clicking on `Disable FullScr Optim.` will open League Of Legends Game's file properties. This only works on Windows 10 and on other operating system versions it will be grayed out. (unusable)
  - **Disable Game Bar:**
-   - Game Bar is a software program included with Windows 10 that lets you take screenshots and record and broadcast video games. Some users have reported that it also reduces League Of Legends performance so disabling it can also help. Right clicking on `Disable Game Bar` will open Windows Settings App.
+   - Game Bar is a software program included with Windows 10 that lets you take screenshots and record and broadcast video games. Some users have reported that it also reduces League Of Legend's performance so disabling it can also help. Right clicking on `Disable Game Bar` will open Windows Settings App. This only works on Windows 10 and on other operating system versions it will be grayed out. (unusable)
  - **App Logs:**
    - Clicking on this button will open folder where program's logs are located.
  - **LoL Config:**
-   - Clicking on this button will open folder where League Of Legends stores configuration and there you can find `LeagueFPSBoost` folder where you can put notification sound files. Read about Sound Notifications above.
+   - Clicking on this button will open folder where League Of Legends stores its configuration and there you can find `LeagueFPSBoost` folder where you can put notification sound files. Read about Sound Notifications above.
  - **User Config:**
-   - Clicking on this button will open folder where program stores it configuration about theme, league client path, current settings and etc...
+   - Clicking on this button will open folder where program stores its configuration about theme, league client path, current settings and etc...
  - **Backup And Save Config:**
-   - Clicking on this button will firstly prompt you where to save backup of game's configuration file `game.cfg` and then it will write new values to the original `game.cfg`. Keep in mind that changing toggles under this button will not affect the game until you press this button and complete the backup process. If something goes wrong you can always restore backed up file by deleting `game.cfg` in folder opened by pressing `LoL Config` button and copying the backup in that folder. Then just rename the backed up file to `game.cfg`. Every time you click on the program window to focus it values from `game.cfg` file will be reloaded.
+   - Clicking on this button will firstly prompt you where to save backup of game's configuration file `game.cfg` and then it will write new values to the original `game.cfg`. Keep in mind that changing toggles under this button will not affect the game's `config.cfg` until you press this button and complete the backup process. If something goes wrong you can always restore backed up file by deleting `game.cfg` in folder opened by pressing `LoL Config` button and copying the backed up file in that folder. Then just rename the backed up file to `game.cfg`. Every time you click on the program window to focus it values from `game.cfg` file will be reloaded.
  - **Character Inking:**
-   - Option bellow under the in game 'Video' Settings Tab menu is what makes the champion/character stand out from the environment and crowded scenarios but it costs performance. In earlier days it was not possible to change this in game but now is. Disabling this will improve performance(decrease load on graphics card). If you don't notice any difference after disabling this you can enable it back.
+   - Option bellow under the in game 'Video' Settings Tab menu is what makes the champion/character stand out from the environment and crowded scenarios but it costs performance. In earlier days it was not possible to change this in game but now it is. Disabling this will improve performance(decrease load on graphics card). If you don't notice any difference in frame rate after disabling this you can enable it back.
  - **HUD Animations:**
-   - Disabling this can also improve performance(decrease load on graphics card). I know that there is also option to do this in game but most people don't care about it. If you don't notice any difference after disabling this you can enable it back.
+   - Disabling this can also improve performance(decrease load on graphics card). I know that there is also option to do this in game but most people don't care about it. If you don't notice any difference in frame rate after disabling this you can enable it back.
  - **Shadows:**
-   - As we all know what shadows is. Again, disabling this will improve the performance(decrease load on graphics card). If you don't notice any difference after disabling this you can enable it back.
+   - As we all know what shadows are. Again, disabling this will improve the performance(decrease load on graphics card). If you don't notice any difference in frame rate after disabling this you can enable it back.
  - **Grass Swaying:**
-   - This option makes grass move in game like when wind is blowing. Again, disabling this will improve the performance(decrease load on graphics card). If you don't notice any difference after disabling this you can enable it back.
+   - This option makes grass move in game like when wind is blowing. Again, disabling this will improve the performance(decrease load on graphics card). If you don't notice any difference in frame rate after disabling this you can enable it back.
 
 ## Theme Tab
 
@@ -99,9 +99,11 @@ More Information window contains few buttons, links and startup options(command 
  - **Console Button:**
    - This button is only visible when console is available. Clicking on this button will show/hide the console. Closing the console by pressing X will also close the program. Console shows log in real time.
  - **Startup Arguments:**
-   - **Exit Early**:
+   - **Clean:**
+     - When this is checked all other startup arguments are ignored and program will start without any arguments.
+   - **Exit Early:**
      - When this is checked after restarting program will exit before startup of main window. Use this if you want log file containing only startup before logger has been started and checking for program's configuration.
-   - **No Client**:
+   - **No Client:**
      - When this is checked after restarting program will be allowed to change the priority of `League Of Legends.exe` without having `LeagueClient.exe` running.
    - **Clear Logs:**
      - When this is checked after restarting program will delete `LeagueFPSBoost Logs` folder. New one will be created as soon as new log entry is printed.
@@ -120,8 +122,8 @@ More Information window contains few buttons, links and startup options(command 
 ## Versioning
 
 Versioning system:
- - Major Version: Incremented there is a lot of new features added at once compared to last update.
- - Minor Version: Few new features added and bug fixes.
+ - Major Version: Incremented if there is a lot of new features added at once compared to last update.
+ - Minor Version: Some new features added and bug fixes.
  - Last 2 numbers changed only for hot fixes or rebuild.
 
 ## Authors
