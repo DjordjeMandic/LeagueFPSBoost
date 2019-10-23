@@ -1,4 +1,4 @@
-# LeagueFPSBoost [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/DjordjeMandic)
+# LeagueFPSBoost [![Subscribe](https://img.shields.io/badge/Subscribe-YouTube-red)](https://www.youtube.com/channel/UCKv_SvHJWBPpDN_Mcyjr72A) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?color=blue)](https://paypal.me/DjordjeMandic)
 LeagueFPSBoost is a program written in C# that makes it easier to manage stuff on system and in game visual settings to improve FPS in League Of Legends.
 
 ## Getting Started
@@ -14,11 +14,11 @@ What things you need to install the software and how to install them
 
 Download .NET Framework 4.7.2 from [here](https://dotnet.microsoft.com/download/thank-you/net472)
 
-## Installing ![GitHub Release Date](https://img.shields.io/github/release-date/DjordjeMandic/LeagueFPSBoost) ![GitHub All Releases](https://img.shields.io/github/downloads/DjordjeMandic/LeagueFPSBoost/total)
+## Installing [![GitHub Release Date](https://img.shields.io/github/release-date/DjordjeMandic/LeagueFPSBoost)](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest) [![GitHub All Releases](https://img.shields.io/github/downloads/DjordjeMandic/LeagueFPSBoost/total)](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest)
 
 A step by step series of examples that tell you how to get a program running
 
-1. Download the exe file from [releases](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest)
+1. Download the exe file from [releases](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest).
    - Download the exe file from releases. After downloading finishes open the folder containing the program and place the program on your desktop or where ever you want. Make sure that the program's file name is exactly like on the releases page "LeagueFPSBoost".
 
 2. Double click on the program to run it for first time.
@@ -130,9 +130,9 @@ Versioning system:
 
 * **Djordje Mandic** - *Initial work* - [GitHub](https://github.com/DjordjeMandic) - [YouTube](https://www.youtube.com/channel/UCKv_SvHJWBPpDN_Mcyjr72A) 
 
-## Donate [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/DjordjeMandic)
+## Donate And Subscribe [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?color=blue)](https://paypal.me/DjordjeMandic) [![Subscribe](https://img.shields.io/badge/Subscribe-YouTube-red)](https://www.youtube.com/channel/UCKv_SvHJWBPpDN_Mcyjr72A)
 
-A donation would be appreciated to support the project.
+A donation would be appreciated to support the project. If you can't donate then please leave a sub ^_^
 
 ## License
 
