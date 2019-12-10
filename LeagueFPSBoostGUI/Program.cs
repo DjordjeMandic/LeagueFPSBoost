@@ -24,6 +24,7 @@ using NLog.Config;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 using PowerManagerAPI;
+using Shell32;
 using StringCipherLib;
 using System;
 using System.Collections.Generic;
@@ -95,7 +96,7 @@ namespace LeagueFPSBoost
         public static bool MainWindowLoaded;
         static readonly bool WaitForDebugger = false;
 
-        public static readonly bool MandatoryUpdate = false;
+        public static readonly bool MandatoryUpdate = true;
 
         public static WriteOnce<bool> FirstRun = new WriteOnce<bool>();
 
@@ -109,6 +110,7 @@ namespace LeagueFPSBoost
         
         public static string RestartReasonArg { get; private set; } = null;
         public static string UpdateFolderPath { get; private set; } = null;
+        public static string LeagueClientFilePath { get; private set; } = null;
 
         public enum RestartReason
         {
@@ -139,6 +141,7 @@ namespace LeagueFPSBoost
                 { Strings.clearLogsArg, "Clear logs folder on startup.", v => { ClearLogs = v != null; } },
                 { Strings.RestartReasonArg, "Reason why program had restarted. {}", v => { RestartReasonArg = v; } },
                 { Strings.UpdateFolderArg, "{Path} for the update folder.", v => { UpdateFolderPath = v; } },
+                { Strings.LeagueClientPathArg, "{Path} for the LeagueClient.exe file.", v => { LeagueClientFilePath = v; } },
                 { Strings.ExitBeforeMainWindow, "Terminate program before launching main window.", v => { ExitBeforeMainWindow = v != null; } },
                 { Strings.helpArg, "Show this message and exit.", v => { showHelp = v != null; } }
             };
@@ -213,7 +216,7 @@ namespace LeagueFPSBoost
                 return;
             }
 
-            DeleteTempUpdaterFilesAndCreateUpdateFolder(UpdateFolderPath);
+            DeleteTempUpdaterFilesAndCreateUpdateFolder(UpdateFolderPath, LeagueClientFilePath);
 
             CodeStep = 1; // LeagueFPSBoost: Fatal Error While Checking Mutex
             PreNLog("Checking if program is already open.");
@@ -316,7 +319,24 @@ namespace LeagueFPSBoost
             return false;
         }
 
-        private static void DeleteTempUpdaterFilesAndCreateUpdateFolder(string folderPath)
+        public static string GetShortcutTargetFile(string shortcutFilename)
+        {
+            string pathOnly = System.IO.Path.GetDirectoryName(shortcutFilename);
+            string filenameOnly = System.IO.Path.GetFileName(shortcutFilename);
+
+            Shell shell = new Shell();
+            Folder folder = shell.NameSpace(pathOnly);
+            FolderItem folderItem = folder.ParseName(filenameOnly);
+            if (folderItem != null)
+            {
+                Shell32.ShellLinkObject link = (Shell32.ShellLinkObject)folderItem.GetLink;
+                return link.Path;
+            }
+
+            return string.Empty;
+        }
+
+        private static void DeleteTempUpdaterFilesAndCreateUpdateFolder(string folderPath, string leagueClientPath)
         {
             var dir = "";
             var zipFileName = "LeagueFPSBoost.zip";
@@ -350,20 +370,30 @@ namespace LeagueFPSBoost
                 }
             }
 
-            var PathSpecified = !string.IsNullOrWhiteSpace(folderPath);
+            var PathSpecified = !string.IsNullOrWhiteSpace(folderPath) && !string.IsNullOrWhiteSpace(leagueClientPath);
             if (PathSpecified)
             {
                 PreNLog("Update directory path has been specified.");
 
                 
                 var validChk = false;
-                for(int i = 0; i < 5; i++)
+                var leagueclientpathValid = false;
+                for (int i = 0; i < 5; i++)
                 {
                     try
                     {
                         PreNLog("Checking if specified path is valid.");
                         if (Directory.Exists(folderPath)) Directory.Delete(folderPath, true);
                         Directory.CreateDirectory(folderPath);
+                        var shortcutPath = "";
+                        if (Path.GetExtension(leagueClientPath).ToLower() == ".lnk")
+                        {
+                            shortcutPath = GetShortcutTargetFile(leagueClientPath);
+                            leagueClientPath = shortcutPath;
+                        }
+
+                        leagueclientpathValid = Path.GetFileName(leagueClientPath).ToLower() == "leagueclient.exe";
+
                         validChk = Directory.Exists(folderPath);
                         if (validChk) break;
                     }
@@ -382,13 +412,14 @@ namespace LeagueFPSBoost
                 else
                 {
                     dir = Path.Combine(Environment.CurrentDirectory, "Update");
-                    PreNLog("Specified update directory path is not valid. Using default one: " + dir);
+                    PreNLog("Specified update directory path or league client path is not valid. Using default update directory and skipping league client information: " + dir);
                 }
 
 
                 var zipFilePath = Path.Combine(dir, zipFileName);
                 var xmlFilePath = Path.Combine(dir, "updater.xml");
                 var jsonFilePath = Path.Combine(dir, "updater.json");
+                var githubReleasesTemplateFilePath = Path.Combine(dir, "GitHubReleasesTemplate.md");
 
 
                 
@@ -419,14 +450,27 @@ namespace LeagueFPSBoost
                         xmlUpdaterData.Save();
 
                         PreNLog("Created update xml file: " + xmlFilePath);
-
                         var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, MandatoryUpdate);
-                        jsonUpdaterData.AddMessageBox(MessageBoxList.GameBarAndFullScrOptim);
+                        foreach (var mbox in MessageBoxList.UpdaterDataMessageBoxList)
+                        {
+                            jsonUpdaterData.AddMessageBox(mbox);
+                        }
 
                         if (jsonUpdaterData.Save())
                             PreNLog("Created update json file: " + jsonFilePath);
                         else
                             PreNLog("Couldn't create json file: " + jsonFilePath);
+
+                        var sbGithubReleasesTemplate = new StringBuilder();
+                        sbGithubReleasesTemplate.AppendLine(GithubRelatedResources.ReleasesTemplate).AppendLine().AppendLine().AppendLine();
+                        sbGithubReleasesTemplate.AppendLine("* LeagueFPSBoost information:").AppendLine(GetLeagueFPSBoostInformation());
+
+                        if (leagueclientpathValid)
+                            sbGithubReleasesTemplate.AppendLine("* League client information:").AppendLine(GetLeagueClientInformation(leagueClientPath));
+                        else
+                            PreNLog("LeagueClientPath is not valid, skipping league client information.");
+
+                        File.WriteAllText(githubReleasesTemplateFilePath, sbGithubReleasesTemplate.ToString());
 
                         if (!DebugBuild)
                         {
@@ -1529,6 +1573,7 @@ namespace LeagueFPSBoost
 
         static string GetLeagueClientInformation(string clientPath)
         {
+            //MessageBox.Show(clientPath);
             try
             {
                 var sb = new StringBuilder();
