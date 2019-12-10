@@ -18,8 +18,8 @@ Download .NET Framework 4.7.2 [here](https://dotnet.microsoft.com/download/thank
 
 A step by step series of examples that tell you how to get a program running
 
-1. Download the exe file from [releases](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest)
-   - Download the exe file from releases. After downloading finishes open the folder containing the program and place the program on your desktop or where you want. Make sure that the program's file name is exactly like original "LeagueFPSBoost".
+1. Download the zip file from [releases](https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest)
+   - Download the zip file from releases. After downloading finishes open the folder containing the zip file and extract the program on your desktop or where you want. Make sure that the program's file name is exactly like original "LeagueFPSBoost".
 
 2. Double click on the program to run it for first time.
    - When you run the program for first time it will try to locate folder where league of legends client is located. If it can't find it you will be prompted to select the file named LeagueClient.exe. After that a message box will pop up. That message box pops up after every update and sometimes some more message boxes if needed.
