@@ -1,4 +1,5 @@
 ﻿using LeagueFPSBoost.Native.Unmanaged;
+using LeagueFPSBoost.Updater;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace LeagueFPSBoost.Text
         public const string printProcessModulesArg = "p|procModules";
         public const string RestartReasonArg = "r|restartReason=";
         public const string UpdateFolderArg = "u|updateFolder=";
+        public const string LeagueClientPathArg = "l|leagueClientFile=";
         public const string ExitBeforeMainWindow = "e|exitEarly";
         public const string clearLogsArg = "c|clearLogs";
         public const string helpArg = "h|help";
@@ -46,8 +48,9 @@ namespace LeagueFPSBoost.Text
         public const string Updater_JSON_URL = @"file:///F:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/updater.json";
 #endif
         public const string Updater_Download_URL_ZIP = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip";
-        public const string Updater_Download_URL = Updater_Download_URL_ZIP;
+        public const string Updater_Download_URL_ZIP_LATEST_RELEASE = @"https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest/download/LeagueFPSBoost.zip";
         public const string Updater_Changelog_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/releases";
+
         public const string BoardsPage_URL = @"https://goo.gl/bpxbGV";
         public const string GitHub_URL = @"https://goo.gl/eww7KH";
         public const string YouTube_URL = @"https://goo.gl/RDpsri";

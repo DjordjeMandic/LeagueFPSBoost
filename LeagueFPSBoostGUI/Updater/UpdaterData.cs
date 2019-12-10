@@ -114,25 +114,25 @@ namespace LeagueFPSBoost.Updater
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory)
-            : this(fileName, updaterDataType, checksum, mandatory, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, checksum, mandatory, Strings.Updater_Download_URL_ZIP_LATEST_RELEASE, Program.Version, Strings.Updater_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum)
-            : this(fileName, updaterDataType, checksum, true, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, checksum, true, Strings.Updater_Download_URL_ZIP_LATEST_RELEASE, Program.Version, Strings.Updater_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType)
-            : this(fileName, updaterDataType, new Checksum(), true, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, updaterDataType, new Checksum(), true, Strings.Updater_Download_URL_ZIP_LATEST_RELEASE, Program.Version, Strings.Updater_Changelog_URL)
         {
 
         }
 
         public UpdaterData(string fileName)
-            : this(fileName, UpdaterDataTypeFormat.XDocument, new Checksum(), true, Strings.Updater_Download_URL, Program.Version, Strings.Updater_Changelog_URL)
+            : this(fileName, UpdaterDataTypeFormat.XDocument, new Checksum(), true, Strings.Updater_Download_URL_ZIP_LATEST_RELEASE, Program.Version, Strings.Updater_Changelog_URL)
         {
 
         }
