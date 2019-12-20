@@ -35,7 +35,7 @@ namespace LeagueFPSBoost.Updater
 
         [JsonProperty]
         public bool Mandatory { get; private set; }// = true;
-        
+
         [JsonProperty]
         public Checksum Checksum { get; private set; } //= new Checksum();
 
@@ -47,6 +47,9 @@ namespace LeagueFPSBoost.Updater
 
         [JsonProperty]
         public List<MessageBoxData> MessageBoxes { get; private set; }
+
+        [JsonProperty]
+        public AutoUpdaterDotNET.Mode UpdateMode { get; private set; }
         
         public UpdaterDataTypeFormat UpdaterDataType { get; private set; } //= UpdaterDataTypeFormat.XDocument;
 
@@ -55,8 +58,8 @@ namespace LeagueFPSBoost.Updater
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [JsonConstructor]
-        public UpdaterData(DateTime creationTime, Version version, string downloadURL, string changelogURL, bool mandatory, Checksum checksum, string commandLineArguments, List<PostUpdateActionData> postUpdate, List<MessageBoxData> messageBoxes)
-            : this("WEB", UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, mandatory, downloadURL, version, changelogURL, commandLineArguments)
+        public UpdaterData(DateTime creationTime, Version version, string downloadURL, string changelogURL, bool mandatory, Checksum checksum, string commandLineArguments, List<PostUpdateActionData> postUpdate, List<MessageBoxData> messageBoxes, AutoUpdaterDotNET.Mode updateMode)
+            : this(Strings.Updater_JSON_URL, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, mandatory, downloadURL, version, changelogURL, commandLineArguments)
         {
             /*Mandatory = mandatory;
             Version = version;
@@ -65,8 +68,13 @@ namespace LeagueFPSBoost.Updater
             CommandLineArguments = commandlineArgs;
             Checksum = checksum;*/
             CreationTime = creationTime;
+            logger.Debug("Creation time set to: " + CreationTime);
             PostUpdate = postUpdate;
+            logger.Debug("PostUpdate list updated, check json for more info.");
             MessageBoxes = messageBoxes;
+            logger.Debug("MessageBox list updated, check json for more info.");
+            UpdateMode = updateMode;
+            logger.Debug("UpdateMode set to: " + UpdateMode);
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory, string downloadURL, Version version, string changelogURL, string commandlineArguments)
@@ -82,17 +90,9 @@ namespace LeagueFPSBoost.Updater
             CreationTime = DateTime.Now;
             PostUpdate = new List<PostUpdateActionData>();
             MessageBoxes = new List<MessageBoxData>();
+            UpdateMode = AutoUpdaterDotNET.Mode.Normal;
 
-            logger.Debug("Created new instance: " + Environment.NewLine + 
-                Strings.tabWithLine + "FileName: " + FileName + Environment.NewLine +
-                Strings.tabWithLine + "UpdaterDataType: " + UpdaterDataType + Environment.NewLine +
-                Strings.tabWithLine + "Creation Time: " + CreationTime + Environment.NewLine +
-                Strings.tabWithLine + "Version: " + Version + Environment.NewLine +
-                Strings.tabWithLine + "DownloadURL: " + DownloadURL + Environment.NewLine +
-                Strings.tabWithLine + "ChangelogURL: " + ChangelogURL + Environment.NewLine +
-                Strings.tabWithLine + "Mandatory: " + Mandatory + Environment.NewLine +
-                Strings.tabWithLine + "CommandLineArguments: " + CommandLineArguments + Environment.NewLine +
-                Strings.tabWithLine + "Checksum: " + Checksum.Value + " - " + Checksum.Type);
+            LogNewInstanceInfo();
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory, string downloadURL, Version version, string changelogURL)
@@ -111,6 +111,12 @@ namespace LeagueFPSBoost.Updater
             : this(fileName, updaterDataType, checksum, mandatory, downloadURL, Program.Version, Strings.Updater_Changelog_URL)
         {
 
+        }
+
+        public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory, AutoUpdaterDotNET.Mode updateMode)
+            : this(fileName, updaterDataType, checksum, mandatory, Strings.Updater_Download_URL_ZIP_LATEST_RELEASE, Program.Version, Strings.Updater_Changelog_URL)
+        {
+            UpdateMode = updateMode;
         }
 
         public UpdaterData(string fileName, UpdaterDataTypeFormat updaterDataType, Checksum checksum, bool mandatory)
@@ -245,6 +251,21 @@ namespace LeagueFPSBoost.Updater
                 Strings.tabWithLine + "Mandatory: " + Mandatory + Environment.NewLine +
                 Strings.tabWithLine + "CommandLineArguments: " + CommandLineArguments + Environment.NewLine +
                 Strings.tabWithLine + "Checksum: " + Checksum.Value + " - " + Checksum.Type;
+        }
+
+        private void LogNewInstanceInfo()
+        {
+            logger.Debug("Created new instance: " + Environment.NewLine +
+                Strings.tabWithLine + "FileName: " + FileName + Environment.NewLine +
+                Strings.tabWithLine + "UpdaterDataType: " + UpdaterDataType + Environment.NewLine +
+                Strings.tabWithLine + "Creation Time: " + CreationTime + Environment.NewLine +
+                Strings.tabWithLine + "Version: " + Version + Environment.NewLine +
+                Strings.tabWithLine + "DownloadURL: " + DownloadURL + Environment.NewLine +
+                Strings.tabWithLine + "ChangelogURL: " + ChangelogURL + Environment.NewLine +
+                Strings.tabWithLine + "Mandatory: " + Mandatory + Environment.NewLine +
+                Strings.tabWithLine + "UpdateMode: " + UpdateMode + Environment.NewLine +
+                Strings.tabWithLine + "CommandLineArguments: " + CommandLineArguments + Environment.NewLine +
+                Strings.tabWithLine + "Checksum: " + Checksum.Value + " - " + Checksum.Type);
         }
         
     }
