@@ -115,6 +115,7 @@ namespace LeagueFPSBoost.Updater
 
         static void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
         {
+            logger.Debug("RemoteData(JSON/XML): " + Environment.NewLine + args.RemoteData);
             JsonParsedUpdaterData = JsonConvert.DeserializeObject<UpdaterData>(args.RemoteData);
             JsonParsedUpdaterDataReady = true;
             args.UpdateInfo = new UpdateInfoEventArgs
@@ -122,11 +123,19 @@ namespace LeagueFPSBoost.Updater
                 CurrentVersion = JsonParsedUpdaterData.Version,
                 ChangelogURL = JsonParsedUpdaterData.ChangelogURL,
                 Mandatory = JsonParsedUpdaterData.Mandatory,
+#if !DEBUG
                 DownloadURL = JsonParsedUpdaterData.DownloadURL,
+#else
+                DownloadURL = Strings.Updater_Download_URL_ZIP_LOCAL,
+#endif
                 Checksum = JsonParsedUpdaterData.Checksum.Value,
                 HashingAlgorithm = JsonParsedUpdaterData.Checksum.Type.ToString(),
-                InstallerArgs = JsonParsedUpdaterData.CommandLineArguments
+                InstallerArgs = JsonParsedUpdaterData.CommandLineArguments,
+                UpdateMode = JsonParsedUpdaterData.UpdateMode
             };
+            
+            AutoUpdater.Mandatory = args.UpdateInfo.Mandatory;
+            AutoUpdater.UpdateMode = args.UpdateInfo.UpdateMode;
         }
         static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
         {

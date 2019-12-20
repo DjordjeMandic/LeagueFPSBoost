@@ -97,6 +97,7 @@ namespace LeagueFPSBoost
         static readonly bool WaitForDebugger = false;
 
         public static readonly bool MandatoryUpdate = true;
+        public static readonly AutoUpdaterDotNET.Mode UpdateMode = AutoUpdaterDotNET.Mode.Forced;
 
         public static WriteOnce<bool> FirstRun = new WriteOnce<bool>();
 
@@ -450,7 +451,7 @@ namespace LeagueFPSBoost
                         xmlUpdaterData.Save();
 
                         PreNLog("Created update xml file: " + xmlFilePath);
-                        var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, MandatoryUpdate);
+                        var jsonUpdaterData = new UpdaterData(jsonFilePath, UpdaterDataTypeFormat.JavaScriptObjectNotation, checksum, MandatoryUpdate, UpdateMode);
                         foreach (var mbox in MessageBoxList.UpdaterDataMessageBoxList)
                         {
                             jsonUpdaterData.AddMessageBox(mbox);

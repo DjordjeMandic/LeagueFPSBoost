@@ -47,6 +47,7 @@ namespace LeagueFPSBoost.Text
 #else
         public const string Updater_JSON_URL = @"file:///F:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/updater.json";
 #endif
+        public const string Updater_Download_URL_ZIP_LOCAL = "file:///F:/Documents/Visual%20Studio%202017/Projects/LeagueFPSBoost/AutoUpdater/LeagueFPSBoost.zip";
         public const string Updater_Download_URL_ZIP = @"https://github.com/DjordjeMandic/LeagueFPSBoost/raw/master/AutoUpdater/LeagueFPSBoost.zip";
         public const string Updater_Download_URL_ZIP_LATEST_RELEASE = @"https://github.com/DjordjeMandic/LeagueFPSBoost/releases/latest/download/LeagueFPSBoost.zip";
         public const string Updater_Changelog_URL = @"https://github.com/DjordjeMandic/LeagueFPSBoost/releases";

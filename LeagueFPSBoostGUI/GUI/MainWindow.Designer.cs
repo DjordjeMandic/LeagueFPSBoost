@@ -32,6 +32,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.settingsTabPage = new MetroFramework.Controls.MetroTabPage();
+            this.metroLabelManageProcPriority = new MetroFramework.Controls.MetroLabel();
+            this.metroToggleProcessPriority = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
+            this.disableGameBarMetroToggle = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
+            this.disableFullScreenOptimizationsMetroToggle = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.highPerformanceToggle = new MetroFramework.Controls.MetroToggle();
             this.metroButton3 = new MetroFramework.Controls.MetroButton();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
@@ -43,6 +51,8 @@
             this.shadowsToggle = new MetroFramework.Controls.MetroToggle();
             this.hudAnimationsToggle = new MetroFramework.Controls.MetroToggle();
             this.characterInkingToggle = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.notificationsToggle = new MetroFramework.Controls.MetroToggle();
             this.backupConfigButton = new MetroFramework.Controls.MetroButton();
             this.themeTabPage = new MetroFramework.Controls.MetroTabPage();
             this.blackColorButton = new System.Windows.Forms.Button();
@@ -65,16 +75,6 @@
             this.metroLink2 = new MetroFramework.Controls.MetroLink();
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
-            this.notificationsToggle = new MetroFramework.Controls.MetroToggle();
-            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
-            this.highPerformanceToggle = new MetroFramework.Controls.MetroToggle();
-            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
-            this.disableFullScreenOptimizationsMetroToggle = new MetroFramework.Controls.MetroToggle();
-            this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
-            this.disableGameBarMetroToggle = new MetroFramework.Controls.MetroToggle();
-            this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
-            this.metroToggleProcessPriority = new MetroFramework.Controls.MetroToggle();
-            this.metroLabelManageProcPriority = new MetroFramework.Controls.MetroLabel();
             this.metroTabControl1.SuspendLayout();
             this.settingsTabPage.SuspendLayout();
             this.themeTabPage.SuspendLayout();
@@ -124,6 +124,104 @@
             this.settingsTabPage.TabIndex = 0;
             this.settingsTabPage.Text = "Settings";
             this.settingsTabPage.VerticalScrollbarBarColor = true;
+            // 
+            // metroLabelManageProcPriority
+            // 
+            this.metroLabelManageProcPriority.AutoSize = true;
+            this.metroLabelManageProcPriority.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabelManageProcPriority.Location = new System.Drawing.Point(89, 37);
+            this.metroLabelManageProcPriority.Name = "metroLabelManageProcPriority";
+            this.metroLabelManageProcPriority.Size = new System.Drawing.Size(141, 19);
+            this.metroLabelManageProcPriority.TabIndex = 34;
+            this.metroLabelManageProcPriority.Text = "Manage Proc. Priority";
+            this.metroLabelManageProcPriority.UseStyleColors = true;
+            // 
+            // metroToggleProcessPriority
+            // 
+            this.metroToggleProcessPriority.AutoSize = true;
+            this.metroToggleProcessPriority.Location = new System.Drawing.Point(3, 38);
+            this.metroToggleProcessPriority.Name = "metroToggleProcessPriority";
+            this.metroToggleProcessPriority.Size = new System.Drawing.Size(80, 17);
+            this.metroToggleProcessPriority.TabIndex = 33;
+            this.metroToggleProcessPriority.Text = "Off";
+            this.metroToggleProcessPriority.UseStyleColors = true;
+            this.metroToggleProcessPriority.UseVisualStyleBackColor = true;
+            this.metroToggleProcessPriority.CheckedChanged += new System.EventHandler(this.MetroToggleProcessPriority_CheckedChanged);
+            // 
+            // metroLabel8
+            // 
+            this.metroLabel8.AutoSize = true;
+            this.metroLabel8.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabel8.Location = new System.Drawing.Point(89, 106);
+            this.metroLabel8.Name = "metroLabel8";
+            this.metroLabel8.Size = new System.Drawing.Size(121, 19);
+            this.metroLabel8.TabIndex = 32;
+            this.metroLabel8.Text = "Disable Game Bar ";
+            this.metroLabel8.UseStyleColors = true;
+            this.metroLabel8.Click += new System.EventHandler(this.MetroLabel8_Click);
+            this.metroLabel8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MetroLabel8_MouseClick);
+            // 
+            // disableGameBarMetroToggle
+            // 
+            this.disableGameBarMetroToggle.AutoSize = true;
+            this.disableGameBarMetroToggle.Location = new System.Drawing.Point(3, 107);
+            this.disableGameBarMetroToggle.Name = "disableGameBarMetroToggle";
+            this.disableGameBarMetroToggle.Size = new System.Drawing.Size(80, 17);
+            this.disableGameBarMetroToggle.TabIndex = 31;
+            this.disableGameBarMetroToggle.Text = "Off";
+            this.disableGameBarMetroToggle.UseStyleColors = true;
+            this.disableGameBarMetroToggle.UseVisualStyleBackColor = true;
+            this.disableGameBarMetroToggle.CheckedChanged += new System.EventHandler(this.DisableGameBarMetroToggle_CheckedChanged);
+            // 
+            // metroLabel7
+            // 
+            this.metroLabel7.AutoSize = true;
+            this.metroLabel7.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabel7.Location = new System.Drawing.Point(89, 83);
+            this.metroLabel7.Name = "metroLabel7";
+            this.metroLabel7.Size = new System.Drawing.Size(142, 19);
+            this.metroLabel7.TabIndex = 30;
+            this.metroLabel7.Text = "Disable FullScr Optim.";
+            this.metroLabel7.UseStyleColors = true;
+            this.metroLabel7.Click += new System.EventHandler(this.MetroLabel7_Click);
+            this.metroLabel7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MetroLabel7_MouseClick);
+            // 
+            // disableFullScreenOptimizationsMetroToggle
+            // 
+            this.disableFullScreenOptimizationsMetroToggle.AutoSize = true;
+            this.disableFullScreenOptimizationsMetroToggle.Location = new System.Drawing.Point(3, 84);
+            this.disableFullScreenOptimizationsMetroToggle.Name = "disableFullScreenOptimizationsMetroToggle";
+            this.disableFullScreenOptimizationsMetroToggle.Size = new System.Drawing.Size(80, 17);
+            this.disableFullScreenOptimizationsMetroToggle.TabIndex = 29;
+            this.disableFullScreenOptimizationsMetroToggle.Text = "Off";
+            this.disableFullScreenOptimizationsMetroToggle.UseStyleColors = true;
+            this.disableFullScreenOptimizationsMetroToggle.UseVisualStyleBackColor = true;
+            this.disableFullScreenOptimizationsMetroToggle.CheckedChanged += new System.EventHandler(this.DisableFullScreenOptimizationsMetroToggle_CheckedChanged);
+            // 
+            // metroLabel2
+            // 
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabel2.Location = new System.Drawing.Point(89, 14);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(138, 19);
+            this.metroLabel2.TabIndex = 28;
+            this.metroLabel2.Text = "High Performance PP";
+            this.metroLabel2.UseStyleColors = true;
+            this.metroLabel2.Click += new System.EventHandler(this.MetroLabel2_Click_1);
+            this.metroLabel2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MetroLabel2_MouseClick);
+            // 
+            // highPerformanceToggle
+            // 
+            this.highPerformanceToggle.AutoSize = true;
+            this.highPerformanceToggle.Location = new System.Drawing.Point(3, 15);
+            this.highPerformanceToggle.Name = "highPerformanceToggle";
+            this.highPerformanceToggle.Size = new System.Drawing.Size(80, 17);
+            this.highPerformanceToggle.TabIndex = 27;
+            this.highPerformanceToggle.Text = "Off";
+            this.highPerformanceToggle.UseStyleColors = true;
+            this.highPerformanceToggle.UseVisualStyleBackColor = true;
+            this.highPerformanceToggle.CheckedChanged += new System.EventHandler(this.HighPerformanceToggle1_CheckedChanged);
             // 
             // metroButton3
             // 
@@ -243,6 +341,30 @@
             this.characterInkingToggle.UseStyleColors = true;
             this.characterInkingToggle.UseVisualStyleBackColor = true;
             this.characterInkingToggle.CheckedChanged += new System.EventHandler(this.CharacterInkingToggle_CheckedChanged);
+            // 
+            // metroLabel1
+            // 
+            this.metroLabel1.AutoSize = true;
+            this.metroLabel1.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.metroLabel1.Location = new System.Drawing.Point(89, 60);
+            this.metroLabel1.Name = "metroLabel1";
+            this.metroLabel1.Size = new System.Drawing.Size(128, 19);
+            this.metroLabel1.TabIndex = 11;
+            this.metroLabel1.Text = "Sound Notifications";
+            this.metroLabel1.UseStyleColors = true;
+            this.metroLabel1.Click += new System.EventHandler(this.MetroLabel1_Click);
+            // 
+            // notificationsToggle
+            // 
+            this.notificationsToggle.AutoSize = true;
+            this.notificationsToggle.Location = new System.Drawing.Point(3, 61);
+            this.notificationsToggle.Name = "notificationsToggle";
+            this.notificationsToggle.Size = new System.Drawing.Size(80, 17);
+            this.notificationsToggle.TabIndex = 10;
+            this.notificationsToggle.Text = "Off";
+            this.notificationsToggle.UseStyleColors = true;
+            this.notificationsToggle.UseVisualStyleBackColor = true;
+            this.notificationsToggle.CheckedChanged += new System.EventHandler(this.NotificationsToggle_CheckedChanged);
             // 
             // backupConfigButton
             // 
@@ -468,141 +590,19 @@
             // 
             this.metroLabel9.AutoSize = true;
             this.metroLabel9.FontWeight = MetroFramework.MetroLabelWeight.Bold;
-            this.metroLabel9.Location = new System.Drawing.Point(3, 29);
+            this.metroLabel9.Location = new System.Drawing.Point(-4, 32);
             this.metroLabel9.Name = "metroLabel9";
-            this.metroLabel9.Size = new System.Drawing.Size(229, 114);
+            this.metroLabel9.Size = new System.Drawing.Size(242, 114);
             this.metroLabel9.TabIndex = 2;
-            this.metroLabel9.Text = "Open this before game starts\r\nand keep it open till you finish\r\nplaying the game." +
-    " For program\r\nto work it must be open from\r\nchampion select to end of game\r\nscre" +
-    "en! Ask questions on boards!";
+            this.metroLabel9.Text = "Program should be started before \r\nchampion select and you should\r\nnot close it b" +
+    "efore leaving end of\r\ngame screen in order for it \r\nto work properly. \r\nIGN: ISh" +
+    "unpoYourFace - Eune";
             this.metroLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroLabel9.UseStyleColors = true;
             // 
             // metroStyleManager1
             // 
             this.metroStyleManager1.Owner = this;
-            // 
-            // notificationsToggle
-            // 
-            this.notificationsToggle.AutoSize = true;
-            this.notificationsToggle.Location = new System.Drawing.Point(3, 61);
-            this.notificationsToggle.Name = "notificationsToggle";
-            this.notificationsToggle.Size = new System.Drawing.Size(80, 17);
-            this.notificationsToggle.TabIndex = 10;
-            this.notificationsToggle.Text = "Off";
-            this.notificationsToggle.UseStyleColors = true;
-            this.notificationsToggle.UseVisualStyleBackColor = true;
-            this.notificationsToggle.CheckedChanged += new System.EventHandler(this.NotificationsToggle_CheckedChanged);
-            // 
-            // metroLabel1
-            // 
-            this.metroLabel1.AutoSize = true;
-            this.metroLabel1.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel1.Location = new System.Drawing.Point(89, 60);
-            this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(128, 19);
-            this.metroLabel1.TabIndex = 11;
-            this.metroLabel1.Text = "Sound Notifications";
-            this.metroLabel1.UseStyleColors = true;
-            this.metroLabel1.Click += new System.EventHandler(this.MetroLabel1_Click);
-            // 
-            // highPerformanceToggle
-            // 
-            this.highPerformanceToggle.AutoSize = true;
-            this.highPerformanceToggle.Location = new System.Drawing.Point(3, 15);
-            this.highPerformanceToggle.Name = "highPerformanceToggle";
-            this.highPerformanceToggle.Size = new System.Drawing.Size(80, 17);
-            this.highPerformanceToggle.TabIndex = 27;
-            this.highPerformanceToggle.Text = "Off";
-            this.highPerformanceToggle.UseStyleColors = true;
-            this.highPerformanceToggle.UseVisualStyleBackColor = true;
-            this.highPerformanceToggle.CheckedChanged += new System.EventHandler(this.HighPerformanceToggle1_CheckedChanged);
-            // 
-            // metroLabel2
-            // 
-            this.metroLabel2.AutoSize = true;
-            this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel2.Location = new System.Drawing.Point(89, 14);
-            this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(138, 19);
-            this.metroLabel2.TabIndex = 28;
-            this.metroLabel2.Text = "High Performance PP";
-            this.metroLabel2.UseStyleColors = true;
-            this.metroLabel2.Click += new System.EventHandler(this.MetroLabel2_Click_1);
-            this.metroLabel2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MetroLabel2_MouseClick);
-            // 
-            // disableFullScreenOptimizationsMetroToggle
-            // 
-            this.disableFullScreenOptimizationsMetroToggle.AutoSize = true;
-            this.disableFullScreenOptimizationsMetroToggle.Location = new System.Drawing.Point(3, 84);
-            this.disableFullScreenOptimizationsMetroToggle.Name = "disableFullScreenOptimizationsMetroToggle";
-            this.disableFullScreenOptimizationsMetroToggle.Size = new System.Drawing.Size(80, 17);
-            this.disableFullScreenOptimizationsMetroToggle.TabIndex = 29;
-            this.disableFullScreenOptimizationsMetroToggle.Text = "Off";
-            this.disableFullScreenOptimizationsMetroToggle.UseStyleColors = true;
-            this.disableFullScreenOptimizationsMetroToggle.UseVisualStyleBackColor = true;
-            this.disableFullScreenOptimizationsMetroToggle.CheckedChanged += new System.EventHandler(this.DisableFullScreenOptimizationsMetroToggle_CheckedChanged);
-            // 
-            // metroLabel7
-            // 
-            this.metroLabel7.AutoSize = true;
-            this.metroLabel7.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel7.Location = new System.Drawing.Point(89, 83);
-            this.metroLabel7.Name = "metroLabel7";
-            this.metroLabel7.Size = new System.Drawing.Size(142, 19);
-            this.metroLabel7.TabIndex = 30;
-            this.metroLabel7.Text = "Disable FullScr Optim.";
-            this.metroLabel7.UseStyleColors = true;
-            this.metroLabel7.Click += new System.EventHandler(this.MetroLabel7_Click);
-            this.metroLabel7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MetroLabel7_MouseClick);
-            // 
-            // disableGameBarMetroToggle
-            // 
-            this.disableGameBarMetroToggle.AutoSize = true;
-            this.disableGameBarMetroToggle.Location = new System.Drawing.Point(3, 107);
-            this.disableGameBarMetroToggle.Name = "disableGameBarMetroToggle";
-            this.disableGameBarMetroToggle.Size = new System.Drawing.Size(80, 17);
-            this.disableGameBarMetroToggle.TabIndex = 31;
-            this.disableGameBarMetroToggle.Text = "Off";
-            this.disableGameBarMetroToggle.UseStyleColors = true;
-            this.disableGameBarMetroToggle.UseVisualStyleBackColor = true;
-            this.disableGameBarMetroToggle.CheckedChanged += new System.EventHandler(this.DisableGameBarMetroToggle_CheckedChanged);
-            // 
-            // metroLabel8
-            // 
-            this.metroLabel8.AutoSize = true;
-            this.metroLabel8.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabel8.Location = new System.Drawing.Point(89, 106);
-            this.metroLabel8.Name = "metroLabel8";
-            this.metroLabel8.Size = new System.Drawing.Size(121, 19);
-            this.metroLabel8.TabIndex = 32;
-            this.metroLabel8.Text = "Disable Game Bar ";
-            this.metroLabel8.UseStyleColors = true;
-            this.metroLabel8.Click += new System.EventHandler(this.MetroLabel8_Click);
-            this.metroLabel8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MetroLabel8_MouseClick);
-            // 
-            // metroToggleProcessPriority
-            // 
-            this.metroToggleProcessPriority.AutoSize = true;
-            this.metroToggleProcessPriority.Location = new System.Drawing.Point(3, 38);
-            this.metroToggleProcessPriority.Name = "metroToggleProcessPriority";
-            this.metroToggleProcessPriority.Size = new System.Drawing.Size(80, 17);
-            this.metroToggleProcessPriority.TabIndex = 33;
-            this.metroToggleProcessPriority.Text = "Off";
-            this.metroToggleProcessPriority.UseStyleColors = true;
-            this.metroToggleProcessPriority.UseVisualStyleBackColor = true;
-            this.metroToggleProcessPriority.CheckedChanged += new System.EventHandler(this.MetroToggleProcessPriority_CheckedChanged);
-            // 
-            // metroLabelManageProcPriority
-            // 
-            this.metroLabelManageProcPriority.AutoSize = true;
-            this.metroLabelManageProcPriority.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.metroLabelManageProcPriority.Location = new System.Drawing.Point(89, 37);
-            this.metroLabelManageProcPriority.Name = "metroLabelManageProcPriority";
-            this.metroLabelManageProcPriority.Size = new System.Drawing.Size(141, 19);
-            this.metroLabelManageProcPriority.TabIndex = 34;
-            this.metroLabelManageProcPriority.Text = "Manage Proc. Priority";
-            this.metroLabelManageProcPriority.UseStyleColors = true;
             // 
             // MainWindow
             // 
