@@ -1,4 +1,4 @@
-# LeagueFPSBoost [![Subscribe](https://img.shields.io/badge/Subscribe-YouTube-red)](https://www.youtube.com/channel/UCKv_SvHJWBPpDN_Mcyjr72A) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?color=blue)](https://paypal.me/DjordjeMandic)
+# |NOT SUPPORTED ANYMORE| LeagueFPSBoost [![Subscribe](https://img.shields.io/badge/Subscribe-YouTube-red)](https://www.youtube.com/channel/UCKv_SvHJWBPpDN_Mcyjr72A) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?color=blue)](https://paypal.me/DjordjeMandic)
 LeagueFPSBoost is a program written in C# that makes it easier to manage stuff on system and in game visual settings to improve FPS in League Of Legends.
 
 ## Getting Started
